@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: light;
-
   --background: #ffffff;
   --foreground: #171717;
 
@@ -54,31 +52,11 @@
   --color-accent-700: #5024bd;
   --color-accent-800: #3d1c93;
   --color-accent-900: #2f1873;
+
+  --color-coral-400: #ff6fae;
+  --color-coral-500: #f6478f;
+  --color-coral-600: #dd2e77;
 }
-
-/*
-
-.dark {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-
-      --ink-950: #08080b;
-  --ink-900: #0c0c10;
-  --ink-850: #111116;
-  --ink-800: #16161c;
-  --ink-750: #1c1c23;
-  --ink-700: #24242c;
-  --ink-600: #2e2e37;
-  --ink-500: #3a3a45;
-  --ink-400: #56565f;
-  --ink-300: #7a7a85;
-  --ink-200: #a6a6b0;
-  --ink-100: #d4d4dc;
-  --ink-50: #f4f4f7;
-
-  --overlay-white: #ffffff;
-  }
-*/
 
 @utility container-py {
   @apply py-[clamp(96px,14vw,192px)];

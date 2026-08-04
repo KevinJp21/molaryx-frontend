@@ -1,9 +1,12 @@
-import { Hero } from "../components";
+import { HeroSection, FeaturesSection } from "../components";
 
 export const LandingTemplate = () => {
-    return (
-        <Hero />
-    );
+  return (
+    <>
+      <HeroSection />
+      <FeaturesSection />
+    </>
+  );
 };
 
 export default LandingTemplate;

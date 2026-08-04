@@ -1,6 +1,7 @@
 import { Sparkles, ArrowRight, Play } from "lucide-react";
 import { Button } from "@/components";
-export const Hero = () => {
+import Link from "next/link";
+export const HeroSection = () => {
     return (
         <section className="relative min-h-dvh w-full pt-28 sm:pt-36 lg:pt-44">
             <video
@@ -33,13 +34,17 @@ export const Hero = () => {
                     </p>
                 </div>
                 <div className="flex flex-col items-center justify-center gap-3 sm:flex-row mt-9">
-                    <Button variant="default">
-                        Comenzar Ahora
-                        <ArrowRight className="size-4" />
+                    <Button variant="default" asChild>
+                        <Link href="/#features">
+                            <ArrowRight className="size-4" />
+                            Comenzar Ahora
+                        </Link>
                     </Button>
-                    <Button variant="outline">
-                        <Play className="size-4 text-accent-400" />
-                        Conocer Molaryx
+                    <Button variant="outline" asChild>
+                        <Link href="/#features">
+                            <Play className="size-4 text-accent-400" />
+                            Conocer Molaryx
+                        </Link>
                     </Button>
                 </div>
             </div>
@@ -47,4 +52,4 @@ export const Hero = () => {
     );
 };
 
-export default Hero;
+export default HeroSection;

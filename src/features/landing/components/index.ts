@@ -1,1 +1,2 @@
-export * from './Hero'
+export * from './hero-section'
+export * from './features-section'
