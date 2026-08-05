@@ -123,19 +123,19 @@ export const AGENDA_BLOCKS = [
     row: 2,
     span: 1,
     color: "bg-coral-500/70",
-    label: "Carlos R. · Control",
+    label: "Carlos R. · Profilaxis",
   },
   {
     row: 3,
     span: 2,
     color: "bg-indigo-500/70",
-    label: "Ana T. · Primera consulta",
+    label: "Ana T. · Valoración",
   },
   {
     row: 5,
     span: 1,
     color: "bg-emerald-500/70",
-    label: "Jorge M. · Sesión",
+    label: "Jorge M. · Resina",
   },
 ] as const;
 
@@ -143,21 +143,21 @@ export const APPOINTMENT_ITEMS = [
   {
     time: "09:00",
     name: "María Fernández",
-    svc: "Consulta general",
+    svc: "Consulta odontológica",
     status: "Confirmada",
     tone: "text-emerald-300 bg-emerald-500/10",
   },
   {
     time: "10:30",
     name: "Carlos Ruiz",
-    svc: "Control de seguimiento",
+    svc: "Profilaxis dental",
     status: "En sala",
     tone: "text-accent-300 bg-accent-500/10",
   },
   {
     time: "12:00",
     name: "Ana Torres",
-    svc: "Primera consulta",
+    svc: "Primera valoración",
     status: "Pendiente",
     tone: "text-ink-200 bg-white/[0.06]",
   },

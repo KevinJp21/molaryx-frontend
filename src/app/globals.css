@@ -56,7 +56,10 @@
   --color-coral-400: #ff6fae;
   --color-coral-500: #f6478f;
   --color-coral-600: #dd2e77;
+
+  --animate-float: float 4s ease-in-out infinite;
 }
+
 
 @utility container-py {
   @apply py-[clamp(96px,14vw,192px)];
@@ -74,8 +77,12 @@
   @apply bg-gradient-to-r from-ink-50 via-accent-300 to-accent-500 bg-clip-text text-transparent;
 }
 
-
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-14px); }
 }

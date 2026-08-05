@@ -8,10 +8,10 @@ export const PaymentsVisual = () => {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs text-ink-300">Ingresos del mes</p>
-          <p className="mt-1 text-2xl font-semibold text-ink-50">$48,240</p>
+          <p className="mt-1 text-2xl font-semibold text-ink-50">$8.450.000</p>
         </div>
         <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-300">
-          <TrendingUp className="h-3 w-3" /> +18%
+          <TrendingUp className="h-3 w-3" /> +14%
         </span>
       </div>
       <div className="mt-4 flex h-24 w-full min-w-0 items-end gap-0.5 sm:gap-1.5">

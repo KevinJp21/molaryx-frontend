@@ -1,4 +1,6 @@
 export * from './hero-section'
+export * from './dashboard-section'
 export * from './features-section'
 export * from './pricing-section'
 export * from './navbar'
+export * from './dashboard'

@@ -1,5 +1,6 @@
 import {
   Navbar,
+  DashboardSection,
   HeroSection,
   FeaturesSection,
   PricingSection,
@@ -10,6 +11,7 @@ export const LandingTemplate = () => {
     <div id="top">
       <Navbar />
       <HeroSection />
+      <DashboardSection />
       <FeaturesSection />
       <PricingSection />
     </div>
