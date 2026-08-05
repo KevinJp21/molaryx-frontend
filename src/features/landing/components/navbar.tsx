@@ -7,6 +7,7 @@ import { Button, Logo } from "@/components";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
+  { label: "Dashboard", href: "/#dashboard" },
   { label: "Funcionalidades", href: "/#features" },
   { label: "Planes", href: "/#pricing" },
 ] as const;
