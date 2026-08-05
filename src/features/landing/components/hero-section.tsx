@@ -3,7 +3,7 @@ import { Button } from "@/components";
 import Link from "next/link";
 export const HeroSection = () => {
     return (
-        <section className="relative min-h-dvh w-full pt-28 sm:pt-36 lg:pt-44">
+        <section className="flex items-center justify-center relative min-h-dvh w-full container-py">
             <video
                 autoPlay
                 muted

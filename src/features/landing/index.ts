@@ -1,3 +1,5 @@
 export * from './template'
 export * from './components'
 export * from './const'
+export * from './interfaces'
+export * from './utils'

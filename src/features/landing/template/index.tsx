@@ -1,10 +1,11 @@
-import { HeroSection, FeaturesSection } from "../components";
+import { HeroSection, FeaturesSection, PricingSection } from "../components";
 
 export const LandingTemplate = () => {
   return (
     <>
       <HeroSection />
       <FeaturesSection />
+      <PricingSection />
     </>
   );
 };
