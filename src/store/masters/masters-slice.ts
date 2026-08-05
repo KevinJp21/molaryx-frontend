@@ -1,11 +1,11 @@
 import { createAppSlice } from "../slice";
 import { TStatus } from "@/types";
-import { apiGetIdentificationTypes, TMasterItem, TMasterListResponse } from "@/features";
+import { apiGetIdentificationTypes, TMasterItem } from "@/features";
 
 type TMasterState = {
   identificationTypes: {
     status: TStatus;
-    error: string | undefined;
+    message: string | undefined;
     data: TMasterItem<"idIdentificationType">[] | undefined;
   };
 };
@@ -13,7 +13,7 @@ type TMasterState = {
 const initialState: TMasterState = {
   identificationTypes: {
     status: "idle",
-    error: undefined,
+    message: undefined,
     data: undefined,
   },
 };
@@ -31,16 +31,16 @@ const mastersSlice = createAppSlice({
         fulfilled: (state, action) => {
           if (!action.payload.success) {
             state.identificationTypes.status = "error";
-            state.identificationTypes.error = action.payload.error;
+            state.identificationTypes.message = action.payload.message;
             return;
           }
           state.identificationTypes.status = "success";
-          state.identificationTypes.error = undefined;
-          state.identificationTypes.data = action.payload.data?.data;
+          state.identificationTypes.message = undefined;
+          state.identificationTypes.data = action.payload.data?.data ?? undefined;
         },
         rejected: (state, action) => {
           state.identificationTypes.status = "error";
-          state.identificationTypes.error = action.error.message;
+          state.identificationTypes.message = action.error.message;
           state.identificationTypes.data = undefined;
         },
       },

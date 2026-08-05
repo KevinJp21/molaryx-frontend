@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch, useSelector } from 'react-redux'
 import mastersReducer from './masters/masters-slice'
-
+import plansReducer from './plans/plans-slice'
 export const store = configureStore({
     reducer: {
         masters: mastersReducer,
+        plans: plansReducer,
     },
 
 })

@@ -9,16 +9,22 @@ export const apiGetMaster = async <TIdKey extends string>(
 ): Promise<{
   success: boolean;
   data?: TMasterListResponse<TIdKey>;
-  error?: string;
+  message?: string;
+  errors?: Record<string, string[]>;
 }> => {
   const MASTERS = process.env.MASTERS;
   try {
     const response = await serverApi.get<TMasterListResponse<TIdKey>>(
       `${MASTERS}${endpoint}`,
     );
-    return { success: true, data: response.data };
+    return {
+      success: true,
+      data: response.data,
+      message: response.data.message,
+    };
   } catch (error) {
-    return { success: false, error: handleApiError(error) };
+    const { message, errors } = handleApiError(error);
+    return { success: false, message, errors };
   }
 };
 

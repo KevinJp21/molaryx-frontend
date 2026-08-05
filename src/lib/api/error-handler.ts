@@ -20,32 +20,67 @@ const DEFAULT_ERROR_MESSAGES: Record<number, string> = {
 
 const FALLBACK_ERROR_MESSAGE = 'Error inesperado, vuelva a intentarlo.';
 
+export type ApiErrorResult = {
+    /** Mensaje para toast / alert (negocio, auth, genérico) */
+    message: string;
+    /**
+     * Errores de validación por campo (paths con punto, camelCase).
+     * Presente solo cuando el backend envía `errors` con al menos una clave.
+     */
+    errors?: Record<string, string[]>;
+    status: number;
+};
+
 type ErrorBody = Partial<BaseResponse<unknown>>;
 
 const isErrorBody = (body: unknown): body is ErrorBody =>
     typeof body === 'object' && body !== null;
 
-/**
- * Extrae el mensaje del cuerpo de error. La API siempre responde con la forma
- * de `BaseResponse`, así que se prioriza `message` y se usa `errors` como respaldo.
- * El cuerpo ya viene parseado desde `ApiClient`, no se vuelve a leer la respuesta.
- */
-function getServerMessage(body: unknown): string | null {
+function getValidationErrors(errors: unknown): Record<string, string[]> | undefined {
+    if (!errors || typeof errors !== 'object' || Array.isArray(errors)) {
+        return undefined;
+    }
+
+    const entries = Object.entries(errors as Record<string, unknown>).filter(
+        ([, messages]) =>
+            Array.isArray(messages) &&
+            messages.some((item) => typeof item === 'string' && item.trim() !== ''),
+    );
+
+    if (!entries.length) return undefined;
+
+    return Object.fromEntries(
+        entries.map(([path, messages]) => [
+            path,
+            (messages as string[]).filter(
+                (item): item is string => typeof item === 'string' && item.trim() !== '',
+            ),
+        ]),
+    );
+}
+
+function parseErrorBody(body: unknown): {
+    message: string | null;
+    errors?: Record<string, string[]>;
+} {
     if (typeof body === 'string') {
-        return body.trim() || null;
+        const text = body.trim();
+        return { message: text || null };
     }
 
-    if (!isErrorBody(body)) return null;
-
-    if (typeof body.message === 'string' && body.message.trim()) {
-        return body.message.trim();
+    if (!isErrorBody(body)) {
+        return { message: null };
     }
 
-    const errors = Array.isArray(body.errors)
-        ? body.errors.filter((item): item is string => typeof item === 'string' && item.trim() !== '')
-        : [];
+    const message =
+        typeof body.message === 'string' && body.message.trim()
+            ? body.message.trim()
+            : null;
 
-    return errors.length ? errors.join(', ') : null;
+    return {
+        message,
+        errors: getValidationErrors(body.errors),
+    };
 }
 
 type HandleApiErrorOptions = {
@@ -54,10 +89,16 @@ type HandleApiErrorOptions = {
 };
 
 /**
- * Manejador centralizado de errores de API.
- * Procesa la excepción y retorna un mensaje amigable para el usuario.
+ * Manejador centralizado de errores de API (contrato Molaryx Admin).
+ *
+ * - Validación (400 + `errors`): retorna `errors` para setError por path.
+ * - Negocio / auth / 404 / 409: retorna `message` para toast (sin errors).
+ * - 500: toast genérico; no expone detalles del servidor.
  */
-export function handleApiError(error: unknown, options: HandleApiErrorOptions = {}): string {
+export function handleApiError(
+    error: unknown,
+    options: HandleApiErrorOptions = {},
+): ApiErrorResult {
     const { redirectOn401 = true } = options;
 
     if (error instanceof ApiError) {
@@ -68,15 +109,37 @@ export function handleApiError(error: unknown, options: HandleApiErrorOptions = 
             redirect('/sign-in?session=expired');
         }
 
-        return getServerMessage(body)
+        // 500: nunca mostrar detalles internos al usuario
+        if (status >= 500) {
+            return {
+                message: DEFAULT_ERROR_MESSAGES[500],
+                status,
+            };
+        }
+
+        const { message, errors } = parseErrorBody(body);
+        const resolvedMessage =
+            message
             ?? DEFAULT_ERROR_MESSAGES[status]
             ?? FALLBACK_ERROR_MESSAGE;
+
+        return {
+            message: resolvedMessage,
+            errors,
+            status,
+        };
     }
 
     if (error instanceof Error) {
         console.error('Generic Error:', error.message);
-        return error.message;
+        return {
+            message: error.message,
+            status: 0,
+        };
     }
 
-    return FALLBACK_ERROR_MESSAGE;
+    return {
+        message: FALLBACK_ERROR_MESSAGE,
+        status: 0,
+    };
 }
