@@ -3,7 +3,7 @@ import { Button } from "@/components";
 import Link from "next/link";
 export const HeroSection = () => {
     return (
-        <section className="flex items-center justify-center relative min-h-dvh w-full container-py">
+        <section className="relative flex min-h-dvh w-full items-center justify-center container-py pt-28 sm:pt-32">
             <video
                 autoPlay
                 muted
@@ -35,7 +35,7 @@ export const HeroSection = () => {
                 </div>
                 <div className="flex flex-col items-center justify-center gap-3 sm:flex-row mt-9">
                     <Button variant="default" asChild>
-                        <Link href="/#features">
+                        <Link href="/sign-up">
                             <ArrowRight className="size-4" />
                             Comenzar Ahora
                         </Link>
