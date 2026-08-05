@@ -1,5 +1,5 @@
 import { PLANS, PLAN_UI_META } from "../const";
-import { PricingCard } from "./pricing";
+import { PricingCard, PricingFounderCallout } from "./pricing";
 
 export const PricingSection = () => {
   return (
@@ -16,12 +16,14 @@ export const PricingSection = () => {
             <span className="gradient-text">etapa de tu consultorio</span>
           </h2>
           <p className="mt-5 text-ink-200">
-            Organiza tu consultorio odontológico desde una sola plataforma. Empieza con el
-            programa Founder y asegura un precio especial por ser de los primeros.
+            Organiza tu consultorio odontológico desde una sola plataforma. Elige el plan
+            que se ajuste a tu equipo y aprovecha el precio Founder mientras esté disponible.
           </p>
         </div>
 
-        <div className="mx-auto mt-14 grid max-w-4xl gap-6 md:grid-cols-2 md:items-start">
+        <PricingFounderCallout />
+
+        <div className="mx-auto mt-10 grid max-w-4xl gap-6 md:grid-cols-2 md:items-start">
           {PLANS.map((plan) => {
             const meta = PLAN_UI_META[plan.idPlan];
             if (!meta) return null;
@@ -31,8 +33,8 @@ export const PricingSection = () => {
         </div>
 
         <p className="mt-10 text-center text-xs text-ink-400">
-          Precios en pesos colombianos (COP). El programa Founder está disponible para los
-          primeros consultorios odontológicos que se unan a Molaryx.
+          Precios en pesos colombianos (COP). El precio Founder aplica a los planes con la
+          promoción activa.
         </p>
       </div>
     </section>
