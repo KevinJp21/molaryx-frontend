@@ -14,11 +14,11 @@ export const PaymentsVisual = () => {
           <TrendingUp className="h-3 w-3" /> +18%
         </span>
       </div>
-      <div className="mt-4 flex h-24 items-end gap-1.5">
+      <div className="mt-4 flex h-24 w-full min-w-0 items-end gap-0.5 sm:gap-1.5">
         {PAYMENT_CHART.map((height, i) => (
           <div
             key={i}
-            className="flex-1 rounded-t bg-linear-to-t from-accent-500/30 to-accent-400/80"
+            className="min-w-0 flex-1 rounded-t bg-linear-to-t from-accent-500/30 to-accent-400/80"
             style={{ height: `${height}%` }}
           />
         ))}

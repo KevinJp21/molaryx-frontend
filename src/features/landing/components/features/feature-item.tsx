@@ -11,7 +11,7 @@ interface IFeatureItemProps {
 export const FeatureItem = ({ feature, visual, reverse = false }: IFeatureItemProps) => {
   return (
     <div
-      className={`grid items-center gap-8 lg:grid-cols-2 lg:gap-16 ${
+      className={`grid w-full min-w-0 items-center gap-8 lg:grid-cols-2 lg:gap-16 ${
         reverse ? "lg:[&>*:first-child]:order-2" : ""
       }`}
     >
@@ -29,7 +29,7 @@ export const FeatureItem = ({ feature, visual, reverse = false }: IFeatureItemPr
           ))}
         </ul>
       </div>
-      <div>{visual}</div>
+      <div className="min-w-0 w-full">{visual}</div>
     </div>
   );
 };
