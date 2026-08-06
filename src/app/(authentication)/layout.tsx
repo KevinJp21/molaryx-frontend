@@ -54,7 +54,7 @@ export default function AuthenticationLayout({ children, }: { children: React.Re
                 </div>
 
                 <div className="flex flex-1 items-center justify-center px-4 pb-16 sm:px-6">
-                    <div className="w-full max-w-md">{children}</div>
+                    {children}
                 </div>
             </div>
         </div>

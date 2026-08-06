@@ -47,10 +47,10 @@ const mastersSlice = createAppSlice({
     ),
   }),
   selectors: {
-    selectIdentificationTypes: (state) => state.identificationTypes,
+    selectGetIdentificationTypes: (state) => state.identificationTypes,
   },
 });
 
 export const { getIdentificationTypes } = mastersSlice.actions;
-export const { selectIdentificationTypes } = mastersSlice.selectors;
+export const { selectGetIdentificationTypes } = mastersSlice.selectors;
 export default mastersSlice.reducer;

@@ -10,7 +10,7 @@ export interface IGetPublicPlans {
   maxProfessionals: number;
   maxAssistants: number;
   maxPatients: number;
-  promotionPlans: IPromotionPlan;
+  promotionPlan: IPromotionPlan | null;
 }
 
 export interface IPromotionPlan {

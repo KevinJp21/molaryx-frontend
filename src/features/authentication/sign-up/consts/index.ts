@@ -1,13 +1,13 @@
 import { Path } from "react-hook-form";
-import { ISignUpFormRequest } from "../interfaces";
+import type { TSignUpForm } from "../schemas";
 
 export const SIGN_UP_STEPS = [
   { label: "Plan" },
   { label: "Consultorio" },
   { label: "Tu cuenta" },
-] as const;
+];
 
-export const STEP_FIELDS: Record<number, Path<ISignUpFormRequest>[]> = {
+export const STEP_FIELDS: Record<number, Path<TSignUpForm>[]> = {
   1: ["idPlan", "idPromotion"],
   2: [
     "tenant.idIdentificationType",
@@ -30,7 +30,7 @@ export const STEP_FIELDS: Record<number, Path<ISignUpFormRequest>[]> = {
   ],
 };
 
-export const SIGN_UP_DEFAULT_VALUES: ISignUpFormRequest = {
+export const SIGN_UP_DEFAULT_VALUES: TSignUpForm = {
   idPlan: null,
   idPromotion: null,
   tenant: {
@@ -44,9 +44,9 @@ export const SIGN_UP_DEFAULT_VALUES: ISignUpFormRequest = {
   owner: {
     username: "",
     firstName: "",
-    secondName: "",
+    secondName: null,
     firstSurname: "",
-    secondSurname: "",
+    secondSurname: null,
     idIdentificationType: 1,
     identificationNumber: "",
     phoneNumber: "",

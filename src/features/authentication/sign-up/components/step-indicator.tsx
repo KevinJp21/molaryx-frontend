@@ -9,9 +9,9 @@ interface StepIndicatorProps {
   currentStep: number;
 }
 
-export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
+export const StepIndicator = ({ steps, currentStep }: StepIndicatorProps) => {
   return (
-    <ol className="flex items-center gap-2">
+    <ol className="flex items-center gap-2 mb-8">
       {steps.map((step, idx) => {
         const stepNumber = idx + 1;
         const isCompleted = stepNumber < currentStep;
@@ -51,4 +51,6 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
       })}
     </ol>
   );
-}
+};
+
+export default StepIndicator;
