@@ -19,7 +19,9 @@ export const STEP_FIELDS: Record<number, Path<TSignUpForm>[]> = {
   ],
   3: [
     "owner.firstName",
+    "owner.secondName",
     "owner.firstSurname",
+    "owner.secondSurname",
     "owner.idIdentificationType",
     "owner.identificationNumber",
     "owner.username",
@@ -34,7 +36,7 @@ export const SIGN_UP_DEFAULT_VALUES: TSignUpForm = {
   idPlan: null,
   idPromotion: null,
   tenant: {
-    idIdentificationType: null,
+    idIdentificationType: 1,
     identificationNumber: "",
     consultoryName: "",
     email: "",

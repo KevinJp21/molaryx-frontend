@@ -6,6 +6,7 @@ import { currencyFormat } from '@/utils';
 import { useAppSelector } from '@/store';
 import { selectGetPublicPlans } from '@/store/plans/plans-slice';
 import type { TSignUpForm } from '../schemas';
+import { InputErrorMessage } from '@/components';
 
 export function StepPlan() {
   const { control, setValue } = useFormContext<TSignUpForm>();
@@ -91,9 +92,7 @@ export function StepPlan() {
               })}
 
               {fieldState.error && (
-                <p className="mt-1 text-sm font-medium text-coral-500">
-                  {fieldState.error.message}
-                </p>
+                <InputErrorMessage message={fieldState.error.message} />
               )}
             </div>
         )}
