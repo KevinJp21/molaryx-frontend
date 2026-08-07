@@ -1,4 +1,8 @@
-import { CheckCircle2 } from 'lucide-react';
+'use client'
+
+import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Button } from '@/components';
+import Link from 'next/link';
 
 export function RegisterSuccess() {
   return (
@@ -28,6 +32,13 @@ export function RegisterSuccess() {
           </div>
         </div>
       </div>
+
+      <Button variant="default" className="mt-4" asChild>
+        <Link href="/">
+          <ArrowLeft className="h-4 w-4" />
+          Regresar a la página de inicio
+        </Link>
+      </Button>
     </div>
   );
 }

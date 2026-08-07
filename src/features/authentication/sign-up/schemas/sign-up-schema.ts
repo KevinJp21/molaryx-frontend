@@ -116,7 +116,7 @@ export const SignUpSchema = z.object({
           if (!hasHadBirthday) age -= 1;
           return age >= 18;
         }, {
-          message: 'Debe ser mayor de edad para registrar un consultorio.',
+          message: 'Debe ser mayor de edad para registrarse.',
         }),
       phoneNumber: z
         .string()

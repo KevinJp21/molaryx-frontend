@@ -7,7 +7,7 @@ import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { Button, ErrorMessage } from "@/components";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { postSignUp, selectPostSignUp } from "@/store/authentication/authentication-slice";
+import { postSignUp, resetPostSignUp, selectPostSignUp } from "@/store/authentication/authentication-slice";
 import { getPublicPlans, selectGetPublicPlans } from "@/store/plans/plans-slice";
 import { getIdentificationTypes, selectGetIdentificationTypes } from "@/store/masters/masters-slice";
 import { SIGN_UP_STEPS, STEP_FIELDS, SIGN_UP_DEFAULT_VALUES } from "../consts";
@@ -18,11 +18,11 @@ import { IPostSignUpFormRequest } from "../interfaces";
 export const SignUpTemplate = () => {
   const dispatch = useAppDispatch();
   const [step, setStep] = useState(1);
+  const [isRegisterSuccess, setIsRegisterSuccess] = useState(false);
   const { status: plansStatus, message: plansMessage } = useAppSelector(selectGetPublicPlans);
   const { status: identificationTypesStatus } = useAppSelector(selectGetIdentificationTypes);
   const { status: postSignUpStatus, message: postSignUpMessage, error: postSignUpError } = useAppSelector(selectPostSignUp);
   const plansLoading = plansStatus === 'idle' || plansStatus === 'loading';
-  const isRegisterSuccess = postSignUpStatus === 'success';
 
   const methods = useForm<TSignUpForm, unknown, IPostSignUpFormRequest>({
     defaultValues: SIGN_UP_DEFAULT_VALUES,
@@ -30,7 +30,7 @@ export const SignUpTemplate = () => {
     resolver: zodResolver(SignUpSchema),
   });
 
-  const { handleSubmit, trigger } = methods;
+  const { handleSubmit, trigger, reset } = methods;
 
   const goNext = async () => {
     const fields = STEP_FIELDS[step];
@@ -53,18 +53,29 @@ export const SignUpTemplate = () => {
     }
   }, [dispatch]);
 
+  // Al entrar/salir de la página, limpia el estado del registro en Redux
+  useEffect(() => {
+    dispatch(resetPostSignUp());
+    return () => {
+      dispatch(resetPostSignUp());
+    };
+  }, [dispatch]);
+
   useEffect(() => {
     if (postSignUpStatus === 'success') {
-      // currentStep > total → todos los pasos quedan como completados en el indicador
+      setIsRegisterSuccess(true);
       setStep(SIGN_UP_STEPS.length + 1);
       toast.success(postSignUpMessage ?? 'Cuenta creada exitosamente.');
+      reset(SIGN_UP_DEFAULT_VALUES);
+      dispatch(resetPostSignUp());
     }
     if (postSignUpStatus === 'error') {
       toast.error(postSignUpMessage ?? 'Error al crear la cuenta, intente nuevamente más tarde.', {
         description: postSignUpError,
       });
+      dispatch(resetPostSignUp());
     }
-  }, [postSignUpStatus]);
+  }, [postSignUpStatus, postSignUpMessage, postSignUpError, dispatch, reset]);
 
   return (
     <div className="w-full max-w-2xl">
@@ -122,7 +133,11 @@ export const SignUpTemplate = () => {
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               ) : (
-                <Button key="submit" variant="default" type="submit" className="flex-1"
+                <Button
+                  key="submit"
+                  variant="default"
+                  type="submit"
+                  className="flex-1"
                   disabled={postSignUpStatus === 'loading'}
                 >
                   {postSignUpStatus === 'loading' ? (
