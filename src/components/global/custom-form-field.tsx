@@ -139,19 +139,30 @@ export const CustomFormField = ({
                     </label>
 
                     {type === 'date' ? (
-                        <Popover open={isOpen} onOpenChange={setIsOpen}>
+                        <Popover
+                            open={isOpen}
+                            onOpenChange={(open) => {
+                                setIsOpen(open)
+                                if (!open) field.onBlur()
+                            }}
+                        >
                             <PopoverTrigger asChild>
                                 <Button
+                                    ref={field.ref}
+                                    type="button"
                                     variant={"outline"}
                                     disabled={disabled}
+                                    id={name}
+                                    aria-invalid={!!fieldState.error && fieldState.isTouched}
                                     className={cn(
-                                        "w-full justify-start rounded-xl border-ink-700 bg-ink-900 px-3.5 py-2.5 text-left text-sm font-normal text-ink-50",
-                                        "hover:bg-ink-850 hover:border-ink-600",
+                                        "h-auto w-full justify-start rounded-xl border border-ink-700 bg-ink-900 px-3.5 py-2.5 text-left text-sm font-normal text-ink-50 shadow-none",
+                                        "hover:bg-ink-900 hover:border-ink-600 hover:text-ink-50",
+                                        "focus-visible:border-accent-500 focus-visible:ring-[3px] focus-visible:ring-accent-500/20",
                                         !field.value && "text-ink-400",
                                         fieldState.error && fieldState.isTouched && "border-coral-500 ring-[3px] ring-coral-500/20",
                                     )}
                                 >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    <CalendarIcon className="mr-2 h-4 w-4 text-ink-400" />
                                     {field.value ? format(new Date(`${field.value}T00:00:00`), "PPP", { locale: es }) : <span>{placeholder}</span>}
                                 </Button>
                             </PopoverTrigger>
@@ -162,6 +173,7 @@ export const CustomFormField = ({
                                     captionLayout="dropdown"
                                     onSelect={(date) => {
                                         field.onChange(date ? format(date, "yyyy-MM-dd") : '')
+                                        field.onBlur()
                                         onChange?.(date)
                                         setIsOpen(false)
                                     }}

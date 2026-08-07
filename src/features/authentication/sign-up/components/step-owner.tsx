@@ -65,13 +65,19 @@ export const StepOwner = () => {
                         mode='digits'
                     />
                 </div>
-                <div className='mt-4'>
+                <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
                     <CustomFormField
                         name='owner.username'
                         label='Nombre de usuario'
                         placeholder='Ingresa tu nombre de usuario'
                         type='text'
                         mode='text'
+                    />
+                    <CustomFormField
+                        name='owner.birthDate'
+                        label='Fecha de nacimiento'
+                        placeholder='Ingresa tu fecha de nacimiento'
+                        type='date'
                     />
                 </div>
                 <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>

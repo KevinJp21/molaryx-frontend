@@ -17,8 +17,11 @@
   --ink-200: #3d3d4d;
   --ink-100: #232332;
   --ink-50: #0e0e17;
-
-  --overlay-white: #0e0e17;
+  
+  --radius: 0.5rem;
+  --border: oklch(0.922 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
 }
 
 @theme inline {
@@ -40,8 +43,6 @@
   --color-ink-100: var(--ink-100);
   --color-ink-50: var(--ink-50);
 
-  --color-white: var(--overlay-white);
-
   --color-accent-50: #f5f2ff;
   --color-accent-100: #ece6ff;
   --color-accent-200: #d7caff;
@@ -56,6 +57,7 @@
   --color-coral-400: #ff6fae;
   --color-coral-500: #f6478f;
   --color-coral-600: #dd2e77;
+  
 
   --animate-float: float 4s ease-in-out infinite;
 }

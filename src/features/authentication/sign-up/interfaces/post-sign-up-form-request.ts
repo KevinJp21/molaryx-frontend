@@ -1,5 +1,5 @@
-export interface ISignUpFormRequest {
-  idPlan: number | null;
+export interface IPostSignUpFormRequest {
+  idPlan: number;
   idPromotion: number | null;
   tenant: {
     idIdentificationType: number | null;
@@ -17,6 +17,7 @@ export interface ISignUpFormRequest {
     secondSurname: string | null;
     idIdentificationType: number;
     identificationNumber: string;
+    birthDate: string;
     phoneNumber: string;
     email: string;
     password: string;

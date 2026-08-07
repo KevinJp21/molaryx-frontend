@@ -10,7 +10,6 @@ export const apiGetMaster = async <TIdKey extends string>(
   success: boolean;
   data?: TMasterListResponse<TIdKey>;
   message?: string;
-  errors?: Record<string, string[]>;
 }> => {
   const MASTERS = process.env.MASTERS;
   try {
@@ -23,8 +22,8 @@ export const apiGetMaster = async <TIdKey extends string>(
       message: response.data.message,
     };
   } catch (error) {
-    const { message, errors } = handleApiError(error);
-    return { success: false, message, errors };
+    const { message } = await handleApiError(error);
+    return { success: false, message };
   }
 };
 

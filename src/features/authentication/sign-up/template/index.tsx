@@ -3,23 +3,28 @@
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { Button, ErrorMessage } from "@/components";
+import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/store";
+import { postSignUp, selectPostSignUp } from "@/store/authentication/authentication-slice";
 import { getPublicPlans, selectGetPublicPlans } from "@/store/plans/plans-slice";
 import { getIdentificationTypes, selectGetIdentificationTypes } from "@/store/masters/masters-slice";
 import { SIGN_UP_STEPS, STEP_FIELDS, SIGN_UP_DEFAULT_VALUES } from "../consts";
-import { StepIndicator, StepPlan, PlanCardSkeleton, StepTenant, StepOwner } from "../components";
-import { SignUpSchema, type TSignUpForm, type TSignUpFormValues } from "../schemas";
+import { StepIndicator, StepPlan, PlanCardSkeleton, StepTenant, StepOwner, RegisterSuccess } from "../components";
+import { SignUpSchema, type TSignUpForm } from "../schemas";
+import { IPostSignUpFormRequest } from "../interfaces";
 
 export const SignUpTemplate = () => {
   const dispatch = useAppDispatch();
   const [step, setStep] = useState(1);
   const { status: plansStatus, message: plansMessage } = useAppSelector(selectGetPublicPlans);
   const { status: identificationTypesStatus } = useAppSelector(selectGetIdentificationTypes);
+  const { status: postSignUpStatus, message: postSignUpMessage, error: postSignUpError } = useAppSelector(selectPostSignUp);
   const plansLoading = plansStatus === 'idle' || plansStatus === 'loading';
+  const isRegisterSuccess = postSignUpStatus === 'success';
 
-  const methods = useForm<TSignUpForm, unknown, TSignUpFormValues>({
+  const methods = useForm<TSignUpForm, unknown, IPostSignUpFormRequest>({
     defaultValues: SIGN_UP_DEFAULT_VALUES,
     mode: 'onTouched',
     resolver: zodResolver(SignUpSchema),
@@ -35,8 +40,8 @@ export const SignUpTemplate = () => {
 
   const goBack = () => setStep((s) => Math.max(s - 1, 1));
 
-  const onSubmit = (data: TSignUpFormValues) => {
-    console.log("dispatching data", data);
+  const onSubmit = (data: IPostSignUpFormRequest) => {
+    dispatch(postSignUp(data));
   };
 
   useEffect(() => {
@@ -48,66 +53,95 @@ export const SignUpTemplate = () => {
     }
   }, [dispatch]);
 
+  useEffect(() => {
+    if (postSignUpStatus === 'success') {
+      // currentStep > total → todos los pasos quedan como completados en el indicador
+      setStep(SIGN_UP_STEPS.length + 1);
+      toast.success(postSignUpMessage ?? 'Cuenta creada exitosamente.');
+    }
+    if (postSignUpStatus === 'error') {
+      toast.error(postSignUpMessage ?? 'Error al crear la cuenta, intente nuevamente más tarde.', {
+        description: postSignUpError,
+      });
+    }
+  }, [postSignUpStatus]);
+
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-2xl">
       <StepIndicator steps={SIGN_UP_STEPS} currentStep={step} />
 
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {step === 1 && (
-            <div>
-              <h1 className="font-semibold text-3xl tracking-tight text-ink-50">
-                Elige tu plan
-              </h1>
-              <p className="mt-2 text-sm text-ink-300">
-                Puedes cambiar de plan más adelante desde la configuración de tu cuenta.
-              </p>
+      {isRegisterSuccess ? (
+        <RegisterSuccess />
+      ) : (
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {step === 1 && (
+              <div>
+                <h1 className="font-semibold text-3xl tracking-tight text-ink-50">
+                  Elige tu plan
+                </h1>
+                <p className="mt-2 text-sm text-ink-300">
+                  Puedes cambiar de plan más adelante desde la configuración de tu cuenta.
+                </p>
 
-              {plansLoading && <PlanCardSkeleton />}
-              {plansStatus === 'error' && (
-                <ErrorMessage
-                  message={
-                    plansMessage ??
-                    'No se encontraron planes disponibles, intente nuevamente más tarde.'
-                  }
-                />
+                {plansLoading && <PlanCardSkeleton />}
+                {plansStatus === 'error' && (
+                  <ErrorMessage
+                    message={
+                      plansMessage ??
+                      'No se encontraron planes disponibles, intente nuevamente más tarde.'
+                    }
+                  />
+                )}
+                {plansStatus === 'success' && <StepPlan />}
+              </div>
+            )}
+
+            {step === 2 && <StepTenant />}
+
+            {step === 3 && <StepOwner />}
+
+            <div className="mt-9 flex items-center gap-3">
+              {step > 1 && (
+                <Button variant="outline" type="button" onClick={goBack}>
+                  <ArrowLeft className="h-4 w-4" />
+                  Atrás
+                </Button>
               )}
-              {plansStatus === 'success' && <StepPlan />}
+
+              {step < SIGN_UP_STEPS.length ? (
+                <Button
+                  key="continue"
+                  variant="default"
+                  type="button"
+                  onClick={goNext}
+                  className="flex-1"
+                  disabled={step === 1 && (plansLoading || plansStatus === 'error')}
+                >
+                  Continuar
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              ) : (
+                <Button key="submit" variant="default" type="submit" className="flex-1"
+                  disabled={postSignUpStatus === 'loading'}
+                >
+                  {postSignUpStatus === 'loading' ? (
+                    <>
+                      Creando cuenta
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    </>
+                  ) : (
+                    <>
+                      Crear cuenta
+                      <ArrowRight className="h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
-          )}
-
-          {step === 2 && <StepTenant />}
-
-          {step === 3 && <StepOwner />}
-
-          <div className="mt-9 flex items-center gap-3">
-            {step > 1 && (
-              <Button variant="outline" type="button" onClick={goBack}>
-                <ArrowLeft className="h-4 w-4" />
-                Atrás
-              </Button>
-            )}
-
-            {step < SIGN_UP_STEPS.length ? (
-              <Button
-                variant="default"
-                type="button"
-                onClick={goNext}
-                className="flex-1"
-                disabled={step === 1 && (plansLoading || plansStatus === 'error')}
-              >
-                Continuar
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            ) : (
-              <Button variant="default" type="submit" className="flex-1">
-                Crear cuenta
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </form>
-      </FormProvider>
+          </form>
+        </FormProvider>
+      )}
     </div>
   );
 };

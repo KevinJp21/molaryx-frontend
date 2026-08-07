@@ -18,7 +18,7 @@ export const StepIndicator = ({ steps, currentStep }: StepIndicatorProps) => {
         const isCurrent = stepNumber === currentStep;
 
         return (
-          <li key={step.label} className="flex flex-1 items-center gap-2">
+          <li key={step.label} className={`flex ${stepNumber === 3 ? 'flex-none' : 'flex-1'} items-center gap-2`}>
             <div className="flex items-center gap-2.5">
               <span
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors duration-300 ${

@@ -8,7 +8,6 @@ export const apiGetPublicPlansAction = async (): Promise<{
     success: boolean;
     data?: IGetPublicPlans[];
     message?: string;
-    errors?: Record<string, string[]>;
 }> => {
     const PLAN = process.env.PLAN;
     const GET_PUBLIC_PLANS = process.env.GET_PUBLIC_PLANS;
@@ -23,7 +22,7 @@ export const apiGetPublicPlansAction = async (): Promise<{
             message: response.data.message,
         };
     } catch (error) {
-        const { message, errors } = handleApiError(error);
-        return { success: false, message, errors };
+        const { message } = await handleApiError(error);
+        return { success: false, message };
     }
 };

@@ -7,7 +7,6 @@ type TPlansState = {
     status: TStatus;
     message: string | undefined;
     data: IGetPublicPlans[] | undefined;
-    errors?: Record<string, string[]>;
   };
 };
 
@@ -16,7 +15,6 @@ const initialState: TPlansState = {
     status: "idle",
     message: undefined,
     data: undefined,
-    errors: undefined,
   },
 };
 
@@ -33,19 +31,16 @@ const plansSlice = createAppSlice({
           state.getPublicPlans.status = "error";
           state.getPublicPlans.message = action.payload.message;
           state.getPublicPlans.data = undefined;
-          state.getPublicPlans.errors = action.payload.errors;
           return;
         }
         state.getPublicPlans.status = "success";
         state.getPublicPlans.message = action.payload.message;
         state.getPublicPlans.data = action.payload.data;
-        state.getPublicPlans.errors = undefined;
       },
       rejected: (state, action) => {
         state.getPublicPlans.status = "error";
         state.getPublicPlans.message = action.error.message;
         state.getPublicPlans.data = undefined;
-        state.getPublicPlans.errors = undefined;
       },
     }),
   }),

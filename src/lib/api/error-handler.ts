@@ -21,17 +21,18 @@ const DEFAULT_ERROR_MESSAGES: Record<number, string> = {
 const FALLBACK_ERROR_MESSAGE = 'Error inesperado, vuelva a intentarlo.';
 
 export type ApiErrorResult = {
-    /** Mensaje para toast / alert (negocio, auth, genérico) */
+    /** Mensaje general del backend o por código HTTP */
     message: string;
-    /**
-     * Errores de validación por campo (paths con punto, camelCase).
-     * Presente solo cuando el backend envía `errors` con al menos una clave.
-     */
-    errors?: Record<string, string[]>;
-    status: number;
+    /** Primer mensaje de validación del mapa `errors`, si existe */
+    error?: string;
 };
 
 type ErrorBody = Partial<BaseResponse<unknown>>;
+
+type ParsedErrorBody = {
+    message: string | null;
+    error?: string;
+};
 
 const isErrorBody = (body: unknown): body is ErrorBody =>
     typeof body === 'object' && body !== null;
@@ -59,28 +60,67 @@ function getValidationErrors(errors: unknown): Record<string, string[]> | undefi
     );
 }
 
-function parseErrorBody(body: unknown): {
-    message: string | null;
-    errors?: Record<string, string[]>;
-} {
-    if (typeof body === 'string') {
-        const text = body.trim();
+/**
+ * Extrae el primer mensaje de validación del mapa `errors` del backend.
+ */
+function getFirstValidationError(
+    errors?: Record<string, string[]>,
+): string | undefined {
+    if (!errors) return undefined;
+
+    for (const messages of Object.values(errors)) {
+        const first = messages.find((item) => item.trim() !== '');
+        if (first) return first.trim();
+    }
+
+    return undefined;
+}
+
+/**
+ * Extrae message y primer error de validación del cuerpo parseado.
+ */
+export function extractServerMessageFromParsedBody(data: unknown): ParsedErrorBody {
+    if (data == null) return { message: null };
+    if (typeof data === 'string') {
+        const text = data.trim();
         return { message: text || null };
     }
-
-    if (!isErrorBody(body)) {
-        return { message: null };
-    }
+    if (!isErrorBody(data)) return { message: null };
 
     const message =
-        typeof body.message === 'string' && body.message.trim()
-            ? body.message.trim()
+        typeof data.message === 'string' && data.message.trim()
+            ? data.message.trim()
             : null;
 
-    return {
-        message,
-        errors: getValidationErrors(body.errors),
-    };
+    const error = getFirstValidationError(getValidationErrors(data.errors));
+
+    return { message, error };
+}
+
+/**
+ * Intenta extraer message/error del cuerpo de la respuesta.
+ * Solo se puede consumir el stream una vez, por lo que se maneja con cuidado.
+ */
+async function parseErrorResponse(response?: Response): Promise<ParsedErrorBody> {
+    if (!response) return { message: null };
+
+    try {
+        const contentType = response.headers.get('content-type')?.toLowerCase() ?? '';
+
+        if (contentType.includes('json')) {
+            const data = await response.json();
+            return extractServerMessageFromParsedBody(data);
+        }
+
+        const rawText = await response.text();
+        if (rawText) {
+            return extractServerMessageFromParsedBody(rawText);
+        }
+    } catch (e) {
+        console.error('Error al obtener la respuesta de error:', e);
+    }
+
+    return { message: null };
 }
 
 type HandleApiErrorOptions = {
@@ -90,19 +130,16 @@ type HandleApiErrorOptions = {
 
 /**
  * Manejador centralizado de errores de API (contrato Molaryx Admin).
- *
- * - Validación (400 + `errors`): retorna `errors` para setError por path.
- * - Negocio / auth / 404 / 409: retorna `message` para toast (sin errors).
- * - 500: toast genérico; no expone detalles del servidor.
+ * Retorna `{ message, error? }` donde `error` es el primer mensaje de validación.
  */
-export function handleApiError(
+export async function handleApiError(
     error: unknown,
     options: HandleApiErrorOptions = {},
-): ApiErrorResult {
+): Promise<ApiErrorResult> {
     const { redirectOn401 = true } = options;
 
     if (error instanceof ApiError) {
-        const { status, body } = error;
+        const { status, response, body } = error;
 
         if (status === 401 && redirectOn401) {
             console.warn('Sesión expirada o no válida (401)');
@@ -111,35 +148,27 @@ export function handleApiError(
 
         // 500: nunca mostrar detalles internos al usuario
         if (status >= 500) {
-            return {
-                message: DEFAULT_ERROR_MESSAGES[500],
-                status,
-            };
+            return { message: DEFAULT_ERROR_MESSAGES[500] };
         }
 
-        const { message, errors } = parseErrorBody(body);
-        const resolvedMessage =
-            message
-            ?? DEFAULT_ERROR_MESSAGES[status]
-            ?? FALLBACK_ERROR_MESSAGE;
+        const parsed =
+            body !== undefined
+                ? extractServerMessageFromParsedBody(body)
+                : await parseErrorResponse(response);
 
         return {
-            message: resolvedMessage,
-            errors,
-            status,
+            message:
+                parsed.message
+                ?? DEFAULT_ERROR_MESSAGES[status]
+                ?? FALLBACK_ERROR_MESSAGE,
+            error: parsed.error,
         };
     }
 
     if (error instanceof Error) {
         console.error('Generic Error:', error.message);
-        return {
-            message: error.message,
-            status: 0,
-        };
+        return { message: error.message };
     }
 
-    return {
-        message: FALLBACK_ERROR_MESSAGE,
-        status: 0,
-    };
+    return { message: FALLBACK_ERROR_MESSAGE };
 }

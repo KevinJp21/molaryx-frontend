@@ -19,7 +19,7 @@ export const CustomPasswordFormField = ({ name, label, errorMessage }: { name: s
                 <div className='flex flex-col gap-2'>
                     <div className='flex flex-col gap-3'>
                         <span className='flex justify-between items-center '>
-                            <label htmlFor={name} className='text-blue-gray text-sm font-medium leading-5 tracking-normal'>{label}</label>
+                            <label htmlFor={name} className='text-[13px] font-medium text-ink-200'>{label}</label>
                         </span>
                         <div className='relative'>
                             <Input

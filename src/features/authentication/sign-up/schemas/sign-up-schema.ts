@@ -87,6 +87,37 @@ export const SignUpSchema = z.object({
         .string()
         .min(1, 'El número de identificación es obligatorio')
         .regex(IDENTIFICATION_NUMBER_REGEX, 'El número de identificación no es válido'),
+      birthDate: z
+        .string()
+        .min(1, 'La fecha de nacimiento es obligatoria')
+        .refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
+          message: 'La fecha de nacimiento no es válida',
+        })
+        .refine((value) => {
+          const [year, month, day] = value.split('-').map(Number);
+          const date = new Date(year, month - 1, day);
+          const isValidDate =
+            date.getFullYear() === year &&
+            date.getMonth() === month - 1 &&
+            date.getDate() === day;
+
+          return isValidDate && date >= new Date(1900, 0, 1);
+        }, {
+          message: 'La fecha de nacimiento no es válida',
+        })
+        .refine((value) => {
+          const [year, month, day] = value.split('-').map(Number);
+          const today = new Date();
+          let age = today.getFullYear() - year;
+          const hasHadBirthday =
+            today.getMonth() > month - 1 ||
+            (today.getMonth() === month - 1 && today.getDate() >= day);
+
+          if (!hasHadBirthday) age -= 1;
+          return age >= 18;
+        }, {
+          message: 'Debe ser mayor de edad para registrar un consultorio.',
+        }),
       phoneNumber: z
         .string()
         .min(1, 'El teléfono es obligatorio')
@@ -105,8 +136,4 @@ export const SignUpSchema = z.object({
     }),
 });
 
-// Estado del formulario (permite null en campos aún no elegidos).
 export type TSignUpForm = z.input<typeof SignUpSchema>;
-
-// Payload válido tras pasar Zod.
-export type TSignUpFormValues = z.output<typeof SignUpSchema>;
