@@ -7,7 +7,7 @@ import { BaseResponse } from "@/types";
 
 export const apiPostSignUpAction = async (
   data: IPostSignUpFormRequest,
-): Promise<{ success: boolean; message: string; error?: string }> => {
+): Promise<BaseResponse<boolean>> => {
   const AUTH = process.env.AUTH;
   const POST_SIGN_UP = process.env.POST_SIGN_UP;
 

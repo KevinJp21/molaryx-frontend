@@ -2,23 +2,19 @@
 
 import { serverApi } from "@/lib/api/server";
 import { handleApiError } from "@/lib/api/error-handler";
-import { TMasterListResponse } from "../types";
+import { IBaseMasterListResponse } from "../types";
 
 export const apiGetMaster = async <TIdKey extends string>(
   endpoint: string = "",
-): Promise<{
-  success: boolean;
-  data?: TMasterListResponse<TIdKey>;
-  message?: string;
-}> => {
+): Promise<IBaseMasterListResponse<TIdKey>> => {
   const MASTERS = process.env.MASTERS;
   try {
-    const response = await serverApi.get<TMasterListResponse<TIdKey>>(
+    const response = await serverApi.get<IBaseMasterListResponse<TIdKey>>(
       `${MASTERS}${endpoint}`,
     );
     return {
       success: true,
-      data: response.data,
+      data: response.data.data,
       message: response.data.message,
     };
   } catch (error) {

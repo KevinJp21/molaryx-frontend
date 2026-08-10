@@ -1,6 +1,6 @@
 export type BaseResponse<T> = {
-    ok: boolean;
+    success: boolean;
     message: string;
-    data: T | null;
-    errors?: Record<string, string[]> | null;
+    data?: T | null;
+    error?: string | null;
 };
