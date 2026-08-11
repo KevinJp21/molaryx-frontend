@@ -49,7 +49,7 @@ export const apiPostSignIn = async (
     }
     return { success: false, message: response.data.message };
   } catch (error) {
-    const { message, error: errorMessage } = await handleApiError(error);
+    const { message, error: errorMessage } = await handleApiError(error, { redirectOn401: false });
     return { success: false, message, error: errorMessage };
   }
 };

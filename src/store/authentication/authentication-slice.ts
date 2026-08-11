@@ -1,22 +1,30 @@
 import { createAppSlice } from "../slice";
-import { TStatus } from "@/types";
+import { TStatus, TUserState } from "@/types";
 import {
   apiPostSignUpAction,
   IPostSignUpFormRequest,
   apiPostSignIn,
   IPostSignInFormRequest,
+  apiGetUserAction,
+  IGetUserResponseData,
 } from "@/features";
 
 type TAuthenticationState = {
   postSignUp: {
     status: TStatus;
-    message: string | undefined;
-    error: string | undefined;
+    message?: string;
+    error?: string;
   };
   postSignIn: {
     status: TStatus;
-    message: string | undefined;
-    error: string | undefined;
+    message?: string;
+    error?: string;
+  };
+  getUserData: {
+    status: TStatus;
+    message?: string;
+    data?: IGetUserResponseData;
+    userState: TUserState;
   };
 };
 
@@ -30,6 +38,12 @@ const initialState: TAuthenticationState = {
     status: "idle",
     message: undefined,
     error: undefined,
+  },
+  getUserData: {
+    status: "idle",
+    message: undefined,
+    data: undefined,
+    userState: "unauthenticated",
   },
 };
 
@@ -84,7 +98,33 @@ const authenticationSlice = createAppSlice({
         rejected: (state, action) => {
           state.postSignIn.status = "error";
           state.postSignIn.message = action.error.message;
-          state.postSignIn.error = undefined;
+          state.postSignIn.error = action.error.message;
+        },
+      },
+    ),
+    getUserData: create.asyncThunk(
+      async () => apiGetUserAction(),
+      {
+        pending: (state) => {
+          state.getUserData.status = "loading";
+          state.getUserData.userState = "checking";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.getUserData.status = "error";
+            state.getUserData.message = action.payload.message;
+            state.getUserData.userState = "unauthenticated";
+            return;
+          }
+          state.getUserData.status = "success";
+          state.getUserData.message = action.payload.message;
+          state.getUserData.data = action.payload.data;
+          state.getUserData.userState = "authenticated";
+        },
+        rejected: (state, action) => {
+          state.getUserData.status = "error";
+          state.getUserData.message = action.error.message;
+          state.getUserData.userState = "unauthenticated";
         },
       },
     ),
@@ -92,9 +132,12 @@ const authenticationSlice = createAppSlice({
   selectors: {
     selectPostSignUp: (state) => state.postSignUp,
     selectPostSignIn: (state) => state.postSignIn,
+    selectGetUserData: (state) => state.getUserData,
   },
 });
 
-export const { postSignUp, resetPostSignUp, postSignIn } = authenticationSlice.actions;
-export const { selectPostSignUp, selectPostSignIn } = authenticationSlice.selectors;
+export const { postSignUp, resetPostSignUp, postSignIn, getUserData } =
+  authenticationSlice.actions;
+export const { selectPostSignUp, selectPostSignIn, selectGetUserData } =
+  authenticationSlice.selectors;
 export default authenticationSlice.reducer;

@@ -27,7 +27,10 @@ export type ApiErrorResult = {
     error?: string;
 };
 
-type ErrorBody = Partial<BaseResponse<unknown>>;
+type ErrorBody = Partial<BaseResponse<unknown>> & {
+    /** Mapa de validación del backend (paths → mensajes), si existe */
+    errors?: Record<string, string[]> | null;
+};
 
 type ParsedErrorBody = {
     message: string | null;
@@ -92,9 +95,13 @@ export function extractServerMessageFromParsedBody(data: unknown): ParsedErrorBo
             ? data.message.trim()
             : null;
 
-    const error = getFirstValidationError(getValidationErrors(data.errors));
+    const errorFromMap = getFirstValidationError(getValidationErrors(data.errors));
+    const errorFromField =
+        typeof data.error === 'string' && data.error.trim()
+            ? data.error.trim()
+            : undefined;
 
-    return { message, error };
+    return { message, error: errorFromMap ?? errorFromField };
 }
 
 /**

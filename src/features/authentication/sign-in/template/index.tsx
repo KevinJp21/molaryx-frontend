@@ -1,13 +1,24 @@
 'use client'
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignInSchema, TSignInForm } from "../schemas";
 import { IPostSignInFormRequest } from "../interfaces";
 import { CustomFormField, CustomPasswordFormField } from "@/components";
-import { Button } from "@/components";
+import { ArrowRight } from "lucide-react";
+import { Button, Spinner } from "@/components";
 import Link from "next/link";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { postSignIn, selectPostSignIn, getUserData, selectGetUserData } from "@/store/authentication/authentication-slice";
+import { toast } from "sonner";
 
 export const SignInTemplate = () => {
+    const dispatch = useAppDispatch();
+    const { status, message, error } = useAppSelector(selectPostSignIn);
+    const { status: getUserDataStatus, message: getUserDataMessage } = useAppSelector(selectGetUserData);
+    const router = useRouter();
     const methods = useForm<TSignInForm, IPostSignInFormRequest>({
         mode: 'onTouched',
         reValidateMode: 'onSubmit',
@@ -15,11 +26,35 @@ export const SignInTemplate = () => {
         defaultValues: { email: '', password: '' },
     })
 
-    const { handleSubmit, formState: { isSubmitting, isValid } } = methods;
+    const { handleSubmit, formState: { isValid } } = methods;
 
     const onSubmit = async (data: IPostSignInFormRequest) => {
-        console.log(data);
+        dispatch(postSignIn(data));
     }
+
+    useEffect(() => {
+        if (status === 'error') {
+            toast.error(message, {
+                description: error,
+            });
+            return;
+        }
+
+        if (status === 'success') {
+            toast.success(message);
+            dispatch(getUserData());
+            router.push('/dashboard');
+        }
+        
+    }, [status, dispatch]);
+
+    useEffect(() => {
+        if (getUserDataStatus === 'error') {
+            toast.error(getUserDataMessage);
+            return;
+        }
+    }, [getUserDataStatus]);
+
 
     return (
         <div className="w-full max-w-md">
@@ -42,8 +77,18 @@ export const SignInTemplate = () => {
                         label="Contraseña"
                         showForgotPassword={true}
                     />
-                    <Button type="submit" disabled={isSubmitting || !isValid} className="w-full">
-                        {isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión'}
+                    <Button type="submit" disabled={status === 'loading' || !isValid} className="w-full">
+                        {status === 'loading' ? (
+                            <>
+                                Iniciando sesión...
+                                <Spinner />
+                            </>
+                        ) : (
+                            <>
+                                Iniciar sesión
+                                <ArrowRight className="h-4 w-4" />
+                            </>
+                        )}
                     </Button>
                 </form>
             </FormProvider>
