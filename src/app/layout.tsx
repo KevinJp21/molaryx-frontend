@@ -4,8 +4,9 @@ import "./globals.css";
 import { Providers } from "@/store/providers";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components";
+import { AuthGuard } from "@/guard";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const inter = Inter({
   variable: "--font-inter",
@@ -31,9 +32,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <Providers>
-          {children}
+          <AuthGuard>
+            {children}
+          </AuthGuard>
         </Providers>
-        <Toaster/>
+        <Toaster />
       </body>
     </html>
   );

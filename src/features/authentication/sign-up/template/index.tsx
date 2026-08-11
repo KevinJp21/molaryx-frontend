@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
-import { Button, ErrorMessage } from "@/components";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Button, ErrorMessage, Spinner } from "@/components";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { postSignUp, resetPostSignUp, selectPostSignUp } from "@/store/authentication/authentication-slice";
@@ -143,7 +143,7 @@ export const SignUpTemplate = () => {
                   {postSignUpStatus === 'loading' ? (
                     <>
                       Creando cuenta
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Spinner />
                     </>
                   ) : (
                     <>

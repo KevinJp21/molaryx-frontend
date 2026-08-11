@@ -9,11 +9,11 @@ export const apiPostSignUpAction = async (
   data: IPostSignUpFormRequest,
 ): Promise<BaseResponse<boolean>> => {
   const AUTH = process.env.AUTH;
-  const POST_SIGN_UP = process.env.POST_SIGN_UP;
+  const SIGN_UP = process.env.SIGN_UP;
 
   try {
     const response = await serverApi.post<BaseResponse<boolean>>(
-      `${AUTH}${POST_SIGN_UP}`,
+      `${AUTH}${SIGN_UP}`,
       data,
     );
     return { success: true, message: response.data?.message };

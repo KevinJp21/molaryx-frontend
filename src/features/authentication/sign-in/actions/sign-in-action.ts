@@ -7,18 +7,18 @@ import { getObfuscatedCookieName } from "@/utils";
 import { AUTH_TOKEN, REFRESH_TOKEN } from "@/consts";
 import { cookies } from "next/headers";
 
-export const apiPostSignIn = async (
+export const apiPostSignInAction = async (
   data: IPostSignInFormRequest,
 ): Promise<IPostSignInResponse> => {
   const AUTH = process.env.AUTH;
-  const POST_SIGN_IN = process.env.POST_SIGN_IN;
+  const SIGN_IN = process.env.SIGN_IN;
 
   const obfuscatedAuthTokenName = getObfuscatedCookieName(AUTH_TOKEN);
   const obfuscatedRefreshTokenName = getObfuscatedCookieName(REFRESH_TOKEN);
 
   try {
     const response = await serverApi.post<IPostSignInResponse>(
-      `${AUTH}${POST_SIGN_IN}`,
+      `${AUTH}${SIGN_IN}`,
       data,
     );
 
@@ -29,6 +29,7 @@ export const apiPostSignIn = async (
         {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
           maxAge: 60 * 15,
           path: "/",
         },

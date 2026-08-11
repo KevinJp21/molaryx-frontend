@@ -11,13 +11,12 @@ import { ArrowRight } from "lucide-react";
 import { Button, Spinner } from "@/components";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { postSignIn, selectPostSignIn, getUserData, selectGetUserData } from "@/store/authentication/authentication-slice";
+import { postSignIn, selectPostSignIn, getUserData } from "@/store/authentication/authentication-slice";
 import { toast } from "sonner";
 
 export const SignInTemplate = () => {
     const dispatch = useAppDispatch();
     const { status, message, error } = useAppSelector(selectPostSignIn);
-    const { status: getUserDataStatus, message: getUserDataMessage } = useAppSelector(selectGetUserData);
     const router = useRouter();
     const methods = useForm<TSignInForm, IPostSignInFormRequest>({
         mode: 'onTouched',
@@ -46,14 +45,7 @@ export const SignInTemplate = () => {
             router.push('/dashboard');
         }
         
-    }, [status, dispatch]);
-
-    useEffect(() => {
-        if (getUserDataStatus === 'error') {
-            toast.error(getUserDataMessage);
-            return;
-        }
-    }, [getUserDataStatus]);
+    }, [status, dispatch, message, error, router]);
 
 
     return (

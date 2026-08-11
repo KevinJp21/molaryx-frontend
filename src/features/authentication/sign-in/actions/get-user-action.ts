@@ -18,7 +18,7 @@ export const apiGetUserAction = async (): Promise<IGetUserResponse> => {
     };
 
   } catch (error) {
-    const { message } = await handleApiError(error);
+    const { message } = await handleApiError(error, { redirectOn401: false });
     return { success: false, message };
   }
 };

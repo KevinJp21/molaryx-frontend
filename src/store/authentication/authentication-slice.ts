@@ -3,7 +3,7 @@ import { TStatus, TUserState } from "@/types";
 import {
   apiPostSignUpAction,
   IPostSignUpFormRequest,
-  apiPostSignIn,
+  apiPostSignInAction,
   IPostSignInFormRequest,
   apiGetUserAction,
   IGetUserResponseData,
@@ -79,7 +79,7 @@ const authenticationSlice = createAppSlice({
       state.postSignUp = initialState.postSignUp;
     }),
     postSignIn: create.asyncThunk(
-      async (data: IPostSignInFormRequest) => apiPostSignIn(data),
+      async (data: IPostSignInFormRequest) => apiPostSignInAction(data),
       {
         pending: (state) => {
           state.postSignIn.status = "loading";
@@ -102,32 +102,37 @@ const authenticationSlice = createAppSlice({
         },
       },
     ),
-    getUserData: create.asyncThunk(
-      async () => apiGetUserAction(),
-      {
-        pending: (state) => {
-          state.getUserData.status = "loading";
-          state.getUserData.userState = "checking";
-        },
-        fulfilled: (state, action) => {
-          if (!action.payload.success) {
-            state.getUserData.status = "error";
-            state.getUserData.message = action.payload.message;
-            state.getUserData.userState = "unauthenticated";
-            return;
-          }
-          state.getUserData.status = "success";
-          state.getUserData.message = action.payload.message;
-          state.getUserData.data = action.payload.data;
-          state.getUserData.userState = "authenticated";
-        },
-        rejected: (state, action) => {
-          state.getUserData.status = "error";
-          state.getUserData.message = action.error.message;
-          state.getUserData.userState = "unauthenticated";
-        },
+    getUserData: create.asyncThunk(async () => apiGetUserAction(), {
+      pending: (state) => {
+        state.getUserData.status = "loading";
+        state.getUserData.userState = "checking";
       },
-    ),
+      fulfilled: (state, action) => {
+        if (!action.payload.success) {
+          state.getUserData.status = "error";
+          state.getUserData.message = action.payload.message;
+          state.getUserData.userState = "unauthenticated";
+          return;
+        }
+        state.getUserData.status = "success";
+        state.getUserData.message = action.payload.message;
+        state.getUserData.data = action.payload.data;
+        state.getUserData.userState = "authenticated";
+      },
+      rejected: (state, action) => {
+        state.getUserData.status = "error";
+        state.getUserData.message = action.error.message;
+        state.getUserData.userState = "unauthenticated";
+      },
+    }),
+    logout: create.reducer(() => ({
+      ...initialState,
+      getUserData: {
+        ...initialState.getUserData,
+        status: "success",
+        userState: "unauthenticated",
+      },
+    })),
   }),
   selectors: {
     selectPostSignUp: (state) => state.postSignUp,
@@ -136,7 +141,7 @@ const authenticationSlice = createAppSlice({
   },
 });
 
-export const { postSignUp, resetPostSignUp, postSignIn, getUserData } =
+export const { postSignUp, resetPostSignUp, postSignIn, getUserData, logout } =
   authenticationSlice.actions;
 export const { selectPostSignUp, selectPostSignIn, selectGetUserData } =
   authenticationSlice.selectors;
