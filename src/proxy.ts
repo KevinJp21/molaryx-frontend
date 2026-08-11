@@ -53,8 +53,25 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (isPublicAuthRoute && token) {
-    return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
+  if (isPublicAuthRoute) {
+    if (token) {
+      return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
+    }
+
+    if (refreshToken) {
+      const tokens = await refreshSessionFromProxy(refreshToken);
+      if (tokens) {
+        const response = NextResponse.redirect(
+          new URL("/dashboard", req.nextUrl),
+        );
+        applySessionCookies(response, tokens);
+        return response;
+      }
+
+      const response = NextResponse.next();
+      clearSessionCookies(response);
+      return response;
+    }
   }
 
   return NextResponse.next();
