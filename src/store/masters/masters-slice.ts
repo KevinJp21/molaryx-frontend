@@ -36,7 +36,7 @@ const mastersSlice = createAppSlice({
           }
           state.identificationTypes.status = "success";
           state.identificationTypes.message = undefined;
-          state.identificationTypes.data = action.payload.data?.data ?? undefined;
+          state.identificationTypes.data = action.payload.data;
         },
         rejected: (state, action) => {
           state.identificationTypes.status = "error";

@@ -49,7 +49,7 @@ export const SignInTemplate = () => {
 
 
     return (
-        <div className="w-full max-w-md">
+        <div className="flex w-full max-w-md flex-1 flex-col justify-center">
             <h1 className="font-semibold text-ink-50 text-2xl md:text-3xl">
                 Inicia sesión
             </h1>
@@ -86,11 +86,10 @@ export const SignInTemplate = () => {
             </FormProvider>
             <p className="mt-8 flex items-center justify-center gap-1 text-center text-sm text-ink-300">
                 ¿No tienes una cuenta?
-                <Link href="/sign-up" className="font-semibold text-accent-400 hover:text-accent-300">
+                <Link href="/sign-up" className="font-semibold text-accent-400 hover:text-accent-300 hover:underline">
                     Regístrate
                 </Link>
             </p>
-
         </div>
     );
 };

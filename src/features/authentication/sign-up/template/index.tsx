@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { Button, ErrorMessage, Spinner } from "@/components";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -154,6 +155,14 @@ export const SignUpTemplate = () => {
                 </Button>
               )}
             </div>
+            {step === 1 && (
+                <p className="mt-4 flex items-center justify-center gap-1 text-center text-sm text-ink-300">
+                  ¿Ya tienes una cuenta?
+                  <Link href="/sign-in" className="font-semibold text-accent-400 hover:text-accent-300 hover:underline">
+                    Iniciar sesión
+                  </Link>
+                </p>
+              )}
           </form>
         </FormProvider>
       )}
