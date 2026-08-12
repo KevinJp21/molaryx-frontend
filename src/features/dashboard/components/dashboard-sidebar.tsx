@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useMemo } from 'react';
 import { Avatar, AvatarFallback, Logo } from '@/components';
 import { Skeleton } from '@/components/ui/skeleton';
 import { selectGetUserData } from '@/store/authentication/authentication-slice';
@@ -18,9 +17,7 @@ export const DashboardSidebar = ({ isCollapsed }: Props) => {
   const pathname = usePathname();
   const { data: userData, status: userStatus } = useAppSelector(selectGetUserData);
 
-  const visibleSections = useMemo(() => {
-    return filterSectionItemsByPermissions(userData?.permissions);
-  }, [userData?.permissions]);
+  const visibleSections = filterSectionItemsByPermissions(userData?.permissions);
 
   const roleName =
     ROLES.find((role) => role.id === Number(userData?.role.idUserRole))?.name ??
@@ -62,7 +59,7 @@ export const DashboardSidebar = ({ isCollapsed }: Props) => {
             {section.items.map((item) => {
               const Icon = item.icon;
               const isActive =
-                pathname === item.href || pathname.startsWith(`${item.href}/`);
+                pathname === item.href;
 
               return (
                 <Link

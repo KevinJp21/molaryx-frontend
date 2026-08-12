@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
@@ -39,7 +39,7 @@ export const CustomFormField = ({
     const [isOpen, setIsOpen] = useState(false);
     const { control } = useFormContext()
 
-    const formatters = useMemo(() => ({
+    const formatters = {
         currency: new Intl.NumberFormat('es-CO', {
             style: 'currency',
             currency: 'COP',
@@ -64,7 +64,7 @@ export const CustomFormField = ({
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
         }),
-    }), [])
+    };
 
     const isValidNumber = (value: unknown) =>
         value !== '' && value !== null && value !== undefined && !isNaN(Number(value))

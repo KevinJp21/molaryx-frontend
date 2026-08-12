@@ -16,7 +16,7 @@ export const hasRouteAccess = (
     userPermissions: TUserPermission[] | undefined,
 ): boolean => {
     const matchedHref = Object.keys(ROUTE_PERMISSION_MAP).find(
-        (href) => pathname === href || pathname.startsWith(`${href}/`),
+        (href) => pathname === href,
     );
 
     if (!matchedHref) return true;

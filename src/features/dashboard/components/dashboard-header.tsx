@@ -1,7 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Bell, LogOut, Menu } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiLogoutAction } from '@/features';
@@ -28,11 +27,21 @@ export const DashboardHeader = ({
     const router = useRouter();
     const dispatch = useAppDispatch();
     const { data: userData } = useAppSelector(selectGetUserData);
-
+    const pathname = usePathname();
     const firstName = userData?.names?.split(' ')[0];
     const initials = `${userData?.names?.charAt(0) ?? ''}${userData?.surnames?.charAt(0) ?? ''}`;
 
-    const greeting = useMemo(() => getGreeting(), []);
+    const greeting = getGreeting();
+
+    const getCurrentSection = () => {
+        const sections: Array<{ matcher: string; label: string }> = [
+            { matcher: '/dashboard', label: 'Inicio' },
+            { matcher: '/dashboard/patients', label: 'Pacientes' },
+        ];
+
+        const match = sections.find((section) => pathname === section.matcher);
+        return match?.label ?? 'Inicio';
+    };
 
     const handleLogout = async () => {
         try {
@@ -46,7 +55,7 @@ export const DashboardHeader = ({
     };
 
     return (
-        <header className="flex h-14 shrink-0 items-center justify-between gap-3 px-4 md:px-5">
+        <header className="flex h-15 shrink-0 items-center justify-between gap-3 px-4 py-3 md:px-5">
             <div className="flex min-w-0 items-center gap-3">
                 <Button
                     type="button"
@@ -66,8 +75,8 @@ export const DashboardHeader = ({
                         {greeting}
                         {firstName ? `, ${firstName}` : ''}
                     </p>
-                    <h1 className="truncate text-sm font-semibold text-ink-50 md:text-base">
-                        Panel de control
+                    <h1 className="truncate text-sm font-medium text-ink-50">
+                        {getCurrentSection()}
                     </h1>
                 </div>
             </div>
