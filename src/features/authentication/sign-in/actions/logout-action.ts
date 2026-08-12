@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { serverApi } from "@/lib/api/server";
 import { handleApiError } from "@/lib/api/error-handler";
 import { AUTH_TOKEN, REFRESH_TOKEN } from "@/consts";
-import { BaseResponse } from "@/types";
+import { TBaseResponse } from "@/types";
 import { getObfuscatedCookieName } from "@/utils";
 
 const COOKIE_PATH = "/";
@@ -18,16 +18,17 @@ export const clearSessionCookieAction = async (): Promise<void> => {
   cookieStore.delete({ name: obfuscatedRefreshTokenName, path: COOKIE_PATH });
 };
 
-export const apiLogoutAction = async (): Promise<BaseResponse<void>> => {
+export const apiLogoutAction = async (): Promise<TBaseResponse<void>> => {
   const AUTH = process.env.AUTH;
   const LOGOUT = process.env.LOGOUT;
   const obfuscatedRefreshTokenName = getObfuscatedCookieName(REFRESH_TOKEN);
   const refreshToken = (await cookies()).get(obfuscatedRefreshTokenName)?.value;
 
   try {
-    const response = await serverApi.post<BaseResponse<void>>(
+    const response = await serverApi.post<TBaseResponse<void>>(
       `${AUTH}${LOGOUT}`,
       { refreshToken },
+      { withScope: false },
     );
 
     return {

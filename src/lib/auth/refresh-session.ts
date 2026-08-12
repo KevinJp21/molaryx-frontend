@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { AUTH_TOKEN, REFRESH_TOKEN } from "@/consts";
 import { getObfuscatedCookieName } from "@/utils";
-import type { BaseResponse } from "@/types";
+import type { TBaseResponse } from "@/types";
 
 type TSessionTokens = {
   auth_token: string;
@@ -67,7 +67,7 @@ export async function refreshSessionFromProxy(
 
     if (!response.ok) return null;
 
-    const body = (await response.json()) as BaseResponse<TSessionTokens>;
+    const body = (await response.json()) as TBaseResponse<TSessionTokens>;
     const tokens = body.data;
 
     if (!tokens?.auth_token || !tokens?.refresh_token) return null;

@@ -1,6 +1,6 @@
-import { BaseResponse } from "@/types";
+import { TBaseResponse } from "@/types";
 
-export interface IGetPublicPlansResponse extends BaseResponse<IGetPublicPlans[]> {}
+export interface IGetPublicPlansResponse extends TBaseResponse<IGetPublicPlans[]> {}
 
 export interface IGetPublicPlans {
   idPlan: number;

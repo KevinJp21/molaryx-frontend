@@ -69,7 +69,7 @@ export const SignInTemplate = () => {
                         label="Contraseña"
                         showForgotPassword={true}
                     />
-                    <Button type="submit" disabled={status === 'loading' || !isValid} className="w-full">
+                    <Button type="submit" disabled={status === 'loading' || !isValid} className="w-full rounded-full">
                         {status === 'loading' ? (
                             <>
                                 Iniciando sesión...

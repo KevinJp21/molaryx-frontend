@@ -1,6 +1,6 @@
-import { BaseResponse } from "@/types";
+import { TBaseResponse } from "@/types";
 
-export interface IGetUserResponse extends BaseResponse<IGetUserResponseData> {}
+export interface IGetUserResponse extends TBaseResponse<IGetUserResponseData> {}
 
 export interface IGetUserResponseData {
     role: IRole;

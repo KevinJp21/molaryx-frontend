@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import mastersReducer from './masters/masters-slice'
 import plansReducer from './plans/plans-slice'
 import authenticationReducer from './authentication/authentication-slice'
+import patientsReducer from './patients/patiens-slice'
 export const store = configureStore({
     reducer: {
         masters: mastersReducer,
         plans: plansReducer,
         authentication: authenticationReducer,
+        patients: patientsReducer,
     },
 
 })

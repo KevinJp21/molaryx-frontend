@@ -20,6 +20,7 @@ export const apiPostSignInAction = async (
     const response = await serverApi.post<IPostSignInResponse>(
       `${AUTH}${SIGN_IN}`,
       data,
+      { withScope: false },
     );
 
     if (response.data.data?.auth_token && response.data.data?.refresh_token) {

@@ -88,3 +88,35 @@ body {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-14px); }
 }
+
+@layer utilities {
+  .scrollbar-visible::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-visible::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-visible::-webkit-scrollbar-thumb {
+    background: var(--ink-700);
+    border-radius: 10px;
+  }
+}
+
+/* Global scrollbar defaults */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 12px;
+}
+

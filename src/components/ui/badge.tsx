@@ -5,18 +5,22 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] [&>svg]:pointer-events-none [&>svg]:size-3",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-ink text-ink-foreground [a&]:hover:bg-ink/90",
+          "border-transparent bg-accent-500 text-white [a&]:hover:bg-accent-600",
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
+          "border-transparent bg-accent-100 text-accent-700 [a&]:hover:bg-accent-200",
         destructive:
-          "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "border-transparent bg-coral-500/12 text-coral-600 [a&]:hover:bg-coral-500/18",
         outline:
-          "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+          "border-ink-700 bg-transparent text-ink-200 [a&]:hover:bg-ink-900 [a&]:hover:text-ink-100",
+        success:
+          "border-transparent bg-accent-500/12 text-accent-600 [a&]:hover:bg-accent-500/18",
+        muted:
+          "border-transparent bg-ink-800 text-ink-300 [a&]:hover:bg-ink-750",
       },
     },
     defaultVariants: {

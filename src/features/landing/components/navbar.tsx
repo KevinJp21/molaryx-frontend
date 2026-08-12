@@ -78,7 +78,7 @@ export const Navbar = () => {
           >
             Iniciar sesión
           </Link>
-          <Button variant="default" size="sm" asChild>
+          <Button variant="default" size="sm" asChild className="rounded-full">
             <Link href="/sign-up">
               Comenzar ahora
               <ArrowRight className="size-4" />
@@ -118,7 +118,7 @@ export const Navbar = () => {
           ))}
 
           <div className="mt-2 flex flex-col gap-2 border-t border-ink-700/70 pt-4">
-            <Button variant="outline" className="w-full" asChild>
+            <Button variant="outline" className="w-full rounded-full" asChild>
               <Link href="/sign-in" onClick={() => setOpen(false)}>
                 Iniciar sesión
               </Link>

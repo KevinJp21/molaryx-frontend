@@ -15,6 +15,7 @@ export const apiGetPublicPlansAction = async (): Promise<{
     try {
         const response = await serverApi.get<IGetPublicPlansResponse>(
             `${PLAN}${GET_PUBLIC_PLANS}`,
+            { withScope: false },
         );
         return {
             success: true,

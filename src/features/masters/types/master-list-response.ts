@@ -1,4 +1,4 @@
-import { BaseResponse } from "@/types";
+import { TBaseResponse } from "@/types";
 import { TMasterItem } from "./master-item";
 
-export interface IBaseMasterListResponse<TIdKey extends string> extends BaseResponse<TMasterItem<TIdKey>[]> {}
+export interface IBaseMasterListResponse<TIdKey extends string> extends TBaseResponse<TMasterItem<TIdKey>[]> {}

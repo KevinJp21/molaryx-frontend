@@ -1,6 +1,6 @@
-import { BaseResponse } from "@/types";
+import { TBaseResponse } from "@/types";
 
-export interface IPostSignInResponse extends BaseResponse<IPostSignInResponseData>{}
+export interface IPostSignInResponse extends TBaseResponse<IPostSignInResponseData>{}
 
 export interface IPostSignInResponseData{
     auth_token: string;

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import type { BaseResponse } from "@/types";
+import type { TBaseResponse } from "@/types";
 import { ApiError } from "./types";
 
 /**
@@ -27,7 +27,7 @@ export type ApiErrorResult = {
     error?: string;
 };
 
-type ErrorBody = Partial<BaseResponse<unknown>> & {
+type ErrorBody = Partial<TBaseResponse<unknown>> & {
     /** Mapa de validación del backend (paths → mensajes), si existe */
     errors?: Record<string, string[]> | null;
 };

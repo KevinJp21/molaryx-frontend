@@ -115,7 +115,7 @@ export const SignUpTemplate = () => {
 
             <div className="mt-9 flex items-center gap-3">
               {step > 1 && (
-                <Button variant="outline" type="button" onClick={goBack}>
+                <Button variant="outline" type="button" onClick={goBack} className="rounded-full">
                   <ArrowLeft className="h-4 w-4" />
                   Atrás
                 </Button>
@@ -127,7 +127,7 @@ export const SignUpTemplate = () => {
                   variant="default"
                   type="button"
                   onClick={goNext}
-                  className="flex-1"
+                  className="flex-1 rounded-full"
                   disabled={step === 1 && (plansLoading || plansStatus === 'error')}
                 >
                   Continuar
@@ -138,7 +138,7 @@ export const SignUpTemplate = () => {
                   key="submit"
                   variant="default"
                   type="submit"
-                  className="flex-1"
+                  className="flex-1 rounded-full"
                   disabled={postSignUpStatus === 'loading'}
                 >
                   {postSignUpStatus === 'loading' ? (

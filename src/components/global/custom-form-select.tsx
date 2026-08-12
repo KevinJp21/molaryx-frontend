@@ -106,7 +106,7 @@ export const CustomFormSelect = <T extends string | number>({
                                                 disabled={itemDisabled}
                                                 className="rounded-lg text-ink-50 focus:bg-ink-850 focus:text-ink-50"
                                             >
-                                                <Badge className="bg-accent-500 text-[#ffffff]">{itemName}</Badge>
+                                                <Badge>{itemName}</Badge>
                                             </SelectItem>
                                         ) : (
                                             <SelectItem

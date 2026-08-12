@@ -1,4 +1,4 @@
-import { ApiConfig, AuthConfig, ApiResponse, ApiError } from "./types";
+import { ApiConfig, AuthConfig, ApiResponse, ApiError, ApiRequestOptions } from "./types";
 
 export class ApiClient {
     private config: Required<ApiConfig>;
@@ -7,6 +7,7 @@ export class ApiClient {
     constructor(config: ApiConfig = {}, authConfig: AuthConfig = {}) {
         this.config = {
             baseUrl: config.baseUrl || '',
+            scope: config.scope || '',
             defaultHeaders: {
                 'Content-Type': 'application/json',
                 ...config.defaultHeaders,
@@ -24,10 +25,11 @@ export class ApiClient {
 
     private async makeRequest<T>(
         endpoint: string,
-        options: RequestInit = {}
+        options: ApiRequestOptions = {}
     ): Promise<ApiResponse<T>> {
-        const url = this.buildUrl(endpoint);
-        const requestOptions = await this.buildRequestOptions(options);
+        const { withScope = true, ...fetchOptions } = options;
+        const url = this.buildUrl(endpoint, withScope);
+        const requestOptions = await this.buildRequestOptions(fetchOptions);
 
         try {
             // Create AbortController for timeout
@@ -68,12 +70,16 @@ export class ApiClient {
         }
     }
 
-    private buildUrl(endpoint: string): string {
+    private buildUrl(endpoint: string, withScope = true): string {
         // Handle both absolute and relative URLs
         if (endpoint.startsWith('http')) {
             return endpoint;
         }
-        return `${this.config.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+
+        const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+        const scope = withScope && this.config.scope ? this.config.scope : '';
+
+        return `${this.config.baseUrl}${scope}${path}`;
     }
 
     private async buildRequestOptions(options: RequestInit): Promise<RequestInit> {
@@ -142,14 +148,14 @@ export class ApiClient {
         return (await response.text()) as unknown as T;
     }
 
-    async get<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
+    async get<T>(endpoint: string, options?: ApiRequestOptions): Promise<ApiResponse<T>> {
         return this.makeRequest<T>(endpoint, { ...options, method: 'GET' });
     }
 
     async post<T>(
         endpoint: string,
         data?: any,
-        options?: RequestInit
+        options?: ApiRequestOptions
     ): Promise<ApiResponse<T>> {
         const isFormData = data instanceof FormData;
         return this.makeRequest<T>(endpoint, {
@@ -162,7 +168,7 @@ export class ApiClient {
     async put<T>(
         endpoint: string,
         data?: any,
-        options?: RequestInit
+        options?: ApiRequestOptions
     ): Promise<ApiResponse<T>> {
         const isFormData = data instanceof FormData;
         return this.makeRequest<T>(endpoint, {
@@ -172,14 +178,14 @@ export class ApiClient {
         });
     }
 
-    async delete<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
+    async delete<T>(endpoint: string, options?: ApiRequestOptions): Promise<ApiResponse<T>> {
         return this.makeRequest<T>(endpoint, { ...options, method: 'DELETE' });
     }
 
     async patch<T>(
         endpoint: string,
         data?: any,
-        options?: RequestInit
+        options?: ApiRequestOptions
     ): Promise<ApiResponse<T>> {
         const isFormData = data instanceof FormData;
         return this.makeRequest<T>(endpoint, {

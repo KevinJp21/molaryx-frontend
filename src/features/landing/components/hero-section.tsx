@@ -34,13 +34,13 @@ export const HeroSection = () => {
                     </p>
                 </div>
                 <div className="flex flex-col items-center justify-center gap-3 sm:flex-row mt-9">
-                    <Button variant="default" asChild>
+                    <Button variant="default" asChild className="rounded-full">
                         <Link href="/sign-up">
                             <ArrowRight className="size-4" />
                             Comenzar Ahora
                         </Link>
                     </Button>
-                    <Button variant="outline" asChild>
+                    <Button variant="outline" asChild className="rounded-full">
                         <Link href="/#features">
                             <Play className="size-4 text-accent-400" />
                             Conocer Molaryx
