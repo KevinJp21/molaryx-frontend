@@ -90,33 +90,24 @@ body {
 }
 
 @layer utilities {
-  .scrollbar-visible::-webkit-scrollbar {
-    width: 6px;
+  .scrollbar-only-x-visible::-webkit-scrollbar {
+    width: 0 !important;
     height: 6px;
-  }
-
-  .scrollbar-visible::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .scrollbar-visible::-webkit-scrollbar-thumb {
-    background: var(--ink-700);
-    border-radius: 10px;
   }
 }
 
 /* Global scrollbar defaults */
 ::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--ink-800);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: transparent;
+  background: var(--ink-600);
   border-radius: 12px;
 }
 
