@@ -5,8 +5,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getUserData, logout, selectGetUserData } from "@/store/authentication/authentication-slice";
-import { Spinner } from "@/components/ui";
 import { PUBLIC_AUTH_ROUTES, PROTECTED_ROUTE_PREFIXES } from "@/consts";
+import Image from "next/image";
 
 const SessionExpiredHandler = () => {
   const searchParams = useSearchParams();
@@ -65,11 +65,18 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 
   const isCheckingSession = status === "idle" || status === "loading";
 
-  // Spinner en rutas protegidas mientras valida sesión con el API
+  // Logo animado en rutas protegidas mientras valida sesión con el API
   if (isCheckingSession && isProtectedRoute) {
     return (
-      <div className="flex min-h-screen w-full flex-1 flex-col items-center justify-center gap-3 bg-background">
-        <Spinner className="size-10 text-accent-500" />
+      <div className="flex min-h-screen w-full flex-1 flex-col items-center justify-center bg-background">
+        <Image
+          src="/images/molaryx_logo_animated.svg"
+          alt="Cargando Molaryx"
+          width={248}
+          height={248}
+          priority
+          className="size-62"
+        />
       </div>
     );
   }

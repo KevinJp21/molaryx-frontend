@@ -47,11 +47,15 @@ export const Navbar = () => {
         className={cn(
           "flex items-center justify-between transition-all duration-500 ease-out",
           scrolled
-            ? "mx-4 mt-3 h-14 max-w-4xl rounded-full border border-ink-700/70 bg-ink-900/85 px-4 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:mx-auto sm:px-5"
+            ? "mx-4 mt-3 h-14 max-w-4xl w-[90%] rounded-full border border-ink-700/70 bg-ink-900/85 px-4 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:mx-auto sm:px-5"
             : "container-px mx-auto mt-0 h-16 w-full max-w-360 border border-transparent bg-transparent sm:h-18"
         )}
       >
-        <Link href="/#top" className="shrink-0" onClick={() => setOpen(false)}>
+        <Link
+          href="/#top"
+          className="inline-flex shrink-0 items-center leading-none"
+          onClick={() => setOpen(false)}
+        >
           <Logo size={scrolled ? 24 : 28} />
         </Link>
 

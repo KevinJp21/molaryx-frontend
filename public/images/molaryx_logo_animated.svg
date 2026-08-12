@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1024 1024"
+     width="1024" height="1024"
+     role="img"
+     aria-label="Molaryx animated logo">
+  <defs>
+    <linearGradient id="lavenderTop" x1="0%" y1="100%" x2="100%" y2="200%">
+      <stop offset="0%" stop-color="#B69BFE"/>
+      <stop offset="100%" stop-color="#9B78FF"/>
+    </linearGradient>
+
+    <linearGradient id="purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9b78ff"/>
+      <stop offset="100%" stop-color="#7c4dff"/>
+    </linearGradient>
+
+    <linearGradient id="coral" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff5a9b"/>
+      <stop offset="100%" stop-color="#f6478f"/>
+    </linearGradient>
+  </defs>
+
+  <!--
+    Molaryx logo reconstructed as five independent vector pieces.
+    Pieces assemble, hold briefly, then reset in a continuous loop.
+  -->
+
+  <!-- Upper-left piece -->
+  <g opacity="0">
+    <path d="M289 270 L488 402 L488 496 L289 362 Z"
+          fill="url(#lavenderTop)"/>
+    <animateTransform attributeName="transform" type="translate"
+      values="-150 -110; 0 0; 0 0; -150 -110"
+      keyTimes="0; 0.35; 0.7; 1"
+      dur="2s" begin="0.05s" repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.2 0.9 0.2 1; 0 0 1 1; 0.4 0 0.6 1"/>
+    <animateTransform attributeName="transform" type="rotate"
+      values="-8 388 383; 0 388 383; 0 388 383; -8 388 383"
+      keyTimes="0; 0.35; 0.7; 1"
+      dur="2s" begin="0.05s" repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.2 0.9 0.2 1; 0 0 1 1; 0.4 0 0.6 1"
+      additive="sum"/>
+    <animate attributeName="opacity"
+      values="0; 1; 1; 0"
+      keyTimes="0; 0.08; 0.7; 1"
+      dur="2s" begin="0.05s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- Upper-right piece -->
+  <g opacity="0">
+    <path d="M736 270 L534 402 L534 496 L736 362 Z"
+          fill="url(#lavenderTop)"/>
+    <animateTransform attributeName="transform" type="translate"
+      values="150 -110; 0 0; 0 0; 150 -110"
+      keyTimes="0; 0.35; 0.7; 1"
+      dur="2s" begin="0.18s" repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.2 0.9 0.2 1; 0 0 1 1; 0.4 0 0.6 1"/>
+    <animateTransform attributeName="transform" type="rotate"
+      values="8 635 383; 0 635 383; 0 635 383; 8 635 383"
+      keyTimes="0; 0.35; 0.7; 1"
+      dur="2s" begin="0.18s" repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.2 0.9 0.2 1; 0 0 1 1; 0.4 0 0.6 1"
+      additive="sum"/>
+    <animate attributeName="opacity"
+      values="0; 1; 1; 0"
+      keyTimes="0; 0.08; 0.7; 1"
+      dur="2s" begin="0.18s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- Lower-left piece -->
+  <g opacity="0">
+    <path d="M289 383 L385 448 L385 682 L289 616 Z"
+          fill="url(#purple)"/>
+    <animateTransform attributeName="transform" type="translate"
+      values="-125 145; 0 0; 0 0; -125 145"
+      keyTimes="0; 0.35; 0.7; 1"
+      dur="2s" begin="0.31s" repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.2 0.9 0.2 1; 0 0 1 1; 0.4 0 0.6 1"/>
+    <animateTransform attributeName="transform" type="rotate"
+      values="-8 337 533; 0 337 533; 0 337 533; -8 337 533"
+      keyTimes="0; 0.35; 0.7; 1"
+      dur="2s" begin="0.31s" repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.2 0.9 0.2 1; 0 0 1 1; 0.4 0 0.6 1"
+      additive="sum"/>
+    <animate attributeName="opacity"
+      values="0; 1; 1; 0"
+      keyTimes="0; 0.08; 0.7; 1"
+      dur="2s" begin="0.31s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- Lower-right piece -->
+  <g opacity="0">
+    <path d="M637 448 L736 383 L736 616 L637 682 Z"
+          fill="url(#purple)"/>
+    <animateTransform attributeName="transform" type="translate"
+      values="125 145; 0 0; 0 0; 125 145"
+      keyTimes="0; 0.35; 0.7; 1"
+      dur="2s" begin="0.44s" repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.2 0.9 0.2 1; 0 0 1 1; 0.4 0 0.6 1"/>
+    <animateTransform attributeName="transform" type="rotate"
+      values="8 687 533; 0 687 533; 0 687 533; 8 687 533"
+      keyTimes="0; 0.35; 0.7; 1"
+      dur="2s" begin="0.44s" repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.2 0.9 0.2 1; 0 0 1 1; 0.4 0 0.6 1"
+      additive="sum"/>
+    <animate attributeName="opacity"
+      values="0; 1; 1; 0"
+      keyTimes="0; 0.08; 0.7; 1"
+      dur="2s" begin="0.44s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- Coral center piece -->
+  <g opacity="0">
+    <path d="M512 516 L624 592 L624 682 L512 615 Z"
+          fill="url(#coral)"/>
+    <animateTransform attributeName="transform" type="translate"
+      values="0 175; 0 0; 0 0; 0 175"
+      keyTimes="0; 0.35; 0.7; 1"
+      dur="2s" begin="0.57s" repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.2 0.9 0.2 1; 0 0 1 1; 0.4 0 0.6 1"/>
+    <animateTransform attributeName="transform" type="rotate"
+      values="12 568 599; 0 568 599; 0 568 599; 12 568 599"
+      keyTimes="0; 0.35; 0.7; 1"
+      dur="2s" begin="0.57s" repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.2 0.9 0.2 1; 0 0 1 1; 0.4 0 0.6 1"
+      additive="sum"/>
+    <animate attributeName="opacity"
+      values="0; 1; 1; 0"
+      keyTimes="0; 0.08; 0.7; 1"
+      dur="2s" begin="0.57s" repeatCount="indefinite"/>
+  </g>
+</svg>

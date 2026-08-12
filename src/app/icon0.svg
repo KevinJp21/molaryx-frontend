@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="280 260 460 440" width="460" height="440" role="img" aria-label="Molaryx logo"><metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description><dc:creator>RealFaviconGenerator</dc:creator><dc:source>https://realfavicongenerator.net</dc:source></rdf:Description></rdf:RDF></metadata><defs>
+    <linearGradient id="molaryx-lavender" x1="0%" y1="100%" x2="100%" y2="200%">
+      <stop offset="0%" stop-color="#B69BFE"></stop>
+      <stop offset="100%" stop-color="#9B78FF"></stop>
+    </linearGradient>
+
+    <linearGradient id="molaryx-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9b78ff"></stop>
+      <stop offset="100%" stop-color="#7c4dff"></stop>
+    </linearGradient>
+
+    <linearGradient id="molaryx-coral" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff5a9b"></stop>
+      <stop offset="100%" stop-color="#f6478f"></stop>
+    </linearGradient>
+  </defs><path d="M289 270 L488 402 L488 496 L289 362 Z" fill="url(#molaryx-lavender)"></path><path d="M736 270 L534 402 L534 496 L736 362 Z" fill="url(#molaryx-lavender)"></path><path d="M289 383 L385 448 L385 682 L289 616 Z" fill="url(#molaryx-purple)"></path><path d="M637 448 L736 383 L736 616 L637 682 Z" fill="url(#molaryx-purple)"></path><path d="M512 516 L624 592 L624 682 L512 615 Z" fill="url(#molaryx-coral)"></path></svg>

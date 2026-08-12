@@ -18,7 +18,7 @@ export default function AuthenticationLayout({ children, }: { children: React.Re
                 </div>
 
                 <Link href="/" className="inline-block w-fit">
-                    <Logo size={30} />
+                    <Logo size={52} />
                 </Link>
 
                 <div className="max-w-sm">
@@ -48,7 +48,7 @@ export default function AuthenticationLayout({ children, }: { children: React.Re
             <div className="flex flex-1 flex-col">
                 <div className="container-px flex items-center justify-between py-6">
                     <Link href="/" className="lg:hidden">
-                        <Logo size={26} />
+                        <Logo size={42} layout="fixed"/>
                     </Link>
                     <span className="hidden lg:block" />
                 </div>

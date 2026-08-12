@@ -7,7 +7,8 @@ export interface IGetUserResponseData {
     idTenant: string;
     status: IStatus;
     username: string;
-    name: string;
+    names: string;
+    surnames: string;
     email: string;
     permissions: IPermission[];
 }
