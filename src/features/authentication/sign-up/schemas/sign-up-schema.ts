@@ -8,15 +8,7 @@ import {
   USERNAME_REGEX,
 } from '@/consts';
 import { z } from 'zod';
-
-const optionalName = (message: string) =>
-  z
-    .string()
-    .nullable()
-    .refine(
-      (value) => value == null || value.trim() === '' || NAME_REGEX.test(value.trim()),
-      { message },
-    );
+import { zodOptionalName } from '@/features/dashboard';
 
 export const SignUpSchema = z.object({
   idPlan: z
@@ -76,12 +68,12 @@ export const SignUpSchema = z.object({
         .string()
         .min(1, 'El nombre es obligatorio')
         .regex(NAME_REGEX, 'El nombre no es válido'),
-      secondName: optionalName('El segundo nombre no es válido'),
+      secondName: zodOptionalName('El segundo nombre no es válido'),
       firstSurname: z
         .string()
         .min(1, 'El apellido es obligatorio')
         .regex(NAME_REGEX, 'El apellido no es válido'),
-      secondSurname: optionalName('El segundo apellido no es válido'),
+      secondSurname: zodOptionalName('El segundo apellido no es válido'),
       idIdentificationType: z.number().min(1, 'Selecciona un tipo de identificación'),
       identificationNumber: z
         .string()
@@ -90,21 +82,6 @@ export const SignUpSchema = z.object({
       birthDate: z
         .string()
         .min(1, 'La fecha de nacimiento es obligatoria')
-        .refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
-          message: 'La fecha de nacimiento no es válida',
-        })
-        .refine((value) => {
-          const [year, month, day] = value.split('-').map(Number);
-          const date = new Date(year, month - 1, day);
-          const isValidDate =
-            date.getFullYear() === year &&
-            date.getMonth() === month - 1 &&
-            date.getDate() === day;
-
-          return isValidDate && date >= new Date(1900, 0, 1);
-        }, {
-          message: 'La fecha de nacimiento no es válida',
-        })
         .refine((value) => {
           const [year, month, day] = value.split('-').map(Number);
           const today = new Date();

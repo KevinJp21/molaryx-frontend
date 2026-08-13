@@ -16,7 +16,6 @@ import {
     Badge,
     Button,
     TableSkeleton,
-    ErrorMessage
 } from "@/components"
 
 export const PatientsTable = () => {
@@ -35,10 +34,8 @@ export const PatientsTable = () => {
     const colSpan = 6;
 
     return (
-        <div className="relative flex h-full w-full flex-col overflow-hidden">
+        <section className="relative flex h-full w-full flex-col overflow-hidden">
             <BaseTable
-                title="Pacientes"
-                icon={<Users className="size-3.5" strokeWidth={2} />}
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={setCurrentPage}
@@ -128,6 +125,6 @@ export const PatientsTable = () => {
                     </TableBody>
                 </Table>
             </BaseTable>
-        </div>
+        </section>
     )
 }

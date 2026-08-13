@@ -33,6 +33,8 @@ export const DashboardHeader = ({
 
     const greeting = getGreeting();
 
+    /*
+    Obtener sección actual
     const getCurrentSection = () => {
         const sections: Array<{ matcher: string; label: string }> = [
             { matcher: '/dashboard', label: 'Inicio' },
@@ -42,7 +44,7 @@ export const DashboardHeader = ({
         const match = sections.find((section) => pathname === section.matcher);
         return match?.label ?? 'Inicio';
     };
-
+    */
     const handleLogout = async () => {
         try {
             await apiLogoutAction();
@@ -75,9 +77,6 @@ export const DashboardHeader = ({
                         {greeting}
                         {firstName ? `, ${firstName}` : ''}
                     </p>
-                    <h1 className="truncate text-sm font-medium text-ink-50">
-                        {getCurrentSection()}
-                    </h1>
                 </div>
             </div>
 

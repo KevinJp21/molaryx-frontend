@@ -41,7 +41,7 @@ export const SignUpTemplate = () => {
 
   const goBack = () => setStep((s) => Math.max(s - 1, 1));
 
-  const onSubmit = (data: IPostSignUpFormRequest) => {
+  const onSubmit = async (data: IPostSignUpFormRequest) => {
     dispatch(postSignUp(data));
   };
 

@@ -41,7 +41,7 @@ export const BaseTable = ({
   return (
     <Card className={cn("h-full w-full gap-0 py-0", className)}>
       {(title || actions) && (
-        <CardHeader className="flex">
+        <CardHeader>
           <div className="flex min-w-0 items-center gap-3">
             {icon && (
               <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl bg-ink-900 text-accent-500 ring-1 ring-inset ring-accent-500/20">
