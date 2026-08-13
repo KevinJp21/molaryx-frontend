@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { Eye, Users } from "lucide-react"
+import { Logs, SquarePen } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/store"
 import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice"
 import { formatDate } from "@/utils"
@@ -16,6 +16,11 @@ import {
     Badge,
     Button,
     TableSkeleton,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+    PopoverHeader,
+    PopoverTitle
 } from "@/components"
 
 export const PatientsTable = () => {
@@ -109,14 +114,40 @@ export const PatientsTable = () => {
                                             )}
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon-sm"
-                                                className="opacity-0 transition-opacity group-hover/row:opacity-100 focus-visible:opacity-100"
-                                                aria-label={`Ver ${fullName}`}
-                                            >
-                                                <Eye className="size-3.5" strokeWidth={1.75} />
-                                            </Button>
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon-sm"
+                                                        className="opacity-0 transition-opacity group-hover/row:opacity-100 focus-visible:opacity-100"
+                                                        aria-label={`Ver ${fullName}`}
+                                                    >
+                                                        <Logs className="size-4" strokeWidth={1.75} />
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-72 p-2" align="end">
+                                                    <div className="flex flex-col gap-2">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="text-xs justify-start text-ink-200 font-normal"
+                                                            aria-label={`Ver detalles del paciente ${fullName}`}
+                                                        >
+                                                            <Logs className="size-4" strokeWidth={1.75} />
+                                                            Ver detalles
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="text-xs justify-start text-ink-200 font-normal"
+                                                            aria-label={`Editar paciente ${fullName}`}
+                                                        >
+                                                            <SquarePen className="size-4" strokeWidth={1.75} />
+                                                            Editar
+                                                        </Button>
+                                                    </div>
+                                                </PopoverContent>
+                                            </Popover>
                                         </TableCell>
                                     </TableRow>
                                 );
