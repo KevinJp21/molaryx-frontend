@@ -13,7 +13,6 @@ const getServerToken = async (): Promise<string | null> => {
 export const serverApi = new ApiClient(
     {
         baseUrl: `${process.env.URL}${process.env.URN}` || 'http://localhost:3000',
-        scope: process.env.SCOPE,
     },
     {
         tokenProvider: getServerToken,

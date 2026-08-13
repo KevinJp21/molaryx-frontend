@@ -15,7 +15,6 @@ export const apiPostSignUpAction = async (
     const response = await serverApi.post<TBaseResponse<boolean>>(
       `${AUTH}${SIGN_UP}`,
       data,
-      { withScope: false },
     );
     return { success: true, message: response.data?.message };
   } catch (error) {

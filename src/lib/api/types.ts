@@ -1,6 +1,5 @@
 export interface ApiConfig {
     baseUrl?: string;
-    scope?: string;
     defaultHeaders?: Record<string, string>;
     timeout?: number;
 }
@@ -10,11 +9,6 @@ export interface AuthConfig {
     tokenHeader?: string;
     tokenPrefix?: string;
 }
-
-export type ApiRequestOptions = RequestInit & {
-    /** @default true */
-    withScope?: boolean;
-};
 
 export interface ApiResponse<T = any> {
     data: T;

@@ -28,7 +28,6 @@ export const apiLogoutAction = async (): Promise<TBaseResponse<void>> => {
     const response = await serverApi.post<TBaseResponse<void>>(
       `${AUTH}${LOGOUT}`,
       { refreshToken },
-      { withScope: false },
     );
 
     return {

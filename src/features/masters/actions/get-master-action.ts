@@ -11,7 +11,6 @@ export const apiGetMaster = async <TIdKey extends string>(
   try {
     const response = await serverApi.get<IBaseMasterListResponse<TIdKey>>(
       `${MASTERS}${endpoint}`,
-      { withScope: false },
     );
     return {
       success: true,

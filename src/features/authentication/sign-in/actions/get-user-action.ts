@@ -9,9 +9,7 @@ export const apiGetUserAction = async (): Promise<IGetUserResponse> => {
   const GET_USER = process.env.GET_USER;
 
   try {
-    const response = await serverApi.get<IGetUserResponse>(`${AUTH}${GET_USER}`, {
-      withScope: false,
-    });
+    const response = await serverApi.get<IGetUserResponse>(`${AUTH}${GET_USER}`);
 
     return {
       success: true,
