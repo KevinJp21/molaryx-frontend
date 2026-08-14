@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
 import { AUTH_TOKEN, REFRESH_TOKEN } from "@/consts";
 import { getObfuscatedCookieName } from "@/utils";
 import type { TBaseResponse } from "@/types";
@@ -53,14 +54,21 @@ export async function refreshSessionFromProxy(
   const URN = process.env.URN;
   const AUTH = process.env.AUTH;
   const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
-  
+  const requestHeaders = await headers();
   const baseUrl = `${URL}${URN}`;
   const endpoint = `${AUTH}${REFRESH_TOKEN}`;
 
   try {
     const response = await fetch(`${baseUrl}${endpoint}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "User-Agent": requestHeaders.get("user-agent") ?? "unknown",
+        "X-Forwarded-For":
+          requestHeaders.get("x-forwarded-for") ??
+          requestHeaders.get("x-real-ip") ??
+          "",
+      },
       body: JSON.stringify({ refreshToken }),
       cache: "no-store",
     });
