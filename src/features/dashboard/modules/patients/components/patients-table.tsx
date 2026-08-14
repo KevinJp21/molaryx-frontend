@@ -25,9 +25,10 @@ import {
 type Props = {
     onEdit: (patient: IPatientsItems) => void;
     onDelete: (patient: IPatientsItems) => void;
+    refreshKey?: number;
 };
 
-export const PatientsTable = ({ onEdit, onDelete }: Props) => {
+export const PatientsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
     const dispatch = useAppDispatch();
     const { data, status, message } = useAppSelector(selectGetPatients);
     const [currentPage, setCurrentPage] = useState(1);
@@ -36,11 +37,17 @@ export const PatientsTable = ({ onEdit, onDelete }: Props) => {
         dispatch(getPatients({
             Page: currentPage,
         }));
-    }, [dispatch, currentPage])
+    }, [dispatch, currentPage, refreshKey]);
 
     const items = data?.items ?? [];
     const totalPages = data?.totalPages ?? 0;
     const colSpan = 6;
+
+    useEffect(() => {
+        if (status === "success" && items.length === 0 && currentPage > 1) {
+            setCurrentPage((page) => page - 1);
+        }
+    }, [status, items.length, currentPage]);
 
     return (
         <section className="relative flex w-full flex-col overflow-hidden">

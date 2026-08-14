@@ -9,7 +9,6 @@ import { BaseModal, Button, CustomFormField, CustomFormSelect, Spinner } from '@
 import { useAppDispatch, useAppSelector } from '@/store';
 import { getIdentificationTypes, selectGetIdentificationTypes } from '@/store/masters/masters-slice';
 import {
-    getPatients,
     postCreatePatient,
     putUpdatePatient,
     resetPostCreatePatient,
@@ -29,6 +28,7 @@ type Props = {
     open: boolean;
     onOpenChange: (next: boolean) => void;
     patient?: IPatientsItems | null;
+    onSuccess?: () => void;
 };
 
 const toOptionalName = (value?: string | null) => {
@@ -57,6 +57,7 @@ export const PatientFormModal = ({
     open,
     onOpenChange,
     patient = null,
+    onSuccess,
 }: Props) => {
     const dispatch = useAppDispatch();
     const isEdit = Boolean(patient);
@@ -141,7 +142,7 @@ export const PatientFormModal = ({
             toast.success(postCreatePatientMessage);
             handleDialogOpenChange(false);
             dispatch(resetPostCreatePatient());
-            dispatch(getPatients());
+            onSuccess?.();
         }
     }, [postCreatePatientStatus, isEdit, dispatch]);
 
@@ -158,7 +159,7 @@ export const PatientFormModal = ({
             toast.success(putUpdatePatientMessage);
             handleDialogOpenChange(false);
             dispatch(resetPutUpdatePatient());
-            dispatch(getPatients());
+            onSuccess?.();
         }
     }, [putUpdatePatientStatus, isEdit, dispatch]);
 

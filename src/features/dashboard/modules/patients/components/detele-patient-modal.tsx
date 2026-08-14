@@ -6,7 +6,6 @@ import { BaseModal, Button, Spinner } from '@/components';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
     deletePatient,
-    getPatients,
     resetDeletePatient,
     selectDeletePatient,
 } from '@/store/patients/patiens-slice';
@@ -17,6 +16,7 @@ type Props = {
     open: boolean;
     onOpenChange: (next: boolean) => void;
     patient: IPatientsItems | null;
+    onSuccess?: () => void;
 };
 
 const fullName = (patient: IPatientsItems) =>
@@ -24,7 +24,7 @@ const fullName = (patient: IPatientsItems) =>
         .filter(Boolean)
         .join(' ');
 
-export const DeletePatientModal = ({ open, onOpenChange, patient }: Props) => {
+export const DeletePatientModal = ({ open, onOpenChange, patient, onSuccess }: Props) => {
     const dispatch = useAppDispatch();
     const { status, message } = useAppSelector(selectDeletePatient);
     const isSubmitting = status === 'loading';
@@ -52,7 +52,7 @@ export const DeletePatientModal = ({ open, onOpenChange, patient }: Props) => {
             toast.success(message);
             handleDialogOpenChange(false);
             dispatch(resetDeletePatient());
-            dispatch(getPatients());
+            onSuccess?.();
         }
     }, [status, dispatch]);
 

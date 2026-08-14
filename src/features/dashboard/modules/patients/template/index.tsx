@@ -10,8 +10,13 @@ export const PatientsTemplate = () => {
     const [patientModalOpen, setPatientModalOpen] = useState(false);
     const [selectedPatient, setSelectedPatient] = useState<IPatientsItems | null>(null);
 
+    const [listRefreshKey, setListRefreshKey] = useState(0);
     const [deletePatientModalOpen, setDeletePatientModalOpen] = useState(false);
     const [patientToDelete, setPatientToDelete] = useState<IPatientsItems | null>(null);
+
+    const refreshPatientsList = () => {
+        setListRefreshKey((key) => key + 1);
+    };
 
     const openCreateModal = () => {
         setSelectedPatient(null);
@@ -54,16 +59,22 @@ export const PatientsTemplate = () => {
                     Agregar Paciente
                 </Button>
             </section>
-            <PatientsTable onEdit={openEditModal} onDelete={openDeleteModal} />
+            <PatientsTable
+                onEdit={openEditModal}
+                onDelete={openDeleteModal}
+                refreshKey={listRefreshKey}
+            />
             <PatientFormModal
                 open={patientModalOpen}
                 onOpenChange={handleModalOpenChange}
                 patient={selectedPatient}
+                onSuccess={refreshPatientsList}
             />
             <DeletePatientModal
                 open={deletePatientModalOpen}
                 onOpenChange={handleDeleteModalOpenChange}
                 patient={patientToDelete}
+                onSuccess={refreshPatientsList}
             />
         </>
     );
