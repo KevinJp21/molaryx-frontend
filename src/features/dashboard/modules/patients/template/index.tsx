@@ -2,14 +2,32 @@
 
 import { useState } from "react";
 import { PlusIcon } from "lucide-react";
-import { PatientsTable } from "../components";
 import { Button } from "@/components";
-import { NewPatientModal } from "../components";
+import { PatientFormModal, PatientsTable } from "../components";
+import { IPatientsItems } from "../interfaces";
+
 export const PatientsTemplate = () => {
-    const [newPatientOpen, setNewPatientOpen] = useState(false);
+    const [patientModalOpen, setPatientModalOpen] = useState(false);
+    const [selectedPatient, setSelectedPatient] = useState<IPatientsItems | null>(null);
+
+    const openCreateModal = () => {
+        setSelectedPatient(null);
+        setPatientModalOpen(true);
+    };
+
+    const openEditModal = (patient: IPatientsItems) => {
+        setSelectedPatient(patient);
+        setPatientModalOpen(true);
+    };
+
+    const handleModalOpenChange = (next: boolean) => {
+        setPatientModalOpen(next);
+        if (!next) setSelectedPatient(null);
+    };
+
     return (
         <>
-            <section className="flex justify-between items-center mb-4">
+            <section className="mb-4 flex items-center justify-between">
                 <div className="flex flex-col gap-1">
                     <h1 className="text-xl font-medium text-ink-50">
                         Pacientes
@@ -18,18 +36,17 @@ export const PatientsTemplate = () => {
                         Gestión de pacientes
                     </p>
                 </div>
-                <Button
-                    onClick={() => setNewPatientOpen(true)}
-                >
-                    <PlusIcon className="w-4 h-4" />
+                <Button onClick={openCreateModal}>
+                    <PlusIcon className="h-4 w-4" />
                     Agregar Paciente
                 </Button>
             </section>
-            <PatientsTable />
-            <NewPatientModal
-                open={newPatientOpen}
-                onOpenChange={setNewPatientOpen}
+            <PatientsTable onEdit={openEditModal} />
+            <PatientFormModal
+                open={patientModalOpen}
+                onOpenChange={handleModalOpenChange}
+                patient={selectedPatient}
             />
         </>
-    )
-}
+    );
+};

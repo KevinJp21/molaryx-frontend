@@ -5,6 +5,8 @@ import {
   TGetPatientsParams,
   apiPostCreatePatientAction,
   IPostCreatePatientFormRequest,
+  apiPutUpdatePatientAction,
+  IPutUpdatePatientFormRequest,
 } from "@/features";
 import { TStatus } from "@/types";
 
@@ -19,6 +21,11 @@ type TPatientsState = {
     message?: string;
     data?: IGetPatientsResponseData;
   };
+  putUpdatePatient: {
+    status: TStatus;
+    message?: string;
+    error?: string;
+  };
 };
 
 const initialState: TPatientsState = {
@@ -31,6 +38,11 @@ const initialState: TPatientsState = {
     status: "idle",
     message: undefined,
     data: undefined,
+  },
+  putUpdatePatient: {
+    status: "idle",
+    message: undefined,
+    error: undefined,
   },
 };
 
@@ -90,15 +102,52 @@ const patientsSlice = createAppSlice({
     resetPostCreatePatient: create.reducer((state) => {
       state.postCreatePatient = initialState.postCreatePatient;
     }),
+    putUpdatePatient: create.asyncThunk(
+      async (data: IPutUpdatePatientFormRequest) =>
+        await apiPutUpdatePatientAction(data),
+      {
+        pending: (state) => {
+          state.putUpdatePatient.status = "loading";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.putUpdatePatient.status = "error";
+            state.putUpdatePatient.message = action.payload.message;
+            state.putUpdatePatient.error = action.payload.error ?? undefined;
+            return;
+          }
+          state.putUpdatePatient.status = "success";
+          state.putUpdatePatient.message = action.payload.message;
+          state.putUpdatePatient.error = undefined;
+        },
+        rejected: (state, action) => {
+          state.putUpdatePatient.status = "error";
+          state.putUpdatePatient.message = action.error.message;
+          state.putUpdatePatient.error = undefined;
+        },
+      },
+    ),
+    resetPutUpdatePatient: create.reducer((state) => {
+      state.putUpdatePatient = initialState.putUpdatePatient;
+    }),
   }),
   selectors: {
     selectGetPatients: (state) => state.getPatients,
     selectPostCreatePatient: (state) => state.postCreatePatient,
+    selectPutUpdatePatient: (state) => state.putUpdatePatient,
   },
 });
 
-export const { getPatients, postCreatePatient, resetPostCreatePatient } =
-  patientsSlice.actions;
-export const { selectGetPatients, selectPostCreatePatient } =
-  patientsSlice.selectors;
+export const {
+  getPatients,
+  postCreatePatient,
+  resetPostCreatePatient,
+  putUpdatePatient,
+  resetPutUpdatePatient,
+} = patientsSlice.actions;
+export const {
+  selectGetPatients,
+  selectPostCreatePatient,
+  selectPutUpdatePatient,
+} = patientsSlice.selectors;
 export default patientsSlice.reducer;

@@ -1,2 +1,2 @@
 export * from './patients-table'
-export * from './new-patient-modal'
+export * from './patient-form-modal'

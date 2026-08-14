@@ -1,1 +1,1 @@
-export * from './new-patient-schema'
+export * from './patient-form-schema'

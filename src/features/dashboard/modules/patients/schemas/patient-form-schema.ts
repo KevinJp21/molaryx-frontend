@@ -2,7 +2,7 @@ import { IDENTIFICATION_NUMBER_REGEX, NAME_REGEX, PHONE_REGEX } from "@/consts";
 import { zodOptionalName } from "@/features/dashboard";
 import { z } from "zod";
 
-export const NewPatientSchema = z.object({
+export const PatientFormSchema = z.object({
   idIdentificationType: z
     .number()
     .min(1, "Selecciona un tipo de identificación"),
@@ -29,6 +29,20 @@ export const NewPatientSchema = z.object({
     .min(1, "El teléfono es obligatorio")
     .regex(PHONE_REGEX, "El teléfono no es válido"),
   email: z.email("Ingrese un correo electrónico válido"),
+  isActive: z.boolean(),
 });
 
-export type TNewPatientForm = z.input<typeof NewPatientSchema>;
+export type TPatientForm = z.input<typeof PatientFormSchema>;
+
+export const PATIENT_FORM_DEFAULT_VALUES: TPatientForm = {
+  idIdentificationType: 1,
+  identificationNumber: "",
+  firstName: "",
+  secondName: null,
+  firstSurname: "",
+  secondSurname: null,
+  birthDate: "",
+  phoneNumber: "",
+  email: "",
+  isActive: true,
+};

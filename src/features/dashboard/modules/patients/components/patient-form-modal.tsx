@@ -10,47 +10,88 @@ import {
     DialogDescription,
     DialogClose,
 } from '@radix-ui/react-dialog';
-import { UserPlus, X } from 'lucide-react';
+import { SquarePen, UserPlus, X } from 'lucide-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/lib/utils';
 import { Button, CustomFormField, CustomFormSelect, Spinner } from '@/components';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { getIdentificationTypes, selectGetIdentificationTypes } from '@/store/masters/masters-slice';
-import { postCreatePatient, selectPostCreatePatient, resetPostCreatePatient } from '@/store/patients/patiens-slice';
-import { getPatients } from '@/store/patients/patiens-slice';
-import { IPostCreatePatientFormRequest } from '../interfaces';
-import { NewPatientSchema, TNewPatientForm } from '../schemas';
+import {
+    getPatients,
+    postCreatePatient,
+    putUpdatePatient,
+    resetPostCreatePatient,
+    resetPutUpdatePatient,
+    selectPostCreatePatient,
+    selectPutUpdatePatient,
+} from '@/store/patients/patiens-slice';
+import { IPatientsItems } from '../interfaces';
+import {
+    PATIENT_FORM_DEFAULT_VALUES,
+    PatientFormSchema,
+    TPatientForm,
+} from '../schemas';
 import { toast } from 'sonner';
 
 type Props = {
     open: boolean;
     onOpenChange: (next: boolean) => void;
+    patient?: IPatientsItems | null;
 };
 
-export const NewPatientModal = ({ open, onOpenChange }: Props) => {
+const toOptionalName = (value?: string | null) => {
+    const trimmed = value?.trim();
+    return trimmed ? trimmed : null;
+};
+
+const toFormValues = (patient?: IPatientsItems | null): TPatientForm => {
+    if (!patient) return PATIENT_FORM_DEFAULT_VALUES;
+
+    return {
+        idIdentificationType: patient.idIdentificationType,
+        identificationNumber: patient.identificationNumber,
+        firstName: patient.firstName,
+        secondName: toOptionalName(patient.secondName),
+        firstSurname: patient.firstSurname,
+        secondSurname: toOptionalName(patient.secondSurname),
+        birthDate: patient.birthDate.slice(0, 10),
+        phoneNumber: patient.phoneNumber,
+        email: patient.email,
+        isActive: patient.isActive,
+    };
+};
+
+export const PatientFormModal = ({
+    open,
+    onOpenChange,
+    patient = null,
+}: Props) => {
     const dispatch = useAppDispatch();
+    const isEdit = Boolean(patient);
     const { data, status } = useAppSelector(selectGetIdentificationTypes);
-    const { status: postCreatePatientStatus, message: postCreatePatientMessage, error: postCreatePatientError } = useAppSelector(selectPostCreatePatient);
+    const {
+        status: postCreatePatientStatus,
+        message: postCreatePatientMessage,
+        error: postCreatePatientError,
+    } = useAppSelector(selectPostCreatePatient);
+    const {
+        status: putUpdatePatientStatus,
+        message: putUpdatePatientMessage,
+        error: putUpdatePatientError,
+    } = useAppSelector(selectPutUpdatePatient);
     const isLoadingTypes = status === 'loading' || status === 'idle';
+    const isSubmitting = isEdit
+        ? putUpdatePatientStatus === 'loading'
+        : postCreatePatientStatus === 'loading';
     const identificationTypes = (data && status === 'success' ? data : []).filter(
         (item) => ![4].includes(item.idIdentificationType),
     );
 
-    const methods = useForm<TNewPatientForm, IPostCreatePatientFormRequest>({
+    const methods = useForm<TPatientForm>({
         mode: 'onTouched',
-        resolver: zodResolver(NewPatientSchema),
-        defaultValues: {
-            idIdentificationType: 1,
-            identificationNumber: '',
-            firstName: '',
-            secondName: null,
-            firstSurname: '',
-            secondSurname: null,
-            birthDate: '',
-            phoneNumber: '',
-            email: '',
-        },
+        resolver: zodResolver(PatientFormSchema),
+        defaultValues: PATIENT_FORM_DEFAULT_VALUES,
     });
 
     const { reset, handleSubmit } = methods;
@@ -61,16 +102,36 @@ export const NewPatientModal = ({ open, onOpenChange }: Props) => {
         }
     }, [open, status, dispatch]);
 
+    useEffect(() => {
+        if (open) {
+            reset(toFormValues(patient));
+        }
+    }, [open, patient, reset]);
+
     const handleDialogOpenChange = (next: boolean) => {
-        if (!next) reset();
+        if (!next) {
+            reset(PATIENT_FORM_DEFAULT_VALUES);
+            dispatch(isEdit ? resetPutUpdatePatient() : resetPostCreatePatient());
+        }
         onOpenChange(next);
     };
 
-    const onSubmit = async (data: IPostCreatePatientFormRequest) => {
-        dispatch(postCreatePatient(data));
-    }
+    const onSubmit = (data: TPatientForm) => {
+        if (isEdit && patient) {
+            dispatch(putUpdatePatient({
+                ...data,
+                idPatient: patient.idPatient,
+            }));
+            return;
+        }
+
+        const { isActive: _isActive, ...createData } = data;
+        dispatch(postCreatePatient(createData));
+    };
 
     useEffect(() => {
+        if (isEdit) return;
+
         if (postCreatePatientStatus === 'error') {
             toast.error(postCreatePatientMessage, {
                 description: postCreatePatientError,
@@ -83,8 +144,24 @@ export const NewPatientModal = ({ open, onOpenChange }: Props) => {
             dispatch(resetPostCreatePatient());
             dispatch(getPatients());
         }
+    }, [postCreatePatientStatus, isEdit, dispatch]);
 
-    }, [postCreatePatientStatus, dispatch]);
+    useEffect(() => {
+        if (!isEdit) return;
+
+        if (putUpdatePatientStatus === 'error') {
+            toast.error(putUpdatePatientMessage, {
+                description: putUpdatePatientError,
+            });
+            dispatch(resetPutUpdatePatient());
+        }
+        if (putUpdatePatientStatus === 'success') {
+            toast.success(putUpdatePatientMessage);
+            handleDialogOpenChange(false);
+            dispatch(resetPutUpdatePatient());
+            dispatch(getPatients());
+        }
+    }, [putUpdatePatientStatus, isEdit, dispatch]);
 
     return (
         <DialogRoot open={open} onOpenChange={handleDialogOpenChange}>
@@ -106,14 +183,20 @@ export const NewPatientModal = ({ open, onOpenChange }: Props) => {
                     <div className="flex shrink-0 items-center justify-between gap-3 border-b border-ink-800 px-5 py-4">
                         <div className="flex min-w-0 items-center gap-3">
                             <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-ink-900 text-accent-500 ring-1 ring-inset ring-accent-500/20">
-                                <UserPlus className="size-3.5" strokeWidth={2} />
+                                {isEdit ? (
+                                    <SquarePen className="size-3.5" strokeWidth={2} />
+                                ) : (
+                                    <UserPlus className="size-3.5" strokeWidth={2} />
+                                )}
                             </span>
                             <div className="min-w-0">
                                 <DialogTitle className="text-sm font-medium tracking-tight text-ink-50">
-                                    Nuevo paciente
+                                    {isEdit ? 'Editar paciente' : 'Nuevo paciente'}
                                 </DialogTitle>
                                 <DialogDescription className="text-xs text-ink-400">
-                                    Ficha de ingreso al directorio del consultorio.
+                                    {isEdit
+                                        ? 'Actualiza los datos de la ficha del paciente.'
+                                        : 'Ficha de ingreso al directorio del consultorio.'}
                                 </DialogDescription>
                             </div>
                         </div>
@@ -194,12 +277,25 @@ export const NewPatientModal = ({ open, onOpenChange }: Props) => {
                                             mode="digits"
                                         />
                                     </div>
-                                    <CustomFormField
-                                        name="email"
-                                        label="Correo electrónico"
-                                        placeholder="Ingresa el correo"
-                                        type="email"
-                                    />
+                                    <div className={cn('grid grid-cols-1 gap-4', isEdit && 'md:grid-cols-2')}>
+                                        <CustomFormField
+                                            name="email"
+                                            label="Correo electrónico"
+                                            placeholder="Ingresa el correo"
+                                            type="email"
+                                        />
+                                        {isEdit && (
+                                            <CustomFormSelect
+                                                name="isActive"
+                                                label="Estado"
+                                                placeholder="Selecciona el estado"
+                                                items={[
+                                                    { name: 'Activo', value: true },
+                                                    { name: 'Inactivo', value: false },
+                                                ]}
+                                            />
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 
@@ -215,13 +311,15 @@ export const NewPatientModal = ({ open, onOpenChange }: Props) => {
                                 <Button
                                     type="submit"
                                     size="sm"
-                                    disabled={postCreatePatientStatus === 'loading'}
+                                    disabled={isSubmitting}
                                 >
-                                    {postCreatePatientStatus === 'loading' ? (
+                                    {isSubmitting ? (
                                         <>
                                             <Spinner className="size-4" />
-                                            Guardando paciente...
+                                            {isEdit ? 'Guardando cambios...' : 'Guardando paciente...'}
                                         </>
+                                    ) : isEdit ? (
+                                        'Guardar cambios'
                                     ) : (
                                         'Guardar paciente'
                                     )}

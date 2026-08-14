@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { InputErrorMessage } from "./input-error-message";
 
-interface Props<T extends string | number> {
+interface Props<T extends string | number | boolean> {
     label: string;
     placeholder: string;
     items: Item<T>[];
@@ -20,14 +20,14 @@ interface Props<T extends string | number> {
     defaultValue?: T;
 }
 
-type Item<T extends string | number> = {
+type Item<T extends string | number | boolean> = {
     name: string,
     value: T,
     image?: string,
     disabled?: boolean
 };
 
-export const CustomFormSelect = <T extends string | number>({
+export const CustomFormSelect = <T extends string | number | boolean>({
     placeholder,
     items,
     label,

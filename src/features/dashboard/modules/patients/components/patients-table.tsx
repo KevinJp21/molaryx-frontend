@@ -5,6 +5,7 @@ import { Logs, SquarePen } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/store"
 import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice"
 import { formatDate } from "@/utils"
+import { IPatientsItems } from "../interfaces"
 import {
     BaseTable,
     Table,
@@ -19,11 +20,13 @@ import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-    PopoverHeader,
-    PopoverTitle
 } from "@/components"
 
-export const PatientsTable = () => {
+type Props = {
+    onEdit: (patient: IPatientsItems) => void;
+};
+
+export const PatientsTable = ({ onEdit }: Props) => {
     const dispatch = useAppDispatch();
     const { data, status, message } = useAppSelector(selectGetPatients);
     const [currentPage, setCurrentPage] = useState(1);
@@ -56,7 +59,7 @@ export const PatientsTable = () => {
                             <TableHead>Nacimiento</TableHead>
                             <TableHead>Contacto</TableHead>
                             <TableHead>Estado</TableHead>
-                            <TableHead className="w-14 text-right"> </TableHead>
+                            <TableHead className="w-14 text-right">Acciones</TableHead>
                         </TableRow>
                     </TableHeader>
                     {(status === "loading" || status === "idle") && (
@@ -119,7 +122,6 @@ export const PatientsTable = () => {
                                                     <Button
                                                         variant="ghost"
                                                         size="icon-sm"
-                                                        className="opacity-0 transition-opacity group-hover/row:opacity-100 focus-visible:opacity-100"
                                                         aria-label={`Ver ${fullName}`}
                                                     >
                                                         <Logs className="size-4" strokeWidth={1.75} />
@@ -141,6 +143,7 @@ export const PatientsTable = () => {
                                                             size="sm"
                                                             className="text-xs justify-start text-ink-200 font-normal"
                                                             aria-label={`Editar paciente ${fullName}`}
+                                                            onClick={() => onEdit(item)}
                                                         >
                                                             <SquarePen className="size-4" strokeWidth={1.75} />
                                                             Editar
