@@ -1,4 +1,4 @@
-import { Home, User } from "lucide-react";
+import { Home, User, Layers } from "lucide-react";
 import { SidebarSection } from "../types";
 
 export const SIDEBAR_SECTIONS: SidebarSection[] = [
@@ -12,6 +12,12 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         title: 'Pacientes',
         items: [
             { label: 'Pacientes', href: '/dashboard/patients', icon: User, permission: { module: 'PATIENTS' } }
+        ]
+    },
+    {
+        title: 'Servicios',
+        items: [
+            { label: 'Servicios', href: '/dashboard/services', icon: Layers, permission: { module: 'SERVICES' } }
         ]
     }
 ]
