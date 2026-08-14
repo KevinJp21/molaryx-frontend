@@ -20,7 +20,7 @@ export const DashboardTemplate = ({ children }: Props) => {
             isSidebarCollapsed={isSidebarCollapsed}
             onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
           />
-          <main className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-5 md:p-6">
+          <main className="h-dvh flex-1 overflow-y-auto p-4 sm:p-5 md:p-6">
             {children}
           </main>
         </div>

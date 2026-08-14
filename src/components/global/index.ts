@@ -5,5 +5,6 @@ export * from "./custom-form-field";
 export * from "./custom-form-select";
 export * from "./custom-password-form-field";
 export * from "./base-table";
+export * from "./base-modal";
 export * from "./custom-pagination";
 export * from "./table-skeleton";

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { Logs, SquarePen } from "lucide-react"
+import { Logs, SquarePen, Trash } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/store"
 import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice"
 import { formatDate } from "@/utils"
@@ -24,9 +24,10 @@ import {
 
 type Props = {
     onEdit: (patient: IPatientsItems) => void;
+    onDelete: (patient: IPatientsItems) => void;
 };
 
-export const PatientsTable = ({ onEdit }: Props) => {
+export const PatientsTable = ({ onEdit, onDelete }: Props) => {
     const dispatch = useAppDispatch();
     const { data, status, message } = useAppSelector(selectGetPatients);
     const [currentPage, setCurrentPage] = useState(1);
@@ -42,7 +43,7 @@ export const PatientsTable = ({ onEdit }: Props) => {
     const colSpan = 6;
 
     return (
-        <section className="relative flex h-full w-full flex-col overflow-hidden">
+        <section className="relative flex w-full flex-col overflow-hidden">
             <BaseTable
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -147,6 +148,16 @@ export const PatientsTable = ({ onEdit }: Props) => {
                                                         >
                                                             <SquarePen className="size-4" strokeWidth={1.75} />
                                                             Editar
+                                                        </Button>
+                                                        <Button
+                                                            variant="destructive"
+                                                            size="sm"
+                                                            className="text-xs justify-start text-ink-200 font-normal"
+                                                            aria-label={`Eliminar paciente ${fullName}`}
+                                                            onClick={() => onDelete(item)}
+                                                        >
+                                                            <Trash className="size-4" strokeWidth={1.75} />
+                                                            Eliminar
                                                         </Button>
                                                     </div>
                                                 </PopoverContent>

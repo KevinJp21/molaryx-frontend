@@ -7,6 +7,7 @@ import {
   IPostCreatePatientFormRequest,
   apiPutUpdatePatientAction,
   IPutUpdatePatientFormRequest,
+  apiDeletePatientAction,
 } from "@/features";
 import { TStatus } from "@/types";
 
@@ -22,6 +23,11 @@ type TPatientsState = {
     data?: IGetPatientsResponseData;
   };
   putUpdatePatient: {
+    status: TStatus;
+    message?: string;
+    error?: string;
+  };
+  deletePatient: {
     status: TStatus;
     message?: string;
     error?: string;
@@ -42,7 +48,10 @@ const initialState: TPatientsState = {
   putUpdatePatient: {
     status: "idle",
     message: undefined,
-    error: undefined,
+  },
+  deletePatient: {
+    status: "idle",
+    message: undefined,
   },
 };
 
@@ -130,11 +139,36 @@ const patientsSlice = createAppSlice({
     resetPutUpdatePatient: create.reducer((state) => {
       state.putUpdatePatient = initialState.putUpdatePatient;
     }),
+    deletePatient: create.asyncThunk(
+      async (idPatient: number) => await apiDeletePatientAction(idPatient),
+      {
+        pending: (state) => {
+          state.deletePatient.status = "loading";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.deletePatient.status = "error";
+            state.deletePatient.message = action.payload.message;
+            return;
+          }
+          state.deletePatient.status = "success";
+          state.deletePatient.message = action.payload.message;
+        },
+        rejected: (state, action) => {
+          state.deletePatient.status = "error";
+          state.deletePatient.message = action.error.message;
+        },
+      },
+    ),
+    resetDeletePatient: create.reducer((state) => {
+      state.deletePatient = initialState.deletePatient;
+    }),
   }),
   selectors: {
     selectGetPatients: (state) => state.getPatients,
     selectPostCreatePatient: (state) => state.postCreatePatient,
     selectPutUpdatePatient: (state) => state.putUpdatePatient,
+    selectDeletePatient: (state) => state.deletePatient,
   },
 });
 
@@ -144,10 +178,13 @@ export const {
   resetPostCreatePatient,
   putUpdatePatient,
   resetPutUpdatePatient,
+  deletePatient,
+  resetDeletePatient,
 } = patientsSlice.actions;
 export const {
   selectGetPatients,
   selectPostCreatePatient,
   selectPutUpdatePatient,
+  selectDeletePatient,
 } = patientsSlice.selectors;
 export default patientsSlice.reducer;

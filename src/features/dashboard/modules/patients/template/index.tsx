@@ -3,12 +3,15 @@
 import { useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/components";
-import { PatientFormModal, PatientsTable } from "../components";
+import { PatientFormModal, PatientsTable, DeletePatientModal } from "../components";
 import { IPatientsItems } from "../interfaces";
 
 export const PatientsTemplate = () => {
     const [patientModalOpen, setPatientModalOpen] = useState(false);
     const [selectedPatient, setSelectedPatient] = useState<IPatientsItems | null>(null);
+
+    const [deletePatientModalOpen, setDeletePatientModalOpen] = useState(false);
+    const [patientToDelete, setPatientToDelete] = useState<IPatientsItems | null>(null);
 
     const openCreateModal = () => {
         setSelectedPatient(null);
@@ -23,6 +26,16 @@ export const PatientsTemplate = () => {
     const handleModalOpenChange = (next: boolean) => {
         setPatientModalOpen(next);
         if (!next) setSelectedPatient(null);
+    };
+
+    const openDeleteModal = (patient: IPatientsItems) => {
+        setPatientToDelete(patient);
+        setDeletePatientModalOpen(true);
+    };
+
+    const handleDeleteModalOpenChange = (next: boolean) => {
+        setDeletePatientModalOpen(next);
+        if (!next) setPatientToDelete(null);
     };
 
     return (
@@ -41,11 +54,16 @@ export const PatientsTemplate = () => {
                     Agregar Paciente
                 </Button>
             </section>
-            <PatientsTable onEdit={openEditModal} />
+            <PatientsTable onEdit={openEditModal} onDelete={openDeleteModal} />
             <PatientFormModal
                 open={patientModalOpen}
                 onOpenChange={handleModalOpenChange}
                 patient={selectedPatient}
+            />
+            <DeletePatientModal
+                open={deletePatientModalOpen}
+                onOpenChange={handleDeleteModalOpenChange}
+                patient={patientToDelete}
             />
         </>
     );
