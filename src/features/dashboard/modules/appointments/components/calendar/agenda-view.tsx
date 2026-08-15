@@ -117,7 +117,7 @@ export const AgendaView = ({
                       style={{ backgroundColor: event.color }}
                     />
 
-                    <div className="flex min-w-[76px] flex-col items-center pl-2">
+                    <div className="flex min-w-19 flex-col items-center pl-2">
                       <span className="text-base font-semibold text-ink-50">
                         {format(event.start, "h:mm")}
                       </span>

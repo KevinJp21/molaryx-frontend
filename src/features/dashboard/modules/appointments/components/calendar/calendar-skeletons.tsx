@@ -34,7 +34,7 @@ const MonthSkeleton = () => (
     </div>
     <div className="grid grid-cols-7">
       {Array.from({ length: 35 }).map((_, index) => (
-        <div key={index} className="min-h-[120px] border-b border-r border-ink-800 p-2">
+        <div key={index} className="min-h-30 border-b border-r border-ink-800 p-2">
           <Bone className="mb-2 h-4 w-6" />
           <div className="space-y-1">
             {MONTH_EVENT_PATTERN[index % MONTH_EVENT_PATTERN.length] && (
@@ -68,7 +68,7 @@ const WeekSkeleton = () => (
     <div className="flex" style={{ height: 600 }}>
       <div className="w-16 border-r border-ink-800">
         {Array.from({ length: 10 }).map((_, index) => (
-          <div key={index} className="relative h-[60px]">
+          <div key={index} className="relative h-15">
             <Bone className="absolute right-2 h-4 w-10 -translate-y-1/2" />
           </div>
         ))}
@@ -77,7 +77,7 @@ const WeekSkeleton = () => (
         {WEEK_EVENT_PATTERN.map((event, columnIndex) => (
           <div key={columnIndex} className="relative border-r border-ink-800 last:border-r-0">
             {Array.from({ length: 10 }).map((_, rowIndex) => (
-              <div key={rowIndex} className="h-[60px] border-b border-dashed border-ink-800" />
+              <div key={rowIndex} className="h-15 border-b border-dashed border-ink-800" />
             ))}
             {event && (
               <Bone
@@ -100,14 +100,14 @@ const DaySkeleton = () => (
     <div className="flex" style={{ height: 600 }}>
       <div className="w-20 border-r border-ink-800 bg-ink-900/20">
         {Array.from({ length: 10 }).map((_, index) => (
-          <div key={index} className="relative h-[80px]">
+          <div key={index} className="relative h-20">
             <Bone className="absolute left-1/2 h-4 w-12 -translate-x-1/2 -translate-y-1/2" />
           </div>
         ))}
       </div>
       <div className="relative flex-1">
         {Array.from({ length: 10 }).map((_, index) => (
-          <div key={index} className="h-[80px] border-b border-dashed border-ink-800" />
+          <div key={index} className="h-20 border-b border-dashed border-ink-800" />
         ))}
         <Bone className="absolute left-4 right-4 rounded-lg" style={{ top: 160, height: 120 }} />
         <Bone className="absolute left-4 right-4 rounded-lg" style={{ top: 400, height: 80 }} />
@@ -155,7 +155,7 @@ const ResourceSkeleton = () => (
       </div>
     </div>
     {Array.from({ length: 4 }).map((_, rowIndex) => (
-      <div key={rowIndex} className="flex min-h-[100px] border-b border-ink-800">
+      <div key={rowIndex} className="flex min-h-25 border-b border-ink-800">
         <div className="flex w-48 shrink-0 items-center gap-3 border-r border-ink-800 p-4">
           <Bone className="size-8 rounded-full" />
           <div className="flex-1 space-y-2">

@@ -36,7 +36,7 @@ export const MiniCalendar = ({ currentDate, onDateChange, onViewChange }: Props)
   }, [viewDate]);
 
   return (
-    <div className="w-[260px] px-4">
+    <div className="w-full px-4">
       <div className="mb-4 flex items-center justify-between">
         <span className="text-sm font-semibold capitalize text-ink-50">
           {format(viewDate, "MMMM yyyy", { locale: es })}
@@ -93,23 +93,25 @@ export const MiniCalendar = ({ currentDate, onDateChange, onViewChange }: Props)
           const today = isToday(day);
 
           return (
-            <button
+            <Button
               key={day.toISOString()}
               type="button"
+              variant={selected ? "default" : "ghost"}
+              size="icon-sm"
               onClick={() => {
                 onDateChange(day);
                 onViewChange("day");
               }}
               className={cn(
-                "mx-auto flex h-8 w-8 items-center justify-center rounded-xl text-xs font-medium transition-all",
+                "mx-auto rounded-xl text-xs font-medium",
                 !inMonth && "text-ink-500",
-                inMonth && !selected && !today && "text-ink-50 hover:bg-accent-100",
-                selected && "scale-105 bg-accent-500 text-white shadow-md shadow-accent-500/30",
+                inMonth && !selected && !today && "hover:bg-accent-100",
+                selected && "scale-105 shadow-md shadow-accent-500/30",
                 !selected && today && "bg-accent-100 text-accent-700 ring-1 ring-accent-300",
               )}
             >
               {format(day, "d")}
-            </button>
+            </Button>
           );
         })}
       </div>

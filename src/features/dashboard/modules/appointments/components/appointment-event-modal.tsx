@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import {
+  Button,
   Select,
   SelectContent,
   SelectItem,
@@ -171,33 +172,39 @@ export const AppointmentEventModal = ({
             </span>
           </div>
           <div className="flex items-center gap-1">
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon-sm"
               onClick={() => onModeChange("edit")}
               title="Editar"
               aria-label="Editar cita"
-              className="rounded-lg p-2 text-ink-400 transition-all hover:bg-ink-900 hover:text-ink-50"
+              className="text-ink-400"
             >
               <Edit2 className="size-4" />
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="ghost"
+              size="icon-sm"
               onClick={() => event && onDelete(event)}
               title="Eliminar"
               aria-label="Eliminar cita"
-              className="rounded-lg p-2 text-ink-400 transition-all hover:bg-coral-500/10 hover:text-coral-600"
+              className="text-ink-400 hover:bg-coral-500/10 hover:text-coral-600"
             >
               <Trash2 className="size-4" />
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="ghost"
+              size="icon-sm"
               onClick={onClose}
               title="Cerrar"
               aria-label="Cerrar"
-              className="rounded-lg p-2 text-ink-400 transition-all hover:bg-ink-900 hover:text-ink-50"
+              className="text-ink-400"
             >
               <X className="size-4" />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -253,14 +260,16 @@ export const AppointmentEventModal = ({
             {mode === "edit" ? "Editar cita" : "Nueva cita"}
           </h2>
         </div>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon-sm"
           onClick={onClose}
           aria-label="Cerrar"
-          className="rounded-xl p-2 text-ink-400 transition-all hover:bg-ink-900 hover:text-ink-50"
+          className="rounded-xl text-ink-400"
         >
           <X className="size-4" />
-        </button>
+        </Button>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -403,32 +412,27 @@ export const AppointmentEventModal = ({
 
       <div className="flex shrink-0 items-center justify-between border-t border-ink-800 bg-ink-900/40 px-5 py-4">
         {mode === "edit" && event ? (
-          <button
+          <Button
             type="button"
+            variant="destructive"
+            size="sm"
             onClick={() => onDelete(event)}
-            className="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium text-coral-600 transition-all hover:bg-coral-500/10"
+            className="rounded-xl"
           >
             <Trash2 className="size-4" />
             Eliminar
-          </button>
+          </Button>
         ) : (
           <span />
         )}
 
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-xl px-4 py-2.5 text-sm font-medium text-ink-400 transition-all hover:bg-ink-900 hover:text-ink-50"
-          >
+          <Button type="button" variant="ghost" size="sm" onClick={onClose} className="rounded-xl text-ink-400">
             Cancelar
-          </button>
-          <button
-            type="submit"
-            className="rounded-xl bg-accent-500 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-accent-400 hover:shadow-lg hover:shadow-accent-500/20 active:scale-95"
-          >
+          </Button>
+          <Button type="submit" size="sm" className="rounded-xl px-6">
             {mode === "edit" ? "Guardar cambios" : "Crear cita"}
-          </button>
+          </Button>
         </div>
       </div>
     </form>

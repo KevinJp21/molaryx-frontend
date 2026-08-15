@@ -22,6 +22,7 @@ import {
 } from "date-fns";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   getAppointments,
@@ -302,7 +303,7 @@ export const AppointmentsCalendar = () => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex h-[calc(100dvh-10rem)] min-h-[640px] flex-col overflow-hidden rounded-2xl bg-ink-950 shadow-[0_1px_0_rgba(14,14,23,0.04),0_24px_48px_-28px_rgba(124,77,255,0.45)] ring-1 ring-ink-700/70">
+      <div className="flex h-[calc(100dvh-10rem)] min-h-160 flex-col overflow-hidden rounded-2xl bg-ink-950 shadow-[0_1px_0_rgba(14,14,23,0.04),0_24px_48px_-28px_rgba(124,77,255,0.45)] ring-1 ring-ink-700/70">
         <CalendarHeader
           currentDate={date}
           view={view}
@@ -348,14 +349,14 @@ export const AppointmentsCalendar = () => {
               </div>
             </div>
 
-            <button
+            <Button
               type="button"
               onClick={() => openCreate()}
               aria-label="Nueva cita"
-              className="absolute bottom-6 right-6 z-40 flex size-14 items-center justify-center rounded-full bg-accent-500 text-white shadow-lg shadow-accent-500/30 transition-transform active:scale-90 md:hidden"
+              className="absolute right-6 bottom-6 z-40 size-14 rounded-full shadow-lg shadow-accent-500/30 md:hidden"
             >
               <Plus className="size-6" />
-            </button>
+            </Button>
           </div>
         </div>
       </div>

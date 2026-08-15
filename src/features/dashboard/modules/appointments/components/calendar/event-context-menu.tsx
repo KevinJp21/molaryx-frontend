@@ -3,7 +3,7 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import type { MouseEvent as ReactMouseEvent } from "react";
 import { Copy, Edit3, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components";
 import type { TAppointmentCalendarEvent } from "../../types";
 
 type Action = {
@@ -108,7 +108,7 @@ export const EventContextMenu = ({
   return (
     <div
       ref={menuRef}
-      className="fixed z-[100] min-w-[180px] overflow-hidden rounded-xl border border-ink-750 bg-ink-950 shadow-xl animate-in fade-in-0 zoom-in-95 duration-150"
+      className="fixed z-100 min-w-45 overflow-hidden rounded-xl border border-ink-750 bg-ink-950 shadow-xl animate-in fade-in-0 zoom-in-95 duration-150"
       style={{ left: adjusted.x, top: adjusted.y }}
     >
       <div className="border-b border-ink-800 bg-ink-900/60 px-3 py-2">
@@ -127,19 +127,16 @@ export const EventContextMenu = ({
             {index > 0 && action.variant === "danger" && (
               <div className="my-1 h-px bg-ink-800" />
             )}
-            <button
+            <Button
               type="button"
+              variant={action.variant === "danger" ? "destructive" : "ghost"}
+              size="sm"
               onClick={action.onClick}
-              className={cn(
-                "flex w-full items-center gap-3 px-3 py-2 text-sm transition-colors",
-                action.variant === "danger"
-                  ? "text-coral-600 hover:bg-coral-500/10"
-                  : "text-ink-100 hover:bg-accent-50",
-              )}
+              className="h-auto w-full justify-start rounded-none px-3 py-2 font-medium"
             >
               {action.icon}
               <span>{action.label}</span>
-            </button>
+            </Button>
           </Fragment>
         ))}
       </div>

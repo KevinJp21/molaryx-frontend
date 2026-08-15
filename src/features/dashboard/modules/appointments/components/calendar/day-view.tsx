@@ -153,7 +153,7 @@ export const DayView = ({
                 style={{ top: `${nowOffset}px` }}
               >
                 <span className="absolute -left-1.5 size-3 animate-pulse rounded-full bg-accent-500 shadow-lg shadow-accent-500/40 ring-2 ring-ink-950" />
-                <span className="h-0.5 w-full bg-gradient-to-r from-accent-500 via-accent-500 to-accent-500/50" />
+                <span className="h-0.5 w-full bg-linear-to-r from-accent-500 via-accent-500 to-accent-500/50" />
               </div>
             )}
           </div>

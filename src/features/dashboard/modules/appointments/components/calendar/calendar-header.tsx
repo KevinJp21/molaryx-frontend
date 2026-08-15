@@ -45,7 +45,7 @@ export const CalendarHeader = ({
   onMenuClick,
 }: Props) => {
   return (
-    <div className="flex min-h-16 flex-col items-center justify-between gap-3 border-b border-ink-800 bg-gradient-to-r from-ink-950 via-ink-950 to-ink-900/60 px-3 py-3 md:flex-row md:gap-0 md:px-5">
+    <div className="flex min-h-16 flex-col items-center justify-between gap-3 border-b border-ink-800 bg-linear-to-r from-ink-950 via-ink-950 to-ink-900/60 px-3 py-3 md:flex-row md:gap-0 md:px-5">
       <div className="flex w-full items-center justify-between gap-2 md:w-auto md:justify-start">
         <div className="flex items-center gap-2 md:gap-3">
           <Button

@@ -102,7 +102,7 @@ export const MonthView = ({
   }, [events]);
 
   return (
-    <div className="scrollbar-hide flex h-full min-w-[800px] flex-col overflow-hidden rounded-2xl bg-ink-950 shadow-sm ring-1 ring-ink-700/60 md:min-w-0">
+    <div className="scrollbar-hide flex h-full min-w-200 flex-col overflow-hidden rounded-2xl bg-ink-950 shadow-sm ring-1 ring-ink-700/60 md:min-w-0">
       <div className="relative flex-1 overflow-y-auto">
         <div className="sticky top-0 z-20 grid grid-cols-7 border-b border-ink-800 bg-ink-900/80 backdrop-blur-sm">
           {weekDays.map((day) => (
@@ -128,7 +128,7 @@ export const MonthView = ({
                 date={day}
                 onClick={() => onDateClick(day)}
                 className={cn(
-                  "group relative flex h-[130px] cursor-pointer flex-col gap-1.5 overflow-hidden border-b border-r border-ink-800 p-2 text-left transition-all duration-200 last:border-r-0",
+                  "group relative flex h-32.5 cursor-pointer flex-col gap-1.5 overflow-hidden border-b border-r border-ink-800 p-2 text-left transition-all duration-200 last:border-r-0",
                   !inMonth && "bg-ink-900/40 text-ink-400",
                   isToday(day) && "bg-accent-50 ring-1 ring-inset ring-accent-200",
                 )}

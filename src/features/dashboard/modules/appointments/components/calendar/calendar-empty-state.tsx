@@ -9,6 +9,7 @@ import {
   Users,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { Button } from "@/components";
 import { cn } from "@/lib/utils";
 import type { TCalendarView } from "../../types";
 
@@ -48,13 +49,13 @@ export const CalendarEmptyState = ({ view, onCreateClick, className }: Props) =>
   return (
     <div
       className={cn(
-        "relative flex h-full min-h-[400px] flex-col items-center justify-center px-6 py-12",
+        "relative flex h-full min-h-100 flex-col items-center justify-center px-6 py-12",
         className,
       )}
     >
       <div className="relative mb-8">
-        <div className="absolute inset-0 scale-150 rounded-full bg-gradient-to-br from-accent-500/5 via-transparent to-accent-500/5 blur-3xl" />
-        <div className="relative rounded-3xl border border-ink-800 bg-gradient-to-br from-ink-900/60 to-ink-900/20 p-6">
+        <div className="absolute inset-0 scale-150 rounded-full bg-linear-to-br from-accent-500/5 via-transparent to-accent-500/5 blur-3xl" />
+        <div className="relative rounded-3xl border border-ink-800 bg-linear-to-br from-ink-900/60 to-ink-900/20 p-6">
           <Icon className="size-16 text-ink-500/40" strokeWidth={1.5} />
         </div>
       </div>
@@ -66,14 +67,14 @@ export const CalendarEmptyState = ({ view, onCreateClick, className }: Props) =>
         </p>
 
         {onCreateClick && (
-          <button
+          <Button
             type="button"
             onClick={onCreateClick}
-            className="inline-flex items-center gap-2 rounded-xl bg-accent-500 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-accent-500/20 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-accent-500/30 active:scale-95"
+            className="rounded-xl shadow-lg shadow-accent-500/20 hover:scale-105 hover:shadow-xl hover:shadow-accent-500/30 active:scale-95"
           >
             <Plus className="size-4" />
             Nueva cita
-          </button>
+          </Button>
         )}
       </div>
 
