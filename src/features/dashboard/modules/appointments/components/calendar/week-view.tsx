@@ -77,10 +77,10 @@ export const WeekView = ({
     <div className="flex h-full min-w-200 flex-col overflow-hidden rounded-2xl bg-ink-950 shadow-sm ring-1 ring-ink-700/60 md:min-w-0">
       <div
         ref={scrollRef}
-        className="scrollbar-hide relative flex-1 scroll-smooth overflow-y-auto"
+        className="scrollbar-hide relative min-h-0 flex-1 scroll-smooth overflow-y-auto overflow-x-hidden rounded-2xl"
         style={{ scrollbarGutter: "stable" }}
       >
-        <div className="sticky top-0 z-20 flex border-b border-ink-800 bg-ink-900/80 backdrop-blur-sm">
+        <div className="sticky top-0 z-20 flex border-b border-ink-800 bg-ink-900">
           <div className="flex w-16 shrink-0 items-center justify-center border-r border-ink-800 bg-ink-900/60 px-1 py-3 text-center font-semibold text-ink-400">
             <span className="flex flex-col items-center leading-tight">
               <span className="text-[11px]">{formatEventTime(now)}</span>

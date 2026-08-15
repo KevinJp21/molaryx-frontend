@@ -86,14 +86,16 @@ const InfoRow = ({
   label,
   value,
 }: {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   label: string;
   value: string;
 }) => (
   <div className="flex items-start gap-3 rounded-2xl border border-ink-800 bg-ink-900/40 p-4">
-    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent-100 text-accent-600">
-      {icon}
-    </span>
+    {icon && (
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent-100 text-accent-600">
+        {icon}
+      </span>
+    )}
     <div className="min-w-0 flex-1">
       <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
         {label}
@@ -167,7 +169,7 @@ export const AppointmentEventModal = ({
               className="size-3 rounded-full"
               style={{ backgroundColor: event?.color ?? statusColor }}
             />
-            <span className="text-xs font-medium uppercase tracking-wider text-ink-400">
+            <span className="text-xs font-medium uppercase tracking-wider text-ink-200">
               {event?.statusLabel ?? statusLabel}
             </span>
           </div>
@@ -208,7 +210,7 @@ export const AppointmentEventModal = ({
           </div>
         </div>
 
-        <h1 className="mb-3 text-2xl font-bold leading-tight text-ink-50">
+        <h1 className="mb-3 text-2xl font-bold leading-tight text-ink-100">
           {event?.title || "Cita"}
         </h1>
 
@@ -234,8 +236,6 @@ export const AppointmentEventModal = ({
           )}
         </div>
       </div>
-
-      <div className="pb-6" />
     </div>
   );
 
@@ -288,12 +288,10 @@ export const AppointmentEventModal = ({
           {event && (
             <div className="grid gap-3 sm:grid-cols-2">
               <InfoRow
-                icon={<User className="size-5" />}
                 label="Paciente"
                 value={event.patientName || "Sin registrar"}
               />
               <InfoRow
-                icon={<Stethoscope className="size-5" />}
                 label="Profesional"
                 value={event.professionalName || "Sin asignar"}
               />
@@ -467,7 +465,16 @@ export const AppointmentEventModal = ({
                 ? "Editar cita"
                 : "Nueva cita"}
           </DialogTitle>
-          {mode === "view" && event ? renderViewMode() : renderEditMode()}
+          {mode === "view" && event ? (
+            renderViewMode()
+          ) : (
+            <div
+              key={mode}
+              className="animate-in fade-in-0 zoom-in-95 duration-200"
+            >
+              {renderEditMode()}
+            </div>
+          )}
         </DialogContent>
       </DialogPortal>
     </DialogRoot>

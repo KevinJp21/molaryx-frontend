@@ -50,7 +50,7 @@ export const PatientsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
     }, [status, items.length, currentPage]);
 
     return (
-        <section className="relative flex w-full flex-col overflow-hidden">
+        <section className="flex-1 relative flex w-full flex-col overflow-hidden">
             <BaseTable
                 currentPage={currentPage}
                 totalPages={totalPages}

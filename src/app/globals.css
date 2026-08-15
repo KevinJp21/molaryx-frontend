@@ -29,19 +29,19 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
 
-  --color-ink-950: var(--ink-950);
-  --color-ink-900: var(--ink-900);
-  --color-ink-850: var(--ink-850);
-  --color-ink-800: var(--ink-800);
-  --color-ink-750: var(--ink-750);
-  --color-ink-700: var(--ink-700);
-  --color-ink-600: var(--ink-600);
-  --color-ink-500: var(--ink-500);
-  --color-ink-400: var(--ink-400);
-  --color-ink-300: var(--ink-300);
-  --color-ink-200: var(--ink-200);
-  --color-ink-100: var(--ink-100);
-  --color-ink-50: var(--ink-50);
+  --color-ink-950: #ffffff;
+  --color-ink-900: #f7f7fb;
+  --color-ink-850: #f1f1f6;
+  --color-ink-800: #eaeaf1;
+  --color-ink-750: #e2e2eb;
+  --color-ink-700: #d6d6e2;
+  --color-ink-600: #c2c2d1;
+  --color-ink-500: #9d9dad;
+  --color-ink-400: #77778a;
+  --color-ink-300: #5c5c6e;
+  --color-ink-200: #3d3d4d;
+  --color-ink-100: #232332;
+  --color-ink-50: #0e0e17;
 
   --color-accent-50: #f5f2ff;
   --color-accent-100: #ece6ff;

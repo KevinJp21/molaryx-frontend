@@ -97,7 +97,7 @@ export const ResourceView = ({
             return (
               <div key={resource.id} className="flex min-h-25 border-b border-ink-800">
                 <div className="sticky left-0 z-20 flex w-48 shrink-0 items-center gap-3 border-r border-ink-800 bg-ink-950 p-4">
-                  <span className="flex size-8 items-center justify-center rounded-full bg-accent-100 text-xs font-bold text-accent-600">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-100 text-xs font-bold text-accent-600">
                     {initials(resource.label)}
                   </span>
                   <div className="flex min-w-0 flex-col">
