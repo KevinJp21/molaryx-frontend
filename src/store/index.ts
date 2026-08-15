@@ -5,6 +5,7 @@ import plansReducer from './plans/plans-slice'
 import authenticationReducer from './authentication/authentication-slice'
 import patientsReducer from './patients/patiens-slice'
 import servicesReducer from './services/services-slice'
+import appointmentsReducer from './appointments/appointments-slice'
 export const store = configureStore({
     reducer: {
         masters: mastersReducer,
@@ -12,6 +13,7 @@ export const store = configureStore({
         authentication: authenticationReducer,
         patients: patientsReducer,
         services: servicesReducer,
+        appointments: appointmentsReducer,
     },
 
 })

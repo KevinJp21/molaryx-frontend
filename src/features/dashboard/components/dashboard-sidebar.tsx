@@ -51,7 +51,7 @@ export const DashboardSidebar = ({ isCollapsed }: Props) => {
       <nav className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto">
         {visibleSections.map((section) => (
           <div key={section.title} className="space-y-1">
-            {!isCollapsed && (
+            {(!isCollapsed && section.items.length > 1) && (
               <p className="px-2.5 text-[11px] font-medium tracking-[0.04em] text-ink-400 uppercase">
                 {section.title}
               </p>
