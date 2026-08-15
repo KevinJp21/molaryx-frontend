@@ -1,6 +1,6 @@
 import { TBaseResponse } from "@/types";
 
-export interface IGetAppointmentsResponse extends TBaseResponse<IGetAppointmentsResponseData[]> {}
+export type IGetAppointmentsResponse = TBaseResponse<IGetAppointmentsResponseData[]>;
 
 export interface IGetAppointmentsResponseData {
     idAppointment: number;
@@ -14,7 +14,8 @@ export interface IGetAppointmentsResponseData {
     idService: number;
     serviceName: string;
     idAppointmentStatus: number;
-    appointmentStatusName: string;
+    appointmentStatus?: string | null;
+    appointmentStatusName?: string | null;
     startAt: string;
     endAt: string;
     notes: string |null;
