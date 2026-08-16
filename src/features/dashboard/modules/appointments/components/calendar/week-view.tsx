@@ -19,6 +19,7 @@ type Props = {
   onEventContextMenu: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
   onTimeSlotClick: (date: Date) => void;
   onEventResize?: (event: TAppointmentCalendarEvent, newEnd: Date) => void;
+  onEventResizePreview?: (event: TAppointmentCalendarEvent, newEnd: Date) => void;
 };
 
 const HOURS = Array.from({ length: 24 }, (_, index) => index);
@@ -48,6 +49,7 @@ export const WeekView = ({
   onEventContextMenu,
   onTimeSlotClick,
   onEventResize,
+  onEventResizePreview,
 }: Props) => {
   const weekDays = eachDayOfInterval({
     start: startOfWeek(currentDate, { weekStartsOn: WEEK_STARTS_ON }),
@@ -181,6 +183,7 @@ export const WeekView = ({
                         onClick={onEventClick}
                         onContextMenu={onEventContextMenu}
                         onResize={onEventResize}
+                        onResizePreview={onEventResizePreview}
                       />
                     );
                   })}

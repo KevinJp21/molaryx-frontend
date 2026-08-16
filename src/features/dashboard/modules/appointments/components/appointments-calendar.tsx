@@ -9,7 +9,12 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import type { DragEndEvent, DragStartEvent, Modifier } from "@dnd-kit/core";
+import type {
+  DragEndEvent,
+  DragOverEvent,
+  DragStartEvent,
+  Modifier,
+} from "@dnd-kit/core";
 import { createSnapModifier, restrictToWindowEdges } from "@dnd-kit/modifiers";
 import {
   addDays,
@@ -78,6 +83,7 @@ export const AppointmentsCalendar = () => {
   const [overrides, setOverrides] = useState<Record<string, Override>>({});
   const [activeDragEvent, setActiveDragEvent] =
     useState<TAppointmentCalendarEvent | null>(null);
+  const [dragPreview, setDragPreview] = useState<Override | null>(null);
 
   const [modalState, setModalState] = useState<{
     open: boolean;
@@ -175,13 +181,58 @@ export const AppointmentsCalendar = () => {
     setOverrides((current) => ({ ...current, [event.id]: { start, end } }));
   };
 
+  // Horario en el que quedaría la cita si se soltara sobre esa celda.
+  const getDropRange = (
+    draggedEvent: TAppointmentCalendarEvent,
+    overDate: Date,
+  ): Override => {
+    const duration = draggedEvent.end.getTime() - draggedEvent.start.getTime();
+    const start = new Date(overDate);
+
+    if (view === "month") {
+      start.setHours(
+        draggedEvent.start.getHours(),
+        draggedEvent.start.getMinutes(),
+        0,
+        0,
+      );
+    } else {
+      start.setSeconds(0, 0);
+    }
+
+    return { start, end: new Date(start.getTime() + duration) };
+  };
+
   const handleDragStart = ({ active }: DragStartEvent) => {
     const dragged = events.find((event) => event.id === active.id);
-    if (dragged) setActiveDragEvent(dragged);
+    if (!dragged) return;
+    setActiveDragEvent(dragged);
+    setDragPreview({ start: dragged.start, end: dragged.end });
+  };
+
+  const handleDragOver = ({ active, over }: DragOverEvent) => {
+    const draggedEvent = active.data.current?.event as
+      | TAppointmentCalendarEvent
+      | undefined;
+    const overDate = over?.data.current?.date as Date | undefined;
+    if (!draggedEvent || !overDate) return;
+
+    const range = getDropRange(draggedEvent, overDate);
+    setDragPreview((current) =>
+      current && current.start.getTime() === range.start.getTime()
+        ? current
+        : range,
+    );
+  };
+
+  const handleDragCancel = () => {
+    setActiveDragEvent(null);
+    setDragPreview(null);
   };
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     setActiveDragEvent(null);
+    setDragPreview(null);
     if (!over) return;
 
     const draggedEvent = active.data.current?.event as
@@ -190,25 +241,19 @@ export const AppointmentsCalendar = () => {
     const overDate = over.data.current?.date as Date | undefined;
     if (!draggedEvent || !overDate) return;
 
-    const duration = draggedEvent.end.getTime() - draggedEvent.start.getTime();
-    const newStart = new Date(overDate);
+    const { start, end } = getDropRange(draggedEvent, overDate);
+    if (start.getTime() === draggedEvent.start.getTime()) return;
 
-    if (view === "month") {
-      newStart.setHours(
-        draggedEvent.start.getHours(),
-        draggedEvent.start.getMinutes(),
-        0,
-        0,
-      );
-    } else {
-      newStart.setSeconds(0, 0);
-    }
+    applyOverride(draggedEvent, start, end);
+    toast.info(`Cita movida a ${formatEventTime(start)}. ${SYNC_PENDING}`);
+  };
 
-    if (newStart.getTime() === draggedEvent.start.getTime()) return;
-
-    const newEnd = new Date(newStart.getTime() + duration);
-    applyOverride(draggedEvent, newStart, newEnd);
-    toast.info(`Cita movida a ${formatEventTime(newStart)}. ${SYNC_PENDING}`);
+  const handleEventResizePreview = (
+    event: TAppointmentCalendarEvent,
+    newEnd: Date,
+  ) => {
+    if (differenceInMinutes(newEnd, event.start) < 15) return;
+    applyOverride(event, event.start, newEnd);
   };
 
   const handleEventResize = (event: TAppointmentCalendarEvent, newEnd: Date) => {
@@ -249,6 +294,7 @@ export const AppointmentsCalendar = () => {
           onEventContextMenu={handleEventContextMenu}
           onTimeSlotClick={openCreate}
           onEventResize={handleEventResize}
+          onEventResizePreview={handleEventResizePreview}
         />
       );
     }
@@ -262,6 +308,7 @@ export const AppointmentsCalendar = () => {
           onEventContextMenu={handleEventContextMenu}
           onTimeSlotClick={openCreate}
           onEventResize={handleEventResize}
+          onEventResizePreview={handleEventResizePreview}
         />
       );
     }
@@ -301,6 +348,8 @@ export const AppointmentsCalendar = () => {
       sensors={sensors}
       modifiers={modifiers}
       onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragCancel={handleDragCancel}
       onDragEnd={handleDragEnd}
     >
       <div className="flex h-full min-h-160 flex-col overflow-hidden rounded-2xl bg-ink-950 shadow-[0_1px_0_rgba(14,14,23,0.04),0_24px_48px_-28px_rgba(124,77,255,0.45)] ring-1 ring-ink-700/70">
@@ -407,9 +456,9 @@ export const AppointmentsCalendar = () => {
             <div className="flex h-full flex-col p-2.5">
               <p className="truncate text-sm font-semibold">{activeDragEvent.title}</p>
               {view !== "month" && (
-                <p className="mt-0.5 text-xs opacity-80">
-                  {formatEventTime(activeDragEvent.start)} -{" "}
-                  {formatEventTime(activeDragEvent.end)}
+                <p className="mt-0.5 text-xs font-semibold tabular-nums">
+                  {formatEventTime(dragPreview?.start ?? activeDragEvent.start)} -{" "}
+                  {formatEventTime(dragPreview?.end ?? activeDragEvent.end)}
                 </p>
               )}
             </div>

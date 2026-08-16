@@ -17,6 +17,7 @@ type Props = {
   onClick: (event: TAppointmentCalendarEvent) => void;
   onContextMenu: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
   onResize?: (event: TAppointmentCalendarEvent, newEnd: Date) => void;
+  onResizePreview?: (event: TAppointmentCalendarEvent, newEnd: Date) => void;
 };
 
 export const TimedEventBlock = ({
@@ -29,6 +30,7 @@ export const TimedEventBlock = ({
   onClick,
   onContextMenu,
   onResize,
+  onResizePreview,
 }: Props) => {
   const durationMinutes = Math.max(15, differenceInMinutes(event.end, event.start));
   const startMinutes = event.start.getHours() * 60 + event.start.getMinutes();
@@ -42,7 +44,7 @@ export const TimedEventBlock = ({
     <DraggableEvent
       event={event}
       disabled={readonly}
-      className={cn("absolute z-10 transition-all", readonly && "cursor-default")}
+      className={cn("absolute z-10 transition-shadow", readonly && "cursor-default")}
       style={
         compact
           ? {
@@ -66,6 +68,7 @@ export const TimedEventBlock = ({
         event={event}
         hourHeight={hourHeight}
         onResize={onResize}
+        onResizePreview={onResizePreview}
         readonly={readonly}
         className="h-full"
         style={{ height: "100%" }}

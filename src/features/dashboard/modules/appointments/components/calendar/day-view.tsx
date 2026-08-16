@@ -17,6 +17,7 @@ type Props = {
   onEventContextMenu: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
   onTimeSlotClick: (date: Date) => void;
   onEventResize?: (event: TAppointmentCalendarEvent, newEnd: Date) => void;
+  onEventResizePreview?: (event: TAppointmentCalendarEvent, newEnd: Date) => void;
 };
 
 const HOURS = Array.from({ length: 24 }, (_, index) => index);
@@ -45,6 +46,7 @@ export const DayView = ({
   onEventContextMenu,
   onTimeSlotClick,
   onEventResize,
+  onEventResizePreview,
 }: Props) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [now, setNow] = useState(() => new Date());
@@ -143,6 +145,7 @@ export const DayView = ({
                   onClick={onEventClick}
                   onContextMenu={onEventContextMenu}
                   onResize={onEventResize}
+                  onResizePreview={onEventResizePreview}
                 />
               );
             })}

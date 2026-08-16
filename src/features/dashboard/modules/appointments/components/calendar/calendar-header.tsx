@@ -52,7 +52,7 @@ export const CalendarHeader = ({
             type="button"
             variant="ghost"
             size="icon"
-            className="hidden size-10 rounded-xl text-ink-400 hover:text-ink-50 md:inline-flex"
+            className="hidden size-10 rounded-xl text-ink-400 hover:text-ink-50 lg:inline-flex"
             onClick={onMenuClick}
             aria-label="Mostrar u ocultar el panel lateral"
           >
