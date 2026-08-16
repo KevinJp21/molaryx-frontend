@@ -10,6 +10,9 @@ export type TAppointmentCalendarEvent = {
   calendarId: string;
   resourceId: string;
   statusLabel: string;
+  idPatient: number;
+  idUser: number;
+  idService: number;
   patientName: string;
   professionalName: string;
   serviceName: string;

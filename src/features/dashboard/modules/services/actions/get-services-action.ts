@@ -21,7 +21,7 @@ export const apiGetServicesAction = async (
 
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
-  if (IsActive) query.append("IsActive", IsActive.toString());
+  if (IsActive !== undefined) query.append("IsActive", IsActive.toString());
 
   const url = `${SERVICE}${GET_SERVICES}?${query.toString()}`;
 

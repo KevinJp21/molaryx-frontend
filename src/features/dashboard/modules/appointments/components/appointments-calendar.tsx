@@ -368,9 +368,9 @@ export const AppointmentsCalendar = () => {
         initialDate={modalState.initialDate}
         onModeChange={(mode) => setModalState((current) => ({ ...current, mode }))}
         onClose={closeModal}
-        onSave={() => {
+        onSuccess={() => {
           closeModal();
-          toast.info(SYNC_PENDING);
+          dispatch(getAppointments(getAppointmentsRange(date, view)));
         }}
         onDelete={() => {
           closeModal();

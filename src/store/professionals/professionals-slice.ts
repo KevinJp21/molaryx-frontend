@@ -1,7 +1,7 @@
 import { createAppSlice } from "../slice";
-import { TStatus } from "@/types";
+import { TPaginationResponse, TStatus } from "@/types";
 import {
-  IGetProfessionalsResponse,
+  IGetProfessionalsResponseData,
   TGetProfessionalsParams,
   apiGetProfessionalsAction,
 } from "@/features/dashboard/modules/Team";
@@ -9,7 +9,7 @@ import {
 type TProfessionalsState = {
   getProfessionals: {
     status: TStatus;
-    data?: IGetProfessionalsResponse;
+    data?: TPaginationResponse<IGetProfessionalsResponseData>;
     message?: string;
   };
 };
@@ -18,7 +18,7 @@ const initialState: TProfessionalsState = {
   getProfessionals: {
     status: "idle",
     data: undefined,
-    message: undefined
+    message: undefined,
   },
 };
 
@@ -42,7 +42,7 @@ const professionalsSlice = createAppSlice({
           }
           state.getProfessionals.status = "success";
           state.getProfessionals.message = action.payload.message;
-          state.getProfessionals.data = action.payload;
+          state.getProfessionals.data = action.payload.data;
         },
         rejected: (state, action) => {
           state.getProfessionals.status = "error";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import {
   Root as DialogRoot,
   DialogContent,
@@ -8,44 +8,56 @@ import {
   DialogPortal,
   DialogTitle,
 } from "@radix-ui/react-dialog";
-import { format } from "date-fns";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  AlignLeft,
   CalendarDays,
   Clock,
   Edit2,
-  Stethoscope,
-  Tag,
   Trash2,
-  User,
   X,
 } from "lucide-react";
+import { toast } from "sonner";
 import {
   Button,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
+  CustomFormField,
+  CustomFormSelect,
+  CustomFormTextarea,
 } from "@/components";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/utils";
+import { useAppDispatch, useAppSelector } from "@/store";
 import {
-  APPOINTMENT_STATUS_OPTIONS,
+  getPatients,
+  selectGetPatients,
+} from "@/store/patients/patiens-slice";
+import {
+  getServices,
+  selectGetServices,
+} from "@/store/services/services-slice";
+import {
+  getProfessionals,
+  selectGetProfessionals,
+} from "@/store/professionals/professionals-slice";
+import {
+  postCreateAppointment,
+  resetPostCreateAppointment,
+  selectPostCreateAppointment,
+} from "@/store/appointments/appointments-slice";
+import {
   getAppointmentStatusColor,
   getAppointmentStatusLabel,
 } from "../consts/appointment-status";
+import { USER_STATUS } from "../consts/user-status";
+import {
+  AppointmentFormSchema,
+  buildAppointmentFormDefaults,
+  type TAppointmentForm,
+} from "../schemas";
 import { formatDuration, formatEventTime } from "../utils/format-time";
 import type { TAppointmentCalendarEvent } from "../types";
 
 export type TAppointmentModalMode = "view" | "edit" | "create";
-
-type FormState = {
-  title: string;
-  start: Date;
-  end: Date;
-  notes: string;
-  statusId: string;
-};
 
 type Props = {
   open: boolean;
@@ -54,31 +66,29 @@ type Props = {
   initialDate?: Date;
   onModeChange: (mode: TAppointmentModalMode) => void;
   onClose: () => void;
-  onSave: (values: FormState & { id?: string }) => void;
+  onSuccess?: () => void;
   onDelete: (event: TAppointmentCalendarEvent) => void;
 };
 
-const toInputValue = (date: Date) => format(date, "yyyy-MM-dd'T'HH:mm");
+const LIST_PARAMS = { Page: 1, Size: 100 } as const;
 
-const buildInitialState = (
+const fullName = (...parts: Array<string | null | undefined>) =>
+  parts.filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+
+const toFormValues = (
   event: TAppointmentCalendarEvent | null,
   initialDate?: Date,
-): FormState => {
-  if (event) {
-    return {
-      title: event.title,
-      start: event.start,
-      end: event.end,
-      notes: event.description ?? "",
-      statusId: event.calendarId,
-    };
-  }
+): TAppointmentForm => {
+  if (!event) return buildAppointmentFormDefaults(initialDate);
 
-  const start = initialDate ?? new Date();
-  const end = new Date(start);
-  end.setHours(start.getHours() + 1);
-
-  return { title: "", start, end, notes: "", statusId: "1" };
+  return {
+    idPatient: event.idPatient,
+    idUser: event.idUser,
+    idService: event.idService,
+    startAt: formatDate(event.start, "yyyy-MM-dd'T'HH:mm"),
+    endAt: formatDate(event.end, "yyyy-MM-dd'T'HH:mm"),
+    notes: event.description ?? "",
+  };
 };
 
 const InfoRow = ({
@@ -112,47 +122,132 @@ export const AppointmentEventModal = ({
   initialDate,
   onModeChange,
   onClose,
-  onSave,
+  onSuccess,
   onDelete,
 }: Props) => {
-  const [form, setForm] = useState<FormState>(() =>
-    buildInitialState(event, initialDate),
+  const dispatch = useAppDispatch();
+  const { data: patientsData, status: patientsStatus } =
+    useAppSelector(selectGetPatients);
+  const { data: servicesData, status: servicesStatus } =
+    useAppSelector(selectGetServices);
+  const { data: professionalsData, status: professionalsStatus } =
+    useAppSelector(selectGetProfessionals);
+  const {
+    status: createStatus,
+    message: createMessage,
+    error: createError,
+  } = useAppSelector(selectPostCreateAppointment);
+
+  const isCreate = mode === "create";
+  const isSubmitting = createStatus === "loading";
+  const statusColor = getAppointmentStatusColor(
+    event ? Number(event.calendarId) : undefined,
   );
-
-  // El formulario se reinicia cada vez que el modal se abre con otra cita o fecha.
-  const formKey = open
-    ? `${event?.id ?? "new"}-${initialDate?.getTime() ?? 0}`
-    : "closed";
-  const [syncedFormKey, setSyncedFormKey] = useState(formKey);
-
-  if (formKey !== syncedFormKey) {
-    setSyncedFormKey(formKey);
-    if (open) setForm(buildInitialState(event, initialDate));
-  }
-
-  const statusColor = getAppointmentStatusColor(Number(form.statusId));
   const statusLabel = getAppointmentStatusLabel(
-    Number(form.statusId),
+    event ? Number(event.calendarId) : undefined,
     event?.statusLabel,
   );
 
-  const handleDateChange = (field: "start" | "end", value: string) => {
-    const nextDate = new Date(value);
-    if (Number.isNaN(nextDate.getTime())) return;
+  const methods = useForm<TAppointmentForm>({
+    mode: "onTouched",
+    resolver: zodResolver(AppointmentFormSchema),
+    defaultValues: buildAppointmentFormDefaults(initialDate),
+  });
 
-    setForm((current) => {
-      if (field === "start") {
-        const duration = current.end.getTime() - current.start.getTime();
-        return {
-          ...current,
-          start: nextDate,
-          end: new Date(nextDate.getTime() + duration),
-        };
-      }
-      return nextDate < current.start
-        ? { ...current, start: nextDate, end: nextDate }
-        : { ...current, end: nextDate };
-    });
+  const { reset, handleSubmit, setValue, getValues, watch } = methods;
+  const startAt = watch("startAt");
+  const endAt = watch("endAt");
+
+  useEffect(() => {
+    if (!open) return;
+
+    reset(toFormValues(event, initialDate));
+    dispatch(getPatients({ ...LIST_PARAMS, IsActive: true }));
+    dispatch(getServices({ ...LIST_PARAMS, IsActive: true }));
+    dispatch(getProfessionals({ ...LIST_PARAMS, IdUserStatus: USER_STATUS.ACTIVE }));
+  }, [open, event, initialDate, reset, dispatch]);
+
+  useEffect(() => {
+    if (!isCreate) return;
+
+    if (createStatus === "error") {
+      toast.error(createMessage, { description: createError });
+      dispatch(resetPostCreateAppointment());
+    }
+
+    if (createStatus === "success") {
+      toast.success(createMessage || "Cita creada correctamente");
+      dispatch(resetPostCreateAppointment());
+      onSuccess?.();
+    }
+  }, [
+    createStatus,
+    createMessage,
+    createError,
+    isCreate,
+    dispatch,
+    onSuccess,
+  ]);
+
+  const patientItems =
+    patientsData?.items.map((patient) => ({
+      value: patient.idPatient,
+      name: fullName(
+        patient.firstName,
+        patient.secondName,
+        patient.firstSurname,
+        patient.secondSurname,
+      ),
+    })) ?? [];
+
+  const serviceItems =
+    servicesData?.items.map((service) => ({
+      value: service.idService,
+      name: service.name,
+    })) ?? [];
+
+  const professionalItems =
+    professionalsData?.items.map((professional) => ({
+      value: professional.idUser,
+      name: fullName(
+        professional.firstName,
+        professional.secondName,
+        professional.firstSurname,
+        professional.secondSurname,
+      ),
+    })) ?? [];
+
+  const durationLabel =
+    startAt && endAt && !Number.isNaN(new Date(startAt).getTime())
+      ? formatDuration(new Date(startAt), new Date(endAt))
+      : null;
+
+  const handleClose = () => {
+    if (createStatus !== "idle") {
+      dispatch(resetPostCreateAppointment());
+    }
+    reset(buildAppointmentFormDefaults());
+    onClose();
+  };
+
+  const onSubmit = (data: TAppointmentForm) => {
+    if (!isCreate) {
+      toast.info(
+        "La edición de citas se aplicará cuando el endpoint esté disponible.",
+      );
+      return;
+    }
+
+    dispatch(
+      postCreateAppointment({
+        idPatient: data.idPatient,
+        idUser: data.idUser,
+        idService: data.idService,
+        startAt: new Date(data.startAt).toISOString(),
+        endAt: new Date(data.endAt).toISOString(),
+        notes: data.notes?.trim() || undefined,
+      }),
+    );
   };
 
   const renderViewMode = () => (
@@ -200,7 +295,7 @@ export const AppointmentEventModal = ({
               type="button"
               variant="ghost"
               size="icon-sm"
-              onClick={onClose}
+              onClick={handleClose}
               title="Cerrar"
               aria-label="Cerrar"
               className="text-ink-400"
@@ -235,212 +330,181 @@ export const AppointmentEventModal = ({
             </span>
           )}
         </div>
+        <div className="mt-6">
+          <InfoRow
+            label="Profesional"
+            value={event?.professionalName || "Sin asignar"}
+          />
+        </div>
       </div>
     </div>
   );
 
-  const renderEditMode = () => (
-    <form
-      onSubmit={(submitEvent) => {
-        submitEvent.preventDefault();
-        onSave({ ...form, id: event?.id });
-      }}
-      className="flex max-h-[85vh] w-full flex-col overflow-hidden bg-ink-950"
-    >
-      <div className="flex shrink-0 items-center justify-between border-b border-ink-800 px-5 py-4">
-        <div className="flex items-center gap-3">
-          <span
-            className="size-5 rounded-full"
-            style={{
-              backgroundColor: statusColor,
-              boxShadow: `0 0 0 2px var(--ink-950), 0 0 0 4px ${statusColor}60`,
+  const renderFormMode = () => (
+    <FormProvider {...methods}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex max-h-[85vh] w-full flex-col overflow-hidden bg-ink-950"
+      >
+        <div className="flex shrink-0 items-center justify-between border-b border-ink-800 px-5 py-4">
+          <div className="flex items-center gap-3">
+            <span
+              className="size-5 rounded-full"
+              style={{
+                backgroundColor: statusColor,
+                boxShadow: `0 0 0 2px var(--ink-950), 0 0 0 4px ${statusColor}60`,
+              }}
+            />
+            <h2 className="text-lg font-semibold text-ink-50">
+              {isCreate ? "Nueva cita" : "Editar cita"}
+            </h2>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            onClick={handleClose}
+            aria-label="Cerrar"
+            className="rounded-xl text-ink-400"
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
+
+        <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
+          <CustomFormSelect
+            name="idPatient"
+            label="Paciente"
+            placeholder={
+              patientsStatus === "loading"
+                ? "Cargando pacientes..."
+                : "Selecciona un paciente"
+            }
+            items={patientItems}
+            disabled={patientsStatus === "loading"}
+          />
+
+          <CustomFormSelect
+            name="idUser"
+            label="Profesional"
+            placeholder={
+              professionalsStatus === "loading"
+                ? "Cargando profesionales..."
+                : "Selecciona un profesional"
+            }
+            items={professionalItems}
+            disabled={professionalsStatus === "loading"}
+          />
+
+          <CustomFormSelect
+            name="idService"
+            label="Servicio"
+            placeholder={
+              servicesStatus === "loading"
+                ? "Cargando servicios..."
+                : "Selecciona un servicio"
+            }
+            items={serviceItems}
+            disabled={servicesStatus === "loading"}
+          />
+          <CustomFormField
+            name="startAt"
+            label="Inicio"
+            type="datetime"
+            placeholder="Fecha y hora de inicio"
+            onChange={(date: Date | undefined) => {
+              if (!date) return;
+              const currentEnd = getValues("endAt");
+              const currentStart = getValues("startAt");
+              const previousStart = currentStart
+                ? new Date(currentStart)
+                : date;
+              const previousEnd = currentEnd
+                ? new Date(currentEnd)
+                : new Date(date.getTime() + 60 * 60 * 1000);
+              const duration = Math.max(
+                15 * 60 * 1000,
+                previousEnd.getTime() - previousStart.getTime(),
+              );
+              setValue(
+                "endAt",
+                formatDate(new Date(date.getTime() + duration), "yyyy-MM-dd'T'HH:mm"),
+                { shouldDirty: true, shouldValidate: true },
+              );
             }}
           />
-          <h2 className="text-lg font-semibold text-ink-50">
-            {mode === "edit" ? "Editar cita" : "Nueva cita"}
-          </h2>
-        </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          onClick={onClose}
-          aria-label="Cerrar"
-          className="rounded-xl text-ink-400"
-        >
-          <X className="size-4" />
-        </Button>
-      </div>
-
-      <div className="flex-1 overflow-y-auto">
-        <div className="space-y-5 px-5 py-4">
-          <input
-            type="text"
-            required
-            value={form.title}
-            onChange={(inputEvent) =>
-              setForm((current) => ({ ...current, title: inputEvent.target.value }))
-            }
-            placeholder="Paciente · servicio"
-            className="w-full border-0 border-b-2 border-transparent bg-transparent px-0 py-2 text-xl font-semibold text-ink-50 transition-all placeholder:text-ink-400/60 focus:border-accent-500 focus:outline-none"
+          <CustomFormField
+            name="endAt"
+            label="Fin"
+            type="datetime"
+            placeholder="Fecha y hora de fin"
           />
 
-          {event && (
-            <div className="grid gap-3 sm:grid-cols-2">
-              <InfoRow
-                label="Paciente"
-                value={event.patientName || "Sin registrar"}
-              />
-              <InfoRow
-                label="Profesional"
-                value={event.professionalName || "Sin asignar"}
-              />
-              <div className="sm:col-span-2">
-                <InfoRow
-                  icon={<Tag className="size-5" />}
-                  label="Servicio"
-                  value={event.serviceName || "Sin servicio"}
-                />
-              </div>
+          {durationLabel && (
+            <div className="flex justify-center">
+              <span className="rounded-full bg-accent-100 px-3 py-1 text-xs font-medium text-accent-700">
+                {durationLabel}
+              </span>
             </div>
           )}
 
-          <div className="flex items-center gap-3 rounded-2xl border border-ink-800 bg-ink-900/40 p-4">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent-100 text-accent-600">
-              <Clock className="size-5" />
-            </span>
-            <div className="grid min-w-0 flex-1 grid-cols-2 gap-3">
-              <div>
-                <label
-                  htmlFor="appointment-start"
-                  className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-ink-400"
-                >
-                  Inicio
-                </label>
-                <input
-                  id="appointment-start"
-                  type="datetime-local"
-                  value={toInputValue(form.start)}
-                  onChange={(inputEvent) =>
-                    handleDateChange("start", inputEvent.target.value)
-                  }
-                  className="w-full rounded-xl border border-ink-700 bg-ink-950 px-3 py-2 text-sm font-medium text-ink-50 transition-all focus:border-accent-500 focus:outline-none focus:ring-[3px] focus:ring-accent-500/20"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="appointment-end"
-                  className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-ink-400"
-                >
-                  Fin
-                </label>
-                <input
-                  id="appointment-end"
-                  type="datetime-local"
-                  value={toInputValue(form.end)}
-                  onChange={(inputEvent) =>
-                    handleDateChange("end", inputEvent.target.value)
-                  }
-                  className="w-full rounded-xl border border-ink-700 bg-ink-950 px-3 py-2 text-sm font-medium text-ink-50 transition-all focus:border-accent-500 focus:outline-none focus:ring-[3px] focus:ring-accent-500/20"
-                />
-              </div>
-            </div>
-          </div>
+          <CustomFormTextarea
+            name="notes"
+            label="Notas"
+            placeholder="Agrega indicaciones o comentarios..."
+            rows={4}
+          />
+        </div>
 
-          <div className="flex justify-center">
-            <span className="rounded-full bg-accent-100 px-3 py-1 text-xs font-medium text-accent-700">
-              {formatDuration(form.start, form.end)}
-            </span>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <AlignLeft className="size-4 text-ink-400" />
-              <span className="text-sm font-medium text-ink-50">Notas</span>
-            </div>
-            <textarea
-              value={form.notes}
-              onChange={(inputEvent) =>
-                setForm((current) => ({ ...current, notes: inputEvent.target.value }))
-              }
-              placeholder="Agrega indicaciones o comentarios..."
-              className="min-h-25 w-full resize-none rounded-xl border border-ink-800 bg-ink-900/40 px-4 py-3 text-sm text-ink-50 transition-all placeholder:text-ink-400 focus:border-accent-500 focus:outline-none focus:ring-[3px] focus:ring-accent-500/20"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-ink-200" htmlFor="status-select">
-              Estado
-            </label>
-            <Select
-              value={form.statusId}
-              onValueChange={(value) =>
-                setForm((current) => ({ ...current, statusId: value }))
-              }
+        <div className="flex shrink-0 items-center justify-between border-t border-ink-800 bg-ink-900/40 px-5 py-4">
+          {!isCreate && event ? (
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => onDelete(event)}
+              className="rounded-xl"
             >
-              <SelectTrigger id="status-select" className="h-auto w-full min-w-0">
-                <span className="flex min-w-0 items-center gap-2">
-                  <span
-                    className="size-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: statusColor }}
-                  />
-                  <span className="truncate">{statusLabel}</span>
-                </span>
-              </SelectTrigger>
-              <SelectContent className="w-(--radix-select-trigger-width)">
-                {APPOINTMENT_STATUS_OPTIONS.map((option) => (
-                  <SelectItem key={option.id} value={String(option.id)}>
-                    <span className="flex items-center gap-2">
-                      <span
-                        className="size-2.5 shrink-0 rounded-full"
-                        style={{ backgroundColor: option.color }}
-                      />
-                      {option.label}
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-ink-400">
-              Abre el listado para ver qué significa cada color de la agenda.
-            </p>
+              <Trash2 className="size-4" />
+              Eliminar
+            </Button>
+          ) : (
+            <span />
+          )}
+
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleClose}
+              className="rounded-xl text-ink-400"
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              size="sm"
+              disabled={isSubmitting}
+              className="rounded-xl px-6"
+            >
+              {isSubmitting
+                ? "Guardando..."
+                : isCreate
+                  ? "Crear cita"
+                  : "Guardar cambios"}
+            </Button>
           </div>
         </div>
-      </div>
-
-      <div className="flex shrink-0 items-center justify-between border-t border-ink-800 bg-ink-900/40 px-5 py-4">
-        {mode === "edit" && event ? (
-          <Button
-            type="button"
-            variant="destructive"
-            size="sm"
-            onClick={() => onDelete(event)}
-            className="rounded-xl"
-          >
-            <Trash2 className="size-4" />
-            Eliminar
-          </Button>
-        ) : (
-          <span />
-        )}
-
-        <div className="flex items-center gap-2">
-          <Button type="button" variant="ghost" size="sm" onClick={onClose} className="rounded-xl text-ink-400">
-            Cancelar
-          </Button>
-          <Button type="submit" size="sm" className="rounded-xl px-6">
-            {mode === "edit" ? "Guardar cambios" : "Crear cita"}
-          </Button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </FormProvider>
   );
 
   return (
     <DialogRoot
       open={open}
       onOpenChange={(next) => {
-        if (!next) onClose();
+        if (!next) handleClose();
       }}
     >
       <DialogPortal>
@@ -468,11 +532,8 @@ export const AppointmentEventModal = ({
           {mode === "view" && event ? (
             renderViewMode()
           ) : (
-            <div
-              key={mode}
-              className="animate-in fade-in-0 zoom-in-95 duration-200"
-            >
-              {renderEditMode()}
+            <div className="animate-in fade-in-0 zoom-in-95 duration-200">
+              {renderFormMode()}
             </div>
           )}
         </DialogContent>

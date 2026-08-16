@@ -21,7 +21,7 @@ export const apiGetPatientsAction = async (
 
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
-  if (IsActive) query.append("IsActive", IsActive.toString());
+  if (IsActive !== undefined) query.append("IsActive", IsActive.toString());
 
   const url = `${PATIENT}${GET_PATIENTS}?${query.toString()}`;
 
