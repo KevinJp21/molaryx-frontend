@@ -6,10 +6,15 @@ import { CSS } from "@dnd-kit/utilities";
 import { cn } from "@/lib/utils";
 import type { TAppointmentCalendarEvent } from "../../../types";
 
-type Props = HTMLAttributes<HTMLDivElement> & {
+export type TDragActivators = {
+  listeners: ReturnType<typeof useDraggable>["listeners"];
+  attributes: ReturnType<typeof useDraggable>["attributes"];
+};
+
+type Props = Omit<HTMLAttributes<HTMLDivElement>, "children"> & {
   event: TAppointmentCalendarEvent;
   disabled?: boolean;
-  children: ReactNode;
+  children: ReactNode | ((activators: TDragActivators) => ReactNode);
 };
 
 export const DraggableEvent = ({
@@ -23,6 +28,10 @@ export const DraggableEvent = ({
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({ id: event.id, data: { event }, disabled });
 
+  const bindToRoot = typeof children !== "function";
+  const content =
+    typeof children === "function" ? children({ listeners, attributes }) : children;
+
   const style: CSSProperties = {
     ...propStyle,
     transform: CSS.Translate.toString(transform),
@@ -34,12 +43,12 @@ export const DraggableEvent = ({
     <div
       ref={setNodeRef}
       style={style}
-      {...listeners}
-      {...attributes}
+      {...(bindToRoot ? listeners : undefined)}
+      {...(bindToRoot ? attributes : undefined)}
       {...props}
       className={cn("touch-none", className)}
     >
-      {children}
+      {content}
     </div>
   );
 };

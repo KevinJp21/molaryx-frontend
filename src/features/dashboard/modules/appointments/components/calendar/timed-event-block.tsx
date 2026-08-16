@@ -61,6 +61,7 @@ export const TimedEventBlock = ({
             }
       }
     >
+      {({ listeners, attributes }) => (
       <ResizableEvent
         event={event}
         hourHeight={hourHeight}
@@ -70,13 +71,13 @@ export const TimedEventBlock = ({
         style={{ height: "100%" }}
       >
         <div
-          role="button"
-          tabIndex={0}
           title={
             overlappingCount > 1
               ? `${event.title} (${index + 1}/${overlappingCount})`
               : event.title
           }
+          {...listeners}
+          {...attributes}
           onClick={(clickEvent) => {
             clickEvent.stopPropagation();
             onClick(event);
@@ -90,7 +91,6 @@ export const TimedEventBlock = ({
           onContextMenu={(mouseEvent) => onContextMenu(event, mouseEvent)}
           className={cn(
             "group relative h-full overflow-hidden rounded-md border shadow-sm transition-all hover:z-20 hover:shadow-md",
-            readonly ? "cursor-default" : "cursor-grab active:cursor-grabbing",
             isShort
               ? compact
                 ? "flex items-center justify-center px-1"
@@ -98,6 +98,7 @@ export const TimedEventBlock = ({
               : compact
                 ? "p-2"
                 : "px-3 py-2",
+            !readonly && "pb-4",
           )}
           style={{
             backgroundColor: `${event.color}15`,
@@ -150,6 +151,7 @@ export const TimedEventBlock = ({
           </div>
         </div>
       </ResizableEvent>
+      )}
     </DraggableEvent>
   );
 };

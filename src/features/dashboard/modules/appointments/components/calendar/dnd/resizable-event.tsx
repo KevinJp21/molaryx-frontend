@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import type { CSSProperties, ReactNode, TouchEvent, MouseEvent } from "react";
+import type { CSSProperties, PointerEvent, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { TAppointmentCalendarEvent } from "../../../types";
+
+const RESIZE_HANDLE_PX = 16;
 
 type Props = {
   event: TAppointmentCalendarEvent;
@@ -34,29 +36,20 @@ export const ResizableEvent = ({
   const currentHeightRef = useRef<number | null>(null);
 
   const handleResizeStart = useCallback(
-    (pointerEvent: MouseEvent | TouchEvent) => {
+    (pointerEvent: PointerEvent<HTMLDivElement>) => {
       pointerEvent.preventDefault();
       pointerEvent.stopPropagation();
 
-      const clientY =
-        "touches" in pointerEvent
-          ? pointerEvent.touches[0].clientY
-          : pointerEvent.clientY;
-
-      startYRef.current = clientY;
+      startYRef.current = pointerEvent.clientY;
       startHeightRef.current = containerRef.current?.offsetHeight ?? 0;
       currentHeightRef.current = null;
       setIsResizing(true);
 
-      const handleMove = (moveEvent: globalThis.MouseEvent | globalThis.TouchEvent) => {
-        const moveClientY =
-          "touches" in moveEvent
-            ? moveEvent.touches[0].clientY
-            : moveEvent.clientY;
-
+      const handleMove = (moveEvent: globalThis.PointerEvent) => {
+        moveEvent.preventDefault();
         const snapInterval = hourHeight / 4;
         const snappedDelta =
-          Math.round((moveClientY - startYRef.current) / snapInterval) *
+          Math.round((moveEvent.clientY - startYRef.current) / snapInterval) *
           snapInterval;
 
         const nextHeight = Math.max(
@@ -83,16 +76,14 @@ export const ResizableEvent = ({
         currentHeightRef.current = null;
         setResizeHeight(null);
 
-        document.removeEventListener("mousemove", handleMove);
-        document.removeEventListener("mouseup", handleEnd);
-        document.removeEventListener("touchmove", handleMove);
-        document.removeEventListener("touchend", handleEnd);
+        document.removeEventListener("pointermove", handleMove);
+        document.removeEventListener("pointerup", handleEnd);
+        document.removeEventListener("pointercancel", handleEnd);
       };
 
-      document.addEventListener("mousemove", handleMove);
-      document.addEventListener("mouseup", handleEnd);
-      document.addEventListener("touchmove", handleMove, { passive: false });
-      document.addEventListener("touchend", handleEnd);
+      document.addEventListener("pointermove", handleMove);
+      document.addEventListener("pointerup", handleEnd);
+      document.addEventListener("pointercancel", handleEnd);
     },
     [event, hourHeight, minDuration, onResize],
   );
@@ -100,7 +91,7 @@ export const ResizableEvent = ({
   return (
     <div
       ref={containerRef}
-      className={cn("group relative", className)}
+      className={cn("relative", className)}
       style={{
         ...style,
         height: resizeHeight !== null ? `${resizeHeight}px` : style?.height,
@@ -108,22 +99,27 @@ export const ResizableEvent = ({
     >
       {children}
 
-      <div
-        className={cn(
-          "absolute bottom-0 left-0 right-0 z-20 flex h-3 items-center justify-center opacity-0 transition-opacity",
-          readonly ? "cursor-default" : "cursor-ns-resize group-hover:opacity-100",
-          isResizing && "opacity-100",
-        )}
-        onMouseDown={readonly ? undefined : handleResizeStart}
-        onTouchStart={readonly ? undefined : handleResizeStart}
-      >
-        <span
+      {!readonly && (
+        <div
+          role="separator"
+          aria-orientation="horizontal"
+          aria-label="Cambiar duración de la cita"
           className={cn(
-            "h-1 w-8 rounded-full transition-all",
-            isResizing ? "bg-accent-500" : "bg-ink-500/40 group-hover:bg-accent-500/60",
+            "absolute inset-x-0 bottom-0 z-20 flex cursor-ns-resize items-center justify-center touch-none",
+            isResizing ? "bg-accent-500/10" : "hover:bg-accent-500/8",
           )}
-        />
-      </div>
+          style={{ height: RESIZE_HANDLE_PX }}
+          onPointerDown={handleResizeStart}
+          onClick={(clickEvent) => clickEvent.stopPropagation()}
+        >
+          <span
+            className={cn(
+              "h-1 w-8 rounded-full transition-colors",
+              isResizing ? "bg-accent-500" : "bg-ink-500/50 hover:bg-accent-500/70",
+            )}
+          />
+        </div>
+      )}
 
       {isResizing && (
         <div className="pointer-events-none absolute inset-0 rounded-md border-2 border-dashed border-accent-500 bg-accent-500/5" />
