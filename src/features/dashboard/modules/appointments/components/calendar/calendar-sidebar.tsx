@@ -42,7 +42,7 @@ export const CalendarSidebar = ({
   return (
     <aside
       className={cn(
-        "hidden h-full shrink-0 overflow-hidden border-r border-ink-800 transition-[width,opacity] duration-300 ease-in-out lg:block",
+        "hidden h-full shrink-0 overflow-hidden border-r border-ink-800 transition-[width,opacity] duration-300 ease-in-out md:block",
         isOpen ? "w-64 opacity-100" : "w-0 opacity-0",
       )}
     >

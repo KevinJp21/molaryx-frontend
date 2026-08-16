@@ -7,6 +7,7 @@ import { TPaginationParams } from "@/types";
 
 export type TGetServicesParams = TPaginationParams & {
   IsActive?: boolean;
+  Search?: string;
 };
 
 export const apiGetServicesAction = async (
@@ -15,13 +16,14 @@ export const apiGetServicesAction = async (
   const SERVICE = process.env.SERVICE;
   const GET_SERVICES = process.env.GET_SERVICES;
 
-  const { Page, Size, IsActive } = params ?? {};
+  const { Page, Size, IsActive, Search } = params ?? {};
 
   const query = new URLSearchParams();
 
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
   if (IsActive !== undefined) query.append("IsActive", IsActive.toString());
+  if (Search) query.append("Search", Search);
 
   const url = `${SERVICE}${GET_SERVICES}?${query.toString()}`;
 

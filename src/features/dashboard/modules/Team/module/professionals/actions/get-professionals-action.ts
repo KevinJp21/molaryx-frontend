@@ -6,6 +6,7 @@ import { TPaginationParams } from "@/types";
 
 export type TGetProfessionalsParams = TPaginationParams & {
   IdUserStatus?: number;
+  Search?: string;
 };
 
 export const apiGetProfessionalsAction = async (
@@ -14,13 +15,14 @@ export const apiGetProfessionalsAction = async (
   const USER = process.env.USER;
   const GET_PROFESSIONALS = process.env.GET_PROFESSIONALS;
 
-  const { Page, Size, IdUserStatus } = params ?? {};
+  const { Page, Size, IdUserStatus, Search } = params ?? {};
 
   const query = new URLSearchParams();
 
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
   if (IdUserStatus) query.append("IdUserStatus", IdUserStatus.toString());
+  if (Search) query.append("Search", Search);
 
   const url = `${USER}${GET_PROFESSIONALS}?${query.toString()}`;
 

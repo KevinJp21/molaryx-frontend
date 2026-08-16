@@ -70,8 +70,6 @@ type Props = {
   onDelete: (event: TAppointmentCalendarEvent) => void;
 };
 
-const LIST_PARAMS = { Page: 1, Size: 100 } as const;
-
 const fullName = (...parts: Array<string | null | undefined>) =>
   parts.filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
 
@@ -162,9 +160,9 @@ export const AppointmentEventModal = ({
     if (!open) return;
 
     reset(toFormValues(event, initialDate));
-    dispatch(getPatients({ ...LIST_PARAMS, IsActive: true }));
-    dispatch(getServices({ ...LIST_PARAMS, IsActive: true }));
-    dispatch(getProfessionals({ ...LIST_PARAMS, IdUserStatus: USER_STATUS.ACTIVE }));
+    dispatch(getPatients({ IsActive: true }));
+    dispatch(getServices({ IsActive: true }));
+    dispatch(getProfessionals({ IdUserStatus: USER_STATUS.ACTIVE }));
   }, [open, event, initialDate, reset, dispatch]);
 
   useEffect(() => {
@@ -376,36 +374,71 @@ export const AppointmentEventModal = ({
             name="idPatient"
             label="Paciente"
             placeholder={
-              patientsStatus === "loading"
+              patientsStatus === "loading" && patientItems.length === 0
                 ? "Cargando pacientes..."
                 : "Selecciona un paciente"
             }
             items={patientItems}
-            disabled={patientsStatus === "loading"}
+            disabled={patientsStatus === "loading" && patientItems.length === 0}
+            searchable
+            searchPlaceholder="Buscar paciente..."
+            isSearching={patientsStatus === "loading"}
+            onSearch={(Search) => {
+              dispatch(
+                getPatients({
+                  IsActive: true,
+                  ...(Search ? { Search } : {}),
+                }),
+              );
+            }}
           />
 
           <CustomFormSelect
             name="idUser"
             label="Profesional"
             placeholder={
-              professionalsStatus === "loading"
+              professionalsStatus === "loading" && professionalItems.length === 0
                 ? "Cargando profesionales..."
                 : "Selecciona un profesional"
             }
             items={professionalItems}
-            disabled={professionalsStatus === "loading"}
+            disabled={
+              professionalsStatus === "loading" && professionalItems.length === 0
+            }
+            searchable
+            searchPlaceholder="Buscar profesional..."
+            isSearching={professionalsStatus === "loading"}
+            onSearch={(Search) => {
+              dispatch(
+                getProfessionals({
+                  IdUserStatus: USER_STATUS.ACTIVE,
+                  ...(Search ? { Search } : {}),
+                }),
+              );
+            }}
           />
 
           <CustomFormSelect
             name="idService"
             label="Servicio"
             placeholder={
-              servicesStatus === "loading"
+              servicesStatus === "loading" && serviceItems.length === 0
                 ? "Cargando servicios..."
                 : "Selecciona un servicio"
             }
             items={serviceItems}
-            disabled={servicesStatus === "loading"}
+            disabled={servicesStatus === "loading" && serviceItems.length === 0}
+            searchable
+            searchPlaceholder="Buscar servicio..."
+            isSearching={servicesStatus === "loading"}
+            onSearch={(Search) => {
+              dispatch(
+                getServices({
+                  IsActive: true,
+                  ...(Search ? { Search } : {}),
+                }),
+              );
+            }}
           />
           <CustomFormField
             name="startAt"

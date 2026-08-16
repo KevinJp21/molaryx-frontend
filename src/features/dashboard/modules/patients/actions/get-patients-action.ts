@@ -7,6 +7,7 @@ import { TPaginationParams } from "@/types";
 
 export type TGetPatientsParams = TPaginationParams & {
   IsActive?: boolean;
+  Search?: string;
 };
 
 export const apiGetPatientsAction = async (
@@ -15,13 +16,14 @@ export const apiGetPatientsAction = async (
   const PATIENT = process.env.PATIENT;
   const GET_PATIENTS = process.env.GET_PATIENTS;
 
-  const { Page, Size, IsActive } = params ?? {};
+  const { Page, Size, IsActive, Search } = params ?? {};
 
   const query = new URLSearchParams();
 
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
   if (IsActive !== undefined) query.append("IsActive", IsActive.toString());
+  if (Search) query.append("Search", Search);
 
   const url = `${PATIENT}${GET_PATIENTS}?${query.toString()}`;
 
