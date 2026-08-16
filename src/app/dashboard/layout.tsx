@@ -1,4 +1,4 @@
-import { DashboardTemplate } from '@/features';
+import { DashboardTemplate } from '@/features/dashboard/template';
 
 type Props = {
     children: React.ReactNode;

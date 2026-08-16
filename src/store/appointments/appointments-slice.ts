@@ -4,7 +4,7 @@ import {
   IGetAppointmentsResponseData,
   apiGetAppointmentsAction,
   TGetAppointmentsParams,
-} from "@/features";
+} from "@/features/dashboard/modules/appointments";
 
 type TAppointmentsState = {
   getAppointments: {

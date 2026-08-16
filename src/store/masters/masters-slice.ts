@@ -1,6 +1,6 @@
 import { createAppSlice } from "../slice";
 import { TStatus } from "@/types";
-import { apiGetIdentificationTypes, TMasterItem } from "@/features";
+import { apiGetIdentificationTypes, TMasterItem } from "@/features/masters";
 
 type TMasterState = {
   identificationTypes: {

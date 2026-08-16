@@ -1,4 +1,4 @@
-import { PatientsTemplate } from "@/features/dashboard/modules";
+import { PatientsTemplate } from "@/features/dashboard/modules/patients";
 
 export const PatientsPage = () => {
     return (

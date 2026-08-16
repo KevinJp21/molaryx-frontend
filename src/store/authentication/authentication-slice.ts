@@ -7,7 +7,7 @@ import {
   IPostSignInFormRequest,
   apiGetUserAction,
   IGetUserResponseData,
-} from "@/features";
+} from "@/features/authentication";
 
 type TAuthenticationState = {
   postSignUp: {

@@ -8,7 +8,7 @@ import {
   apiPutUpdatePatientAction,
   IPutUpdatePatientFormRequest,
   apiDeletePatientAction,
-} from "@/features";
+} from "@/features/dashboard/modules/patients";
 import { TStatus } from "@/types";
 
 type TPatientsState = {

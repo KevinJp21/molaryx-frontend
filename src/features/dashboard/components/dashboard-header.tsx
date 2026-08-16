@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 import { Bell, LogOut, Menu } from 'lucide-react';
 import { toast } from 'sonner';
-import { apiLogoutAction } from '@/features';
+import { apiLogoutAction } from '@/features/authentication';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { logout, selectGetUserData } from '@/store/authentication/authentication-slice';
 import { Button } from '@/components';

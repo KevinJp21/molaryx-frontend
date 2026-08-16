@@ -1,4 +1,4 @@
-import { ServicesTemplate } from "@/features/dashboard/modules"
+import { ServicesTemplate } from "@/features/dashboard/modules/services";
 
 export const ServicesPage = () => {
     return (<ServicesTemplate />)

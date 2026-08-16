@@ -1,14 +1,16 @@
 import { createAppSlice } from "../slice";
 import {
   apiGetServicesAction,
-  IGetServicesResponseData,
   TGetServicesParams,
   apiPostCreateServiceAction,
-  IPostCreateServiceFormRequest,
   apiPutUpdateServiceAction,
-  IPutUpdateServiceFormRequest,
   apiDeleteServiceAction,
-} from "@/features";
+} from "@/features/dashboard/modules/services/actions";
+import {
+  IGetServicesResponseData,
+  IPostCreateServiceFormRequest,
+  IPutUpdateServiceFormRequest,
+} from "@/features/dashboard/modules/services/interfaces";
 import { TStatus } from "@/types";
 
 type TServicesState = {

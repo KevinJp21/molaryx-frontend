@@ -1,6 +1,6 @@
 import { createAppSlice } from "../slice";
 import { TStatus } from "@/types";
-import { apiGetPublicPlansAction, IGetPublicPlans } from "@/features";
+import { apiGetPublicPlansAction, IGetPublicPlans } from "@/features/public-plans";
 
 type TPlansState = {
   getPublicPlans: {
