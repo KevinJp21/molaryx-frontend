@@ -5,7 +5,9 @@ import { handleApiError } from "@/lib/api/error-handler";
 import { IGetPatientsResponse } from "../interfaces";
 import { TPaginationParams } from "@/types";
 
-export type TGetPatientsParams = TPaginationParams & {};
+export type TGetPatientsParams = TPaginationParams & {
+  IsActive?: boolean;
+};
 
 export const apiGetPatientsAction = async (
   params?: TGetPatientsParams,
@@ -13,12 +15,13 @@ export const apiGetPatientsAction = async (
   const PATIENT = process.env.PATIENT;
   const GET_PATIENTS = process.env.GET_PATIENTS;
 
-  const { Page, Size } = params ?? {};
+  const { Page, Size, IsActive } = params ?? {};
 
   const query = new URLSearchParams();
 
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
+  if (IsActive) query.append("IsActive", IsActive.toString());
 
   const url = `${PATIENT}${GET_PATIENTS}?${query.toString()}`;
 

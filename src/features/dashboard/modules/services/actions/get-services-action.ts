@@ -5,7 +5,9 @@ import { handleApiError } from "@/lib/api/error-handler";
 import { IGetServicesResponse } from "../interfaces";
 import { TPaginationParams } from "@/types";
 
-export type TGetServicesParams = TPaginationParams & {};
+export type TGetServicesParams = TPaginationParams & {
+  IsActive?: boolean;
+};
 
 export const apiGetServicesAction = async (
   params?: TGetServicesParams,
@@ -13,12 +15,13 @@ export const apiGetServicesAction = async (
   const SERVICE = process.env.SERVICE;
   const GET_SERVICES = process.env.GET_SERVICES;
 
-  const { Page, Size } = params ?? {};
+  const { Page, Size, IsActive } = params ?? {};
 
   const query = new URLSearchParams();
 
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
+  if (IsActive) query.append("IsActive", IsActive.toString());
 
   const url = `${SERVICE}${GET_SERVICES}?${query.toString()}`;
 

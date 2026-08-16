@@ -4,6 +4,8 @@ import {
   IGetAppointmentsResponseData,
   apiGetAppointmentsAction,
   TGetAppointmentsParams,
+  IPostAppointmentFormRequest,
+  apiPostCreateAppointmentAction,
 } from "@/features/dashboard/modules/appointments";
 
 type TAppointmentsState = {
@@ -13,12 +15,22 @@ type TAppointmentsState = {
     message?: string;
     error?: string;
   };
+  postCreateAppointment: {
+    status: TStatus;
+    message?: string;
+    error?: string;
+  };
 };
 
 const initialState: TAppointmentsState = {
   getAppointments: {
     status: "idle",
     data: undefined,
+    message: undefined,
+    error: undefined,
+  },
+  postCreateAppointment: {
+    status: "idle",
     message: undefined,
     error: undefined,
   },
@@ -55,12 +67,40 @@ const appointmentsSlice = createAppSlice({
         },
       },
     ),
+    postCreateAppointment: create.asyncThunk(
+      async (data: IPostAppointmentFormRequest) =>
+        await apiPostCreateAppointmentAction(data),
+      {
+        pending: (state) => {
+          state.postCreateAppointment.status = "loading";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.postCreateAppointment.status = "error";
+            state.postCreateAppointment.message = action.payload.message;
+            state.postCreateAppointment.error = action.payload.error ?? undefined;
+            return;
+          }
+          state.postCreateAppointment.status = "success";
+          state.postCreateAppointment.message = action.payload.message;
+        },
+        rejected: (state, action) => {
+          state.postCreateAppointment.status = "error";
+          state.postCreateAppointment.message = action.error.message;
+          state.postCreateAppointment.error = undefined;
+        },
+      },
+    ),
+    resetPostCreateAppointment: create.reducer((state) => {
+      state.postCreateAppointment = initialState.postCreateAppointment;
+    }),
   }),
   selectors: {
     selectGetAppointments: (state) => state.getAppointments,
+    selectPostCreateAppointment: (state) => state.postCreateAppointment,
   },
 });
 
-export const { getAppointments } = appointmentsSlice.actions;
-export const { selectGetAppointments } = appointmentsSlice.selectors;
+export const { getAppointments, postCreateAppointment, resetPostCreateAppointment } = appointmentsSlice.actions;
+export const { selectGetAppointments, selectPostCreateAppointment } = appointmentsSlice.selectors;
 export default appointmentsSlice.reducer;
