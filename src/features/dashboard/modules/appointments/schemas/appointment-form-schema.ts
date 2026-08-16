@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { format } from "date-fns";
+import { APPOINTMENT_STATUS } from "../consts/appointment-status";
 
 const requiredId = (message: string) => z.number().min(1, message);
 
@@ -8,6 +9,7 @@ export const AppointmentFormSchema = z
     idPatient: requiredId("Selecciona un paciente"),
     idUser: requiredId("Selecciona un profesional"),
     idService: requiredId("Selecciona un servicio"),
+    idAppointmentStatus: requiredId("Selecciona un estado"),
     startAt: z.string().min(1, "La fecha de inicio es obligatoria"),
     endAt: z.string().min(1, "La fecha de fin es obligatoria"),
     notes: z.string().optional(),
@@ -56,6 +58,7 @@ export const buildAppointmentFormDefaults = (
     idPatient: 0,
     idUser: 0,
     idService: 0,
+    idAppointmentStatus: APPOINTMENT_STATUS.PENDING,
     startAt: format(start, "yyyy-MM-dd'T'HH:mm"),
     endAt: format(end, "yyyy-MM-dd'T'HH:mm"),
     notes: "",

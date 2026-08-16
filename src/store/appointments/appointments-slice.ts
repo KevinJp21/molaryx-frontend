@@ -6,6 +6,8 @@ import {
   TGetAppointmentsParams,
   IPostAppointmentFormRequest,
   apiPostCreateAppointmentAction,
+  IPutUpdateAppointmentFormRequest,
+  apiPutUpdateAppointmentAction,
 } from "@/features/dashboard/modules/appointments";
 
 type TAppointmentsState = {
@@ -20,6 +22,11 @@ type TAppointmentsState = {
     message?: string;
     error?: string;
   };
+  putUpdateAppointment: {
+    status: TStatus;
+    message?: string;
+    error?: string;
+  };
 };
 
 const initialState: TAppointmentsState = {
@@ -30,6 +37,11 @@ const initialState: TAppointmentsState = {
     error: undefined,
   },
   postCreateAppointment: {
+    status: "idle",
+    message: undefined,
+    error: undefined,
+  },
+  putUpdateAppointment: {
     status: "idle",
     message: undefined,
     error: undefined,
@@ -94,13 +106,41 @@ const appointmentsSlice = createAppSlice({
     resetPostCreateAppointment: create.reducer((state) => {
       state.postCreateAppointment = initialState.postCreateAppointment;
     }),
+    putUpdateAppointment: create.asyncThunk(
+      async (data: IPutUpdateAppointmentFormRequest) =>
+        await apiPutUpdateAppointmentAction(data),
+      {
+        pending: (state) => {
+          state.putUpdateAppointment.status = "loading";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.putUpdateAppointment.status = "error";
+            state.putUpdateAppointment.message = action.payload.message;
+            state.putUpdateAppointment.error = action.payload.error ?? undefined;
+            return;
+          }
+          state.putUpdateAppointment.status = "success";
+          state.putUpdateAppointment.message = action.payload.message;
+        },
+        rejected: (state, action) => {
+          state.putUpdateAppointment.status = "error";
+          state.putUpdateAppointment.message = action.error.message;
+          state.putUpdateAppointment.error = undefined;
+        },
+      },
+    ),
+    resetPutUpdateAppointment: create.reducer((state) => {
+      state.putUpdateAppointment = initialState.putUpdateAppointment;
+    }),
   }),
   selectors: {
     selectGetAppointments: (state) => state.getAppointments,
     selectPostCreateAppointment: (state) => state.postCreateAppointment,
+    selectPutUpdateAppointment: (state) => state.putUpdateAppointment,
   },
 });
 
-export const { getAppointments, postCreateAppointment, resetPostCreateAppointment } = appointmentsSlice.actions;
-export const { selectGetAppointments, selectPostCreateAppointment } = appointmentsSlice.selectors;
+export const { getAppointments, postCreateAppointment, resetPostCreateAppointment, putUpdateAppointment, resetPutUpdateAppointment } = appointmentsSlice.actions;
+export const { selectGetAppointments, selectPostCreateAppointment, selectPutUpdateAppointment } = appointmentsSlice.selectors;
 export default appointmentsSlice.reducer;

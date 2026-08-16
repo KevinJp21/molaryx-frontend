@@ -41,10 +41,14 @@ import {
 } from "@/store/professionals/professionals-slice";
 import {
   postCreateAppointment,
+  putUpdateAppointment,
   resetPostCreateAppointment,
+  resetPutUpdateAppointment,
   selectPostCreateAppointment,
+  selectPutUpdateAppointment,
 } from "@/store/appointments/appointments-slice";
 import {
+  APPOINTMENT_STATUS_OPTIONS,
   getAppointmentStatusColor,
   getAppointmentStatusLabel,
 } from "../consts/appointment-status";
@@ -83,6 +87,7 @@ const toFormValues = (
     idPatient: event.idPatient,
     idUser: event.idUser,
     idService: event.idService,
+    idAppointmentStatus: Number(event.calendarId) || 0,
     startAt: formatDate(event.start, "yyyy-MM-dd'T'HH:mm"),
     endAt: formatDate(event.end, "yyyy-MM-dd'T'HH:mm"),
     notes: event.description ?? "",
@@ -135,16 +140,16 @@ export const AppointmentEventModal = ({
     message: createMessage,
     error: createError,
   } = useAppSelector(selectPostCreateAppointment);
+  const {
+    status: updateStatus,
+    message: updateMessage,
+    error: updateError,
+  } = useAppSelector(selectPutUpdateAppointment);
 
   const isCreate = mode === "create";
-  const isSubmitting = createStatus === "loading";
-  const statusColor = getAppointmentStatusColor(
-    event ? Number(event.calendarId) : undefined,
-  );
-  const statusLabel = getAppointmentStatusLabel(
-    event ? Number(event.calendarId) : undefined,
-    event?.statusLabel,
-  );
+  const isEdit = mode === "edit";
+  const isSubmitting =
+    createStatus === "loading" || updateStatus === "loading";
 
   const methods = useForm<TAppointmentForm>({
     mode: "onTouched",
@@ -155,6 +160,19 @@ export const AppointmentEventModal = ({
   const { reset, handleSubmit, setValue, getValues, watch } = methods;
   const startAt = watch("startAt");
   const endAt = watch("endAt");
+  const watchedStatusId = watch("idAppointmentStatus");
+
+  const statusColor = getAppointmentStatusColor(
+    isEdit || isCreate
+      ? watchedStatusId
+      : event
+        ? Number(event.calendarId)
+        : undefined,
+  );
+  const statusLabel = getAppointmentStatusLabel(
+    event ? Number(event.calendarId) : undefined,
+    event?.statusLabel,
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -187,6 +205,28 @@ export const AppointmentEventModal = ({
     onSuccess,
   ]);
 
+  useEffect(() => {
+    if (!isEdit) return;
+
+    if (updateStatus === "error") {
+      toast.error(updateMessage, { description: updateError });
+      dispatch(resetPutUpdateAppointment());
+    }
+
+    if (updateStatus === "success") {
+      toast.success(updateMessage || "Cita actualizada correctamente");
+      dispatch(resetPutUpdateAppointment());
+      onSuccess?.();
+    }
+  }, [
+    updateStatus,
+    updateMessage,
+    updateError,
+    isEdit,
+    dispatch,
+    onSuccess,
+  ]);
+
   const patientItems =
     patientsData?.items.map((patient) => ({
       value: patient.idPatient,
@@ -215,6 +255,11 @@ export const AppointmentEventModal = ({
       ),
     })) ?? [];
 
+  const statusItems = APPOINTMENT_STATUS_OPTIONS.map((option) => ({
+    value: option.id,
+    name: option.label,
+  }));
+
   const durationLabel =
     startAt && endAt && !Number.isNaN(new Date(startAt).getTime())
       ? formatDuration(new Date(startAt), new Date(endAt))
@@ -224,28 +269,36 @@ export const AppointmentEventModal = ({
     if (createStatus !== "idle") {
       dispatch(resetPostCreateAppointment());
     }
+    if (updateStatus !== "idle") {
+      dispatch(resetPutUpdateAppointment());
+    }
     reset(buildAppointmentFormDefaults());
     onClose();
   };
 
   const onSubmit = (data: TAppointmentForm) => {
-    if (!isCreate) {
-      toast.info(
-        "La edición de citas se aplicará cuando el endpoint esté disponible.",
+    const payload = {
+      idPatient: data.idPatient,
+      idUser: data.idUser,
+      idService: data.idService,
+      startAt: colombiaToUtcIso(data.startAt),
+      endAt: colombiaToUtcIso(data.endAt),
+      notes: data.notes?.trim() || undefined,
+    };
+
+    if (isEdit) {
+      if (!event) return;
+      dispatch(
+        putUpdateAppointment({
+          ...payload,
+          idAppointment: Number(event.id),
+          idAppointmentStatus: data.idAppointmentStatus,
+        }),
       );
       return;
     }
 
-    dispatch(
-      postCreateAppointment({
-        idPatient: data.idPatient,
-        idUser: data.idUser,
-        idService: data.idService,
-        startAt: colombiaToUtcIso(data.startAt),
-        endAt: colombiaToUtcIso(data.endAt),
-        notes: data.notes?.trim() || undefined,
-      }),
-    );
+    dispatch(postCreateAppointment(payload));
   };
 
   const renderViewMode = () => (
@@ -440,6 +493,16 @@ export const AppointmentEventModal = ({
               );
             }}
           />
+
+          {isEdit && (
+            <CustomFormSelect
+              name="idAppointmentStatus"
+              label="Estado"
+              placeholder="Selecciona un estado"
+              items={statusItems}
+            />
+          )}
+
           <CustomFormField
             name="startAt"
             label="Inicio"

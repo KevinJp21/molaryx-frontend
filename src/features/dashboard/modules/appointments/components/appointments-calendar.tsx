@@ -31,8 +31,11 @@ import { Button } from "@/components";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   getAppointments,
+  putUpdateAppointment,
+  resetPutUpdateAppointment,
   selectGetAppointments,
 } from "@/store/appointments/appointments-slice";
+import { colombiaToUtcIso } from "@/utils";
 import {
   getAppointmentsRange,
   mapAppointmentsToCalendars,
@@ -40,6 +43,7 @@ import {
   mapAppointmentsToResources,
 } from "../utils";
 import { formatEventTime } from "../utils/format-time";
+import { APPOINTMENT_STATUS } from "../consts/appointment-status";
 import { useViewSwipe } from "../hooks";
 import type {
   TAppointmentCalendarEvent,
@@ -181,6 +185,98 @@ export const AppointmentsCalendar = () => {
     setOverrides((current) => ({ ...current, [event.id]: { start, end } }));
   };
 
+  const clearOverride = (eventId: string) => {
+    setOverrides((current) => {
+      if (!(eventId in current)) return current;
+      const next = { ...current };
+      delete next[eventId];
+      return next;
+    });
+  };
+
+  const refreshAppointments = () => {
+    dispatch(getAppointments(getAppointmentsRange(date, view)));
+  };
+
+  /** Optimistic UI + persistencia en API para drag/resize. */
+  const syncAppointmentSchedule = async (
+    event: TAppointmentCalendarEvent,
+    start: Date,
+    end: Date,
+    successMessage: string,
+  ) => {
+    applyOverride(event, start, end);
+
+    const result = await dispatch(
+      putUpdateAppointment({
+        idAppointment: Number(event.id),
+        idAppointmentStatus: Number(event.calendarId),
+        idPatient: event.idPatient,
+        idUser: event.idUser,
+        idService: event.idService,
+        startAt: colombiaToUtcIso(start),
+        endAt: colombiaToUtcIso(end),
+        notes: event.description || undefined,
+      }),
+    );
+
+    if (
+      putUpdateAppointment.fulfilled.match(result) &&
+      result.payload.success
+    ) {
+      toast.success(successMessage);
+      dispatch(resetPutUpdateAppointment());
+      refreshAppointments();
+      return;
+    }
+
+    clearOverride(event.id);
+    const message = putUpdateAppointment.fulfilled.match(result)
+      ? result.payload.message
+      : "No se pudo actualizar la cita";
+    const description = putUpdateAppointment.fulfilled.match(result)
+      ? result.payload.error
+      : undefined;
+    toast.error(message, { description });
+    dispatch(resetPutUpdateAppointment());
+  };
+
+  /** "Eliminar" en UI: marca la cita como cancelada. */
+  const cancelAppointment = async (event: TAppointmentCalendarEvent) => {
+    const result = await dispatch(
+      putUpdateAppointment({
+        idAppointment: Number(event.id),
+        idAppointmentStatus: APPOINTMENT_STATUS.CANCELLED,
+        idPatient: event.idPatient,
+        idUser: event.idUser,
+        idService: event.idService,
+        startAt: colombiaToUtcIso(event.start),
+        endAt: colombiaToUtcIso(event.end),
+        notes: event.description || undefined,
+      }),
+    );
+
+    if (
+      putUpdateAppointment.fulfilled.match(result) &&
+      result.payload.success
+    ) {
+      toast.success(result.payload.message || "Cita cancelada");
+      dispatch(resetPutUpdateAppointment());
+      refreshAppointments();
+      return true;
+    }
+
+    const message = putUpdateAppointment.fulfilled.match(result)
+      ? result.payload.message
+      : "No se pudo cancelar la cita";
+    const description = putUpdateAppointment.fulfilled.match(result)
+      ? result.payload.error
+      : undefined;
+    toast.error(message, { description });
+    dispatch(resetPutUpdateAppointment());
+    return false;
+  };
+
   // Horario en el que quedaría la cita si se soltara sobre esa celda.
   const getDropRange = (
     draggedEvent: TAppointmentCalendarEvent,
@@ -244,8 +340,12 @@ export const AppointmentsCalendar = () => {
     const { start, end } = getDropRange(draggedEvent, overDate);
     if (start.getTime() === draggedEvent.start.getTime()) return;
 
-    applyOverride(draggedEvent, start, end);
-    toast.info(`Cita movida a ${formatEventTime(start)}. ${SYNC_PENDING}`);
+    void syncAppointmentSchedule(
+      draggedEvent,
+      start,
+      end,
+      `Cita movida a ${formatEventTime(start)}`,
+    );
   };
 
   const handleEventResizePreview = (
@@ -258,8 +358,12 @@ export const AppointmentsCalendar = () => {
 
   const handleEventResize = (event: TAppointmentCalendarEvent, newEnd: Date) => {
     if (differenceInMinutes(newEnd, event.start) < 15) return;
-    applyOverride(event, event.start, newEnd);
-    toast.info(`Duración actualizada. ${SYNC_PENDING}`);
+    void syncAppointmentSchedule(
+      event,
+      event.start,
+      newEnd,
+      "Duración actualizada",
+    );
   };
 
   const handleEventContextMenu = (
@@ -419,11 +523,11 @@ export const AppointmentsCalendar = () => {
         onClose={closeModal}
         onSuccess={() => {
           closeModal();
-          dispatch(getAppointments(getAppointmentsRange(date, view)));
+          refreshAppointments();
         }}
-        onDelete={() => {
-          closeModal();
-          toast.info(SYNC_PENDING);
+        onDelete={async (event) => {
+          const cancelled = await cancelAppointment(event);
+          if (cancelled) closeModal();
         }}
       />
 
@@ -433,7 +537,9 @@ export const AppointmentsCalendar = () => {
         onClose={closeContextMenu}
         onEdit={(event) => setModalState({ open: true, mode: "edit", event })}
         onDuplicate={() => toast.info(SYNC_PENDING)}
-        onDelete={() => toast.info(SYNC_PENDING)}
+        onDelete={(event) => {
+          void cancelAppointment(event);
+        }}
       />
 
       <DragOverlay dropAnimation={null}>
