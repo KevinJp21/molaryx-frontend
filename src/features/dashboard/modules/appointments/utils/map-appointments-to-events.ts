@@ -1,3 +1,4 @@
+import { toColombiaDate } from "@/utils";
 import {
   getAppointmentStatusColor,
   getAppointmentStatusLabel,
@@ -33,8 +34,8 @@ export const mapAppointmentsToEvents = (
       title: patientName
         ? `${patientName} · ${serviceName}`
         : serviceName,
-      start: new Date(appointment.startAt),
-      end: new Date(appointment.endAt),
+      start: toColombiaDate(appointment.startAt),
+      end: toColombiaDate(appointment.endAt),
       description: appointment.notes ?? undefined,
       color: getAppointmentStatusColor(appointment.idAppointmentStatus),
       calendarId: String(appointment.idAppointmentStatus),

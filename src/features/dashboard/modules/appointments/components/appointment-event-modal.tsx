@@ -25,7 +25,7 @@ import {
   CustomFormTextarea,
 } from "@/components";
 import { cn } from "@/lib/utils";
-import { formatDate } from "@/utils";
+import { colombiaToUtcIso, formatDate } from "@/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   getPatients,
@@ -243,8 +243,8 @@ export const AppointmentEventModal = ({
         idPatient: data.idPatient,
         idUser: data.idUser,
         idService: data.idService,
-        startAt: new Date(data.startAt).toISOString(),
-        endAt: new Date(data.endAt).toISOString(),
+        startAt: colombiaToUtcIso(data.startAt),
+        endAt: colombiaToUtcIso(data.endAt),
         notes: data.notes?.trim() || undefined,
       }),
     );

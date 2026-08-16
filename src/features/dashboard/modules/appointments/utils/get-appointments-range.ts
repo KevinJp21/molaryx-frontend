@@ -3,11 +3,11 @@ import {
   endOfDay,
   endOfMonth,
   endOfWeek,
-  format,
   startOfDay,
   startOfMonth,
   startOfWeek,
 } from "date-fns";
+import { colombiaToUtcIso } from "@/utils";
 import type { TCalendarView } from "../types";
 
 const WEEK_OPTIONS = { weekStartsOn: 1 as const };
@@ -15,7 +15,7 @@ const WEEK_OPTIONS = { weekStartsOn: 1 as const };
 /** Días que muestra la vista agenda a partir de la fecha activa. */
 export const AGENDA_RANGE_DAYS = 30;
 
-const toApiDate = (date: Date) => format(date, "yyyy-MM-dd'T'HH:mm:ss");
+const toApiDate = (date: Date) => colombiaToUtcIso(date);
 
 export const getAppointmentsRange = (date: Date, view: TCalendarView) => {
   let from: Date;

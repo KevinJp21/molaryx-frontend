@@ -11,15 +11,11 @@ export const apiPostCreateAppointmentAction = async (
   const APPOINTMENT = process.env.APPOINTMENT;
   const POST_CREATE_APPOINTMENT = process.env.POST_CREATE_APPOINTMENT;
 
-  console.log(data);
-
   try {
     const response = await serverApi.post<TBaseResponse<boolean>>(
       `${APPOINTMENT}${POST_CREATE_APPOINTMENT}`,
       data,
     );
-
-    console.log(response);
 
     return {
       success: true,
