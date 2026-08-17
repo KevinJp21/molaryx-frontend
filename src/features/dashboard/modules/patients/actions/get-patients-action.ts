@@ -2,6 +2,7 @@
 
 import { serverApi } from "@/lib/api/server";
 import { handleApiError } from "@/lib/api/error-handler";
+import { encodeId } from "@/utils/code-and-decode-id";
 import { IGetPatientsResponse } from "../interfaces";
 import { TPaginationParams } from "@/types";
 
@@ -29,10 +30,20 @@ export const apiGetPatientsAction = async (
 
   try {
     const response = await serverApi.get<IGetPatientsResponse>(url);
+    const data = response.data.data;
+
     return {
       success: true,
       message: response.data.message,
-      data: response.data.data,
+      data: data
+        ? {
+            ...data,
+            items: data.items.map((item) => ({
+              ...item,
+              encodedId: encodeId(item.idPatient),
+            })),
+          }
+        : data,
     };
   } catch (error) {
     const { message } = await handleApiError(error);

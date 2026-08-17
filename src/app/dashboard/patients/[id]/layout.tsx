@@ -1,13 +1,13 @@
 import { redirect } from "next/navigation";
 import { decodeId } from "@/utils/code-and-decode-id";
-import { PatientChartLayout } from "@/features/dashboard/modules/patients/chart";
+import { PatientChartLayout } from "@/features/dashboard/modules/patients/modules/patient-details";
 
 type Props = {
     children: React.ReactNode;
     params: Promise<{ id: string }>;
 };
 
-export default async function PatientChartRouteLayout({
+export default async function PatientDetailsRouteLayout({
     children,
     params,
 }: Props) {

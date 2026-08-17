@@ -1,5 +1,5 @@
-import { PatientChartProfileTemplate } from "@/features/dashboard/modules/patients/chart";
+import { PatientDetailsTemplate } from "@/features/dashboard/modules/patients/modules/patient-details";
 
-export default function PatientChartPage() {
-    return <PatientChartProfileTemplate />;
+export default function PatientDetailsPage() {
+    return <PatientDetailsTemplate />;
 }

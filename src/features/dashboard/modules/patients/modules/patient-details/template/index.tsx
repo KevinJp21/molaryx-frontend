@@ -9,8 +9,8 @@ import {
     setCurrentPatient,
 } from "@/store/patients/patiens-slice";
 import { formatDate } from "@/utils";
-import { PatientFormModal } from "../components";
-import { persistPatientChart } from "../utils";
+import { PatientFormModal } from "../../../components";
+import { persistPatientChart } from "../../../utils";
 
 const Field = ({
     label,
@@ -25,7 +25,7 @@ const Field = ({
     </div>
 );
 
-export const PatientChartProfileTemplate = () => {
+export const PatientDetailsTemplate = () => {
     const dispatch = useAppDispatch();
     const patient = useAppSelector(selectCurrentPatient);
     const [editOpen, setEditOpen] = useState(false);

@@ -9,7 +9,6 @@ import { IPatientsItems } from "../interfaces";
 import { persistPatientChart } from "../utils";
 import { useAppDispatch } from "@/store";
 import { setCurrentPatient } from "@/store/patients/patiens-slice";
-import { apiEncodeIdAction } from "../actions";
 
 export const PatientsTemplate = () => {
     const router = useRouter();
@@ -50,11 +49,11 @@ export const PatientsTemplate = () => {
         if (!next) setPatientToDelete(null);
     };
 
-    const openChart = async (patient: IPatientsItems) => {
+    const openChart = (patient: IPatientsItems) => {
+        if (!patient.encodedId) return;
         persistPatientChart(patient);
         dispatch(setCurrentPatient(patient));
-        const encodedId = await apiEncodeIdAction(patient.idPatient);
-        router.push(`/dashboard/patients/${encodedId}`);
+        router.push(`/dashboard/patients/${patient.encodedId}`);
     };
 
     return (

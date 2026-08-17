@@ -4,12 +4,12 @@ import {
   TGetPatientTreatmentsParams,
   apiPostCreatePatientTreatmentAction,
   apiPutUpdatePatientTreatmentAction,
-} from "@/features/dashboard/modules/patient-treatments/actions";
+} from "@/features/dashboard/modules/patients/modules/patient-treatments/actions";
 import {
   IGetPatientTreatmentsResponseData,
   IPostCreatePatientTreatmentFormRequest,
   IPutUpdatePatientTreatmentFormRequest,
-} from "@/features/dashboard/modules/patient-treatments/interfaces";
+} from "@/features/dashboard/modules/patients/modules/patient-treatments/interfaces";
 import { TStatus } from "@/types";
 
 type TPatientTreatmentsState = {
