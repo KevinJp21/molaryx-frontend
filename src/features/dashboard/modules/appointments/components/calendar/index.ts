@@ -10,4 +10,5 @@ export { TimedEventBlock } from "./timed-event-block";
 export { CalendarEmptyState } from "./calendar-empty-state";
 export { CalendarViewSkeleton, CalendarSidebarSkeleton } from "./calendar-skeletons";
 export { EventContextMenu, useEventContextMenu } from "./event-context-menu";
+export { CalendarDragOverlayCard } from "./calendar-drag-overlay";
 export * from "./dnd";

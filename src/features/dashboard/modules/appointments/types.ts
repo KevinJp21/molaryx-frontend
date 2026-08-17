@@ -1,5 +1,9 @@
 export type TCalendarView = "month" | "week" | "day" | "agenda" | "resource";
 
+export type TAppointmentModalMode = "view" | "edit" | "create";
+
+export type TScheduleOverride = { start: Date; end: Date };
+
 export type TAppointmentCalendarEvent = {
   id: string;
   title: string;
