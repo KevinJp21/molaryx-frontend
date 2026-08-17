@@ -15,9 +15,13 @@ export const hasRouteAccess = (
     pathname: string,
     userPermissions: TUserPermission[] | undefined,
 ): boolean => {
-    const matchedHref = Object.keys(ROUTE_PERMISSION_MAP).find(
-        (href) => pathname === href,
-    );
+    const matchedHref = Object.keys(ROUTE_PERMISSION_MAP)
+        .filter(
+            (href) =>
+                pathname === href ||
+                (href !== DASHBOARD_HOME_ROUTE && pathname.startsWith(`${href}/`)),
+        )
+        .sort((a, b) => b.length - a.length)[0];
 
     if (!matchedHref) return true;
 
@@ -26,6 +30,18 @@ export const hasRouteAccess = (
 
     return Boolean(userPermissions?.some((p) => p.module === rule.module));
 };
+
+export const hasPermissionCode = (
+    userPermissions: TUserPermission[] | undefined,
+    module: string,
+    code: string,
+): boolean =>
+    Boolean(
+        userPermissions?.some(
+            (permission) =>
+                permission.module === module && permission.codes.includes(code),
+        ),
+    );
 
 export const filterSectionItemsByPermissions = (
     userPermissions: TUserPermission[] | undefined,

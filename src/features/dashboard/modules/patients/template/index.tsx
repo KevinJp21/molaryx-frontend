@@ -1,12 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/components";
 import { PatientFormModal, PatientsTable, DeletePatientModal } from "../components";
 import { IPatientsItems } from "../interfaces";
+import { persistPatientChart } from "../utils";
+import { useAppDispatch } from "@/store";
+import { setCurrentPatient } from "@/store/patients/patiens-slice";
+import { apiEncodeIdAction } from "../actions";
 
 export const PatientsTemplate = () => {
+    const router = useRouter();
+    const dispatch = useAppDispatch();
     const [patientModalOpen, setPatientModalOpen] = useState(false);
     const [selectedPatient, setSelectedPatient] = useState<IPatientsItems | null>(null);
 
@@ -43,6 +50,13 @@ export const PatientsTemplate = () => {
         if (!next) setPatientToDelete(null);
     };
 
+    const openChart = async (patient: IPatientsItems) => {
+        persistPatientChart(patient);
+        dispatch(setCurrentPatient(patient));
+        const encodedId = await apiEncodeIdAction(patient.idPatient);
+        router.push(`/dashboard/patients/${encodedId}`);
+    };
+
     return (
         <>
             <section className="mb-4 flex items-center justify-between">
@@ -62,6 +76,7 @@ export const PatientsTemplate = () => {
             <PatientsTable
                 onEdit={openEditModal}
                 onDelete={openDeleteModal}
+                onOpenChart={openChart}
                 refreshKey={listRefreshKey}
             />
             <PatientFormModal

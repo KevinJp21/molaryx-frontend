@@ -1,4 +1,4 @@
-import { Home, User, Layers, Calendar, Users, Stethoscope } from "lucide-react";
+import { Home, User, Layers, Calendar, Users, ClipboardPlus } from "lucide-react";
 import { SidebarSection } from "../types";
 
 export const SIDEBAR_SECTIONS: SidebarSection[] = [
@@ -45,7 +45,7 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
       {
         label: "Tratamientos",
         href: "/dashboard/treatments",
-        icon: Stethoscope,
+        icon: ClipboardPlus,
         permission: { module: "TREATMENTS" },
       },
     ],

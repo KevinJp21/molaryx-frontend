@@ -25,10 +25,11 @@ import {
 type Props = {
     onEdit: (patient: IPatientsItems) => void;
     onDelete: (patient: IPatientsItems) => void;
+    onOpenChart: (patient: IPatientsItems) => void;
     refreshKey?: number;
 };
 
-export const PatientsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
+export const PatientsTable = ({ onEdit, onDelete, onOpenChart, refreshKey = 0 }: Props) => {
     const dispatch = useAppDispatch();
     const { data, status, message } = useAppSelector(selectGetPatients);
     const [currentPage, setCurrentPage] = useState(1);
@@ -142,6 +143,7 @@ export const PatientsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
                                                             size="sm"
                                                             className="text-xs justify-start text-ink-200 font-normal"
                                                             aria-label={`Ver detalles del paciente ${fullName}`}
+                                                            onClick={() => onOpenChart(item)}
                                                         >
                                                             <Logs className="size-4" strokeWidth={1.75} />
                                                             Ver detalles

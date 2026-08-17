@@ -2,6 +2,7 @@ import { createAppSlice } from "../slice";
 import {
   apiGetPatientsAction,
   IGetPatientsResponseData,
+  IPatientsItems,
   TGetPatientsParams,
   apiPostCreatePatientAction,
   IPostCreatePatientFormRequest,
@@ -12,6 +13,7 @@ import {
 import { TStatus } from "@/types";
 
 type TPatientsState = {
+  currentPatient: IPatientsItems | null;
   postCreatePatient: {
     status: TStatus;
     message?: string;
@@ -35,6 +37,7 @@ type TPatientsState = {
 };
 
 const initialState: TPatientsState = {
+  currentPatient: null,
   postCreatePatient: {
     status: "idle",
     message: undefined,
@@ -59,6 +62,9 @@ const patientsSlice = createAppSlice({
   name: "patients",
   initialState,
   reducers: (create) => ({
+    setCurrentPatient: create.reducer<IPatientsItems | null>((state, action) => {
+      state.currentPatient = action.payload;
+    }),
     getPatients: create.asyncThunk(
       async (params?: TGetPatientsParams) => await apiGetPatientsAction(params),
       {
@@ -165,6 +171,7 @@ const patientsSlice = createAppSlice({
     }),
   }),
   selectors: {
+    selectCurrentPatient: (state) => state.currentPatient,
     selectGetPatients: (state) => state.getPatients,
     selectPostCreatePatient: (state) => state.postCreatePatient,
     selectPutUpdatePatient: (state) => state.putUpdatePatient,
@@ -173,6 +180,7 @@ const patientsSlice = createAppSlice({
 });
 
 export const {
+  setCurrentPatient,
   getPatients,
   postCreatePatient,
   resetPostCreatePatient,
@@ -182,6 +190,7 @@ export const {
   resetDeletePatient,
 } = patientsSlice.actions;
 export const {
+  selectCurrentPatient,
   selectGetPatients,
   selectPostCreatePatient,
   selectPutUpdatePatient,
