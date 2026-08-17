@@ -9,8 +9,12 @@ import { getObfuscatedCookieName } from "./utils";
 import {
   applySessionCookies,
   clearSessionCookies,
+  continueWithSession,
   refreshSessionFromProxy,
 } from "./lib/auth/refresh-session";
+
+const isInternalNextRequest = (req: NextRequest) =>
+  req.headers.has("next-action") || req.headers.get("rsc") === "1";
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -29,14 +33,16 @@ export async function proxy(req: NextRequest) {
 
   if (isProtectedRoute && !token) {
     if (refreshToken) {
-      const tokens = await refreshSessionFromProxy(refreshToken);
+      const tokens = await refreshSessionFromProxy(refreshToken, req.headers);
 
       if (tokens) {
-        const response = NextResponse.next({
-          request: { headers: req.headers },
-        });
-        applySessionCookies(response, tokens);
-        return response;
+        return continueWithSession(req, tokens);
+      }
+
+      // Un Server Action/RSC puede llegar sin la cookie nueva justo después
+      // del refresh del documento. No borres la sesión en esa carrera.
+      if (isInternalNextRequest(req)) {
+        return NextResponse.next();
       }
 
       const url = req.nextUrl.clone();
@@ -59,7 +65,7 @@ export async function proxy(req: NextRequest) {
     }
 
     if (refreshToken) {
-      const tokens = await refreshSessionFromProxy(refreshToken);
+      const tokens = await refreshSessionFromProxy(refreshToken, req.headers);
       if (tokens) {
         const response = NextResponse.redirect(
           new URL("/dashboard", req.nextUrl),
@@ -67,11 +73,11 @@ export async function proxy(req: NextRequest) {
         applySessionCookies(response, tokens);
         return response;
       }
-
-      const response = NextResponse.next();
-      clearSessionCookies(response);
-      return response;
     }
+
+    const response = NextResponse.next();
+    clearSessionCookies(response);
+    return response;
   }
 
   return NextResponse.next();

@@ -4,7 +4,7 @@ import {
   IGetProfessionalsResponseData,
   TGetProfessionalsParams,
   apiGetProfessionalsAction,
-} from "@/features/dashboard/modules/Team";
+} from "@/features/dashboard/modules/team";
 
 type TProfessionalsState = {
   getProfessionals: {
