@@ -33,7 +33,7 @@ export const PatientDetailsTemplate = () => {
     if (!patient) {
         return (
             <p className="text-sm text-ink-400">
-                Abre el expediente desde el listado de pacientes para ver la ficha completa.
+                Abre el expediente desde el listado de pacientes para ver los datos del paciente.
             </p>
         );
     }
@@ -42,8 +42,8 @@ export const PatientDetailsTemplate = () => {
         <>
             <section className="mb-4 flex items-center justify-between">
                 <div className="flex flex-col gap-1">
-                    <h2 className="text-lg font-medium text-ink-50">Ficha</h2>
-                    <p className="text-sm text-ink-300">Datos del paciente</p>
+                    <h2 className="text-lg font-medium text-ink-50">Datos del paciente</h2>
+                    <p className="text-sm text-ink-300">Identificación y contacto</p>
                 </div>
                 <Button onClick={() => setEditOpen(true)}>
                     <SquarePen className="h-4 w-4" />

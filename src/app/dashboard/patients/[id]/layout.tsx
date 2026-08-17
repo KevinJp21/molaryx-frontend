@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { decodeId } from "@/utils/code-and-decode-id";
-import { PatientChartLayout } from "@/features/dashboard/modules/patients/modules/patient-details";
+import { PatientChartLayout } from "@/features/dashboard/modules/patients";
 
 type Props = {
     children: React.ReactNode;

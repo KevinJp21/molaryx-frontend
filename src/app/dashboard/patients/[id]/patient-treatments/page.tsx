@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PatientTreatmentsTemplate } from "@/features/dashboard/modules/patients/modules/patient-treatments";
-import { usePatientChart } from "@/features/dashboard/modules/patients/modules/patient-details";
+import { usePatientChart } from "@/features/dashboard/modules/patients";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";

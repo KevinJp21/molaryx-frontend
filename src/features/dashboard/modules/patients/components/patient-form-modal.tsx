@@ -190,8 +190,8 @@ export const PatientFormModal = ({
             title={isEdit ? 'Editar paciente' : 'Nuevo paciente'}
             description={
                 isEdit
-                    ? 'Actualiza los datos de la ficha del paciente.'
-                    : 'Ficha de ingreso al directorio del consultorio.'
+                    ? 'Actualiza los datos del paciente.'
+                    : 'Datos de identificación y contacto.'
             }
         >
             <FormProvider {...methods}>

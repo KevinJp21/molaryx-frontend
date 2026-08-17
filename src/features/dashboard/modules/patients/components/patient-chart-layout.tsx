@@ -14,7 +14,7 @@ import {
     setCurrentPatient,
 } from "@/store/patients/patiens-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";
-import { patientFullName, persistPatientChart, readPersistedPatientChart } from "../../../utils";
+import { patientFullName, persistPatientChart, readPersistedPatientChart } from "../utils";
 
 type PatientChartContextValue = {
     encodedId: string;
@@ -87,7 +87,7 @@ export const PatientChartLayout = ({
     const treatmentsHref = `${fichaHref}/patient-treatments`;
 
     const tabs = [
-        { href: fichaHref, label: "Ficha", icon: User, exact: true },
+        { href: fichaHref, label: "Información", icon: User, exact: true },
         ...(canViewTreatments
             ? [{ href: treatmentsHref, label: "Tratamientos", icon: ClipboardPlus, exact: false }]
             : []),
@@ -121,7 +121,7 @@ export const PatientChartLayout = ({
                             </div>
                             <p className="text-sm text-ink-300">
                                 {patient
-                                    ? `${patient.identificationType} ${patient.identificationNumber}`
+                                    ? `${patient.identificationType}: ${patient.identificationNumber}`
                                     : "Expediente del paciente"}
                             </p>
                         </div>

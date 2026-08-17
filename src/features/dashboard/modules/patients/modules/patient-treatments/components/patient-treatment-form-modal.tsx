@@ -118,12 +118,10 @@ export const PatientTreatmentFormModal = ({
         Number(idPaymentFrequency) !== PAYMENT_FREQUENCY.NONE &&
         Number(idPaymentFrequency) !== PAYMENT_FREQUENCY.ONE_TIME;
 
-    const treatmentItems = (treatmentsData?.items ?? [])
-        .filter((item) => item.isActive || item.idTreatment === patientTreatment?.idTreatment)
-        .map((item) => ({
-            value: item.idTreatment,
-            name: item.name,
-        }));
+    const treatmentItems = (treatmentsData?.items ?? []).map((item) => ({
+        value: item.idTreatment,
+        name: item.name,
+    }));
 
     const statusOptions = patientTreatment
         ? getAllowedTreatmentStatuses(patientTreatment.idTreatmentStatus).map(
@@ -135,11 +133,12 @@ export const PatientTreatmentFormModal = ({
         : [];
 
     useEffect(() => {
-        if (open) {
-            dispatch(getTreatments({ IsActive: true, Size: 100 }));
-            reset(toFormValues(patientTreatment));
+        if (!open) return;
+        if (!isEdit) {
+            dispatch(getTreatments({ IsActive: true, Size: 10 }));
         }
-    }, [open, patientTreatment, dispatch, reset]);
+        reset(toFormValues(patientTreatment));
+    }, [open, isEdit, patientTreatment, dispatch, reset]);
 
     const handleDialogOpenChange = (next: boolean) => {
         if (!next) {
