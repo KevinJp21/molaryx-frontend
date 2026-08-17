@@ -9,6 +9,7 @@ import appointmentsReducer from './appointments/appointments-slice'
 import professionalsReducer from './professionals/professionals-slice'
 import treatmentsReducer from './treatments/treatments-slice'
 import patientTreatmentsReducer from './patient-treatments/patient-treatments-slice'
+import paymentsReducer from './payments/payments-slice'
 export const store = configureStore({
     reducer: {
         masters: mastersReducer,
@@ -20,6 +21,7 @@ export const store = configureStore({
         professionals: professionalsReducer,
         treatments: treatmentsReducer,
         patientTreatments: patientTreatmentsReducer,
+        payments: paymentsReducer,
     },
 
 })

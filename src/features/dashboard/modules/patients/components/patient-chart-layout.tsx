@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ArrowLeft, ClipboardPlus, User } from "lucide-react";
+import { ArrowLeft, ClipboardPlus, User, Wallet } from "lucide-react";
 import { Badge, Button } from "@/components";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -73,6 +73,11 @@ export const PatientChartLayout = ({
         "PATIENT_TREATMENTS",
         "GET_PATIENT_TREATMENTS",
     );
+    const canViewPayments = hasPermissionCode(
+        userData?.permissions,
+        "PAYMENTS",
+        "GET_PAYMENTS",
+    );
 
     const fullName = patient
         ? patientFullName(
@@ -85,11 +90,15 @@ export const PatientChartLayout = ({
 
     const fichaHref = `/dashboard/patients/${encodedId}`;
     const treatmentsHref = `${fichaHref}/patient-treatments`;
+    const paymentsHref = `${fichaHref}/payments`;
 
     const tabs = [
         { href: fichaHref, label: "Información", icon: User, exact: true },
         ...(canViewTreatments
             ? [{ href: treatmentsHref, label: "Tratamientos", icon: ClipboardPlus, exact: false }]
+            : []),
+        ...(canViewPayments
+            ? [{ href: paymentsHref, label: "Pagos", icon: Wallet, exact: false }]
             : []),
     ];
 

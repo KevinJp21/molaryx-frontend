@@ -34,6 +34,7 @@ import { IPatientTreatmentItems } from "../interfaces";
 type Props = {
     encodedPatientId: string;
     onEdit: (item: IPatientTreatmentItems) => void;
+    onViewDetails: (item: IPatientTreatmentItems) => void;
     canUpdate: boolean;
     refreshKey?: number;
 };
@@ -48,6 +49,7 @@ const statusBadgeVariant = (id: number) => {
 export const PatientTreatmentsTable = ({
     encodedPatientId,
     onEdit,
+    onViewDetails,
     canUpdate,
     refreshKey = 0,
 }: Props) => {
@@ -193,30 +195,47 @@ export const PatientTreatmentsTable = ({
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        {canUpdate && !isFinalTreatmentStatus(item.idTreatmentStatus) && (
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon-sm"
-                                                        aria-label={`Acciones de ${item.treatmentName}`}
-                                                    >
-                                                        <Logs className="size-4" strokeWidth={1.75} />
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-56 p-2" align="end">
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon-sm"
+                                                    aria-label={`Acciones de ${item.treatmentName}`}
+                                                >
+                                                    <Logs className="size-4" strokeWidth={1.75} />
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-56 p-2" align="end">
+                                                <div className="flex flex-col gap-2">
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
-                                                        className="w-full text-xs justify-start text-ink-200 font-normal"
-                                                        onClick={() => onEdit(item)}
+                                                        className="text-xs justify-start text-ink-200 font-normal"
+                                                        onClick={() => onViewDetails(item)}
                                                     >
-                                                        <SquarePen className="size-4" strokeWidth={1.75} />
-                                                        Editar
+                                                        <Logs className="size-4" strokeWidth={1.75} />
+                                                        Ver detalles
                                                     </Button>
-                                                </PopoverContent>
-                                            </Popover>
-                                        )}
+                                                    {canUpdate &&
+                                                        !isFinalTreatmentStatus(
+                                                            item.idTreatmentStatus,
+                                                        ) && (
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="text-xs justify-start text-ink-200 font-normal"
+                                                                onClick={() => onEdit(item)}
+                                                            >
+                                                                <SquarePen
+                                                                    className="size-4"
+                                                                    strokeWidth={1.75}
+                                                                />
+                                                                Editar
+                                                            </Button>
+                                                        )}
+                                                </div>
+                                            </PopoverContent>
+                                        </Popover>
                                     </TableCell>
                                 </TableRow>
                             ))}

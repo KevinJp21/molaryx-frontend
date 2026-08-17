@@ -6,7 +6,7 @@ import { Button } from "@/components";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";
-import { PatientTreatmentFormModal, PatientTreatmentsTable } from "../components";
+import { PatientTreatmentDetailModal, PatientTreatmentFormModal, PatientTreatmentsTable } from "../components";
 import { IPatientTreatmentItems } from "../interfaces";
 
 type Props = {
@@ -27,7 +27,9 @@ export const PatientTreatmentsTemplate = ({ encodedPatientId }: Props) => {
     );
 
     const [modalOpen, setModalOpen] = useState(false);
+    const [detailModalOpen, setDetailModalOpen] = useState(false);
     const [selected, setSelected] = useState<IPatientTreatmentItems | null>(null);
+    const [detailSelected, setDetailSelected] = useState<IPatientTreatmentItems | null>(null);
     const [listRefreshKey, setListRefreshKey] = useState(0);
 
     const refreshList = () => setListRefreshKey((key) => key + 1);
@@ -42,9 +44,19 @@ export const PatientTreatmentsTemplate = ({ encodedPatientId }: Props) => {
         setModalOpen(true);
     };
 
+    const openDetails = (item: IPatientTreatmentItems) => {
+        setDetailSelected(item);
+        setDetailModalOpen(true);
+    };
+
     const handleModalOpenChange = (next: boolean) => {
         setModalOpen(next);
         if (!next) setSelected(null);
+    };
+
+    const handleDetailModalOpenChange = (next: boolean) => {
+        setDetailModalOpen(next);
+        if (!next) setDetailSelected(null);
     };
 
     return (
@@ -68,6 +80,7 @@ export const PatientTreatmentsTemplate = ({ encodedPatientId }: Props) => {
             <PatientTreatmentsTable
                 encodedPatientId={encodedPatientId}
                 onEdit={openEdit}
+                onViewDetails={openDetails}
                 canUpdate={canUpdate}
                 refreshKey={listRefreshKey}
             />
@@ -77,6 +90,12 @@ export const PatientTreatmentsTemplate = ({ encodedPatientId }: Props) => {
                 idPatient={encodedPatientId}
                 patientTreatment={selected}
                 onSuccess={refreshList}
+            />
+            <PatientTreatmentDetailModal
+                open={detailModalOpen}
+                onOpenChange={handleDetailModalOpenChange}
+                encodedPatientId={encodedPatientId}
+                patientTreatment={detailSelected}
             />
         </>
     );
