@@ -49,10 +49,12 @@ const Metric = ({
   label,
   value,
   emphasize,
+  priceColumnClassName,
 }: {
   label: string;
   value: string;
   emphasize?: boolean;
+  priceColumnClassName?: string;
 }) => (
   <div className="flex min-w-0 flex-col gap-1">
     <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
@@ -60,8 +62,9 @@ const Metric = ({
     </span>
     <span
       className={cn(
-        "truncate text-sm tabular-nums",
-        emphasize ? "font-semibold text-accent-600" : "text-ink-50",
+        "truncate text-sm tabular-nums font-semibold",
+        priceColumnClassName,
+        emphasize ? "text-accent-600" : "text-ink-50",
       )}
     >
       {value}
@@ -104,6 +107,7 @@ export const PaymentSummaryByConcept = ({
   const billedLabel = idPatientTreatment ? "Precio acordado" : "Precio";
   const remainingValue =
     data?.remaining == null ? "—" : currencyFormat(data.remaining);
+  const hasCredit = data?.credit != null && data.credit > 0;
   const paymentCountLabel =
     !data || data.paymentCount === 0
       ? "Sin abonos"
@@ -133,13 +137,19 @@ export const PaymentSummaryByConcept = ({
 
       {status === "success" && data && (
         <div className="flex flex-col gap-3">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div
+            className={cn(
+              "grid grid-cols-1 gap-4",
+              hasCredit ? "md:grid-cols-4" : "md:grid-cols-3",
+            )}
+          >
             <Metric
               label={billedLabel}
               value={billed == null ? "Sin precio pactado" : currencyFormat(billed)}
             />
             <Metric
               label="Total abonado"
+              priceColumnClassName="text-emerald-600!"
               value={currencyFormat(data.totalPaid)}
             />
             <Metric
@@ -147,6 +157,13 @@ export const PaymentSummaryByConcept = ({
               value={remainingValue}
               emphasize={remainingEmphasize}
             />
+            {hasCredit && data.credit != null && (
+              <Metric
+                label="Saldo a favor"
+                value={currencyFormat(data.credit)}
+                emphasize
+              />
+            )}
           </div>
           {progress != null && (
             <div className="h-1.5 overflow-hidden rounded-full bg-ink-800">

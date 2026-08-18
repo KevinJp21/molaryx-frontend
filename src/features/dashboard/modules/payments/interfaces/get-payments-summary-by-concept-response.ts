@@ -8,5 +8,6 @@ export interface IGetPaymentsSummaryByConceptData {
   agreedPrice: number | null;
   totalPaid: number;
   remaining: number | null;
+  credit: number | null;
   paymentCount: number;
 }
