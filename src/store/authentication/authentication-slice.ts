@@ -102,7 +102,15 @@ const authenticationSlice = createAppSlice({
         },
       },
     ),
-    getUserData: create.asyncThunk(async () => apiGetUserAction(), {
+    getUserData: create.asyncThunk(async () => {
+      const first = await apiGetUserAction();
+      if (first.success) return first;
+      // El proxy puede haber rotado el refresh en el documento y este
+      // Server Action aún sale con las cookies viejas. Un segundo intento
+      // ya lleva el access token nuevo.
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      return apiGetUserAction();
+    }, {
       pending: (state) => {
         state.getUserData.status = "loading";
         state.getUserData.userState = "checking";

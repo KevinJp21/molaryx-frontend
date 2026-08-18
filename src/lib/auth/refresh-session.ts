@@ -11,12 +11,12 @@ type TSessionTokens = {
 const COOKIE_PATH = "/";
 const REFRESH_TIMEOUT_MS = 10_000;
 
-const authCookieName = () => getObfuscatedCookieName(AUTH_TOKEN);
-const refreshCookieName = () => getObfuscatedCookieName(REFRESH_TOKEN);
+export const authCookieName = () => getObfuscatedCookieName(AUTH_TOKEN);
+export const refreshCookieName = () => getObfuscatedCookieName(REFRESH_TOKEN);
 
 const refreshInFlight = new Map<string, Promise<TSessionTokens | null>>();
 
-const authCookieOptions = {
+export const authCookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax" as const,
@@ -24,7 +24,7 @@ const authCookieOptions = {
   maxAge: 60 * 15,
 };
 
-const refreshCookieOptions = {
+export const refreshCookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax" as const,
@@ -49,8 +49,17 @@ export function continueWithSession(req: NextRequest, tokens: TSessionTokens) {
   req.cookies.set(authCookieName(), tokens.auth_token);
   req.cookies.set(refreshCookieName(), tokens.refresh_token);
 
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set(
+    "cookie",
+    req.cookies
+      .getAll()
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join("; "),
+  );
+
   const response = NextResponse.next({
-    request: { headers: req.headers },
+    request: { headers: requestHeaders },
   });
   applySessionCookies(response, tokens);
   return response;

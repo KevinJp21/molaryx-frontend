@@ -39,6 +39,8 @@ export const RouteGuard = ({ children }: Props) => {
     router.replace(DASHBOARD_HOME_ROUTE);
   }, [isUserReady, pathname, userData, router]);
 
+  if (status === 'error') return null;
+
   // No renderizar la ruta hasta confirmar permisos
   if (!isUserReady || !isAllowed) {
     return <RouteLoading />;

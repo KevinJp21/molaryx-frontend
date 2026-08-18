@@ -63,10 +63,9 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     }
   }, [pathname, router, status, userState, isProtectedRoute, isPublicAuthRoute]);
 
-  const isCheckingSession = status === "idle" || status === "loading";
-
-  // Logo animado en rutas protegidas mientras valida sesión con el API
-  if (isCheckingSession && isProtectedRoute) {
+  // En dashboard no pintes la app hasta haber sesión. Si getUser falla por
+  // carrera del refresh, RouteGuard se quedaba en el logo con status error.
+  if (isProtectedRoute && userState !== "authenticated") {
     return (
       <div className="flex min-h-screen w-full flex-1 flex-col items-center justify-center bg-background">
         <Image
