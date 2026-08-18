@@ -15,6 +15,7 @@ export interface IGetAppointmentsResponseData {
     serviceName: string;
     idPatientTreatment?: number | null;
     patientTreatmentName?: string | null;
+    price?: number | null;
     idAppointmentStatus: number;
     appointmentStatus?: string | null;
     appointmentStatusName?: string | null;

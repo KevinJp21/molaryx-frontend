@@ -19,6 +19,7 @@ export type TAppointmentCalendarEvent = {
   idService: number;
   idPatientTreatment: number | null;
   patientTreatmentName: string | null;
+  price: number | null;
   patientName: string;
   professionalName: string;
   serviceName: string;

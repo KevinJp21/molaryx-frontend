@@ -19,6 +19,7 @@ export interface IAppointmentListItems {
   serviceName: string;
   idPatientTreatment?: number | null;
   patientTreatmentName?: string | null;
+  price?: number | null;
   idAppointmentStatus: number;
   appointmentStatus: string;
   startAt: string;

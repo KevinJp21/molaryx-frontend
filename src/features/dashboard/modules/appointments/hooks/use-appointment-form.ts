@@ -73,6 +73,8 @@ export const useAppointmentForm = ({
   const endAt = useWatch({ control, name: "endAt" });
   const watchedStatusId = useWatch({ control, name: "idAppointmentStatus" });
   const idPatient = useWatch({ control, name: "idPatient" });
+  const idPatientTreatment = useWatch({ control, name: "idPatientTreatment" });
+  const hasTreatment = (idPatientTreatment ?? 0) > 0;
 
   const {
     patientItems,
@@ -180,11 +182,23 @@ export const useAppointmentForm = ({
   };
 
   const onSubmit = (data: TAppointmentForm) => {
+    const hasTreatment = (data.idPatientTreatment ?? 0) > 0;
     const payload = {
       idPatient: data.idPatient,
       idUser: data.idUser,
       idService: data.idService,
-      idPatientTreatment: data.idPatientTreatment ?? null,
+      idPatientTreatment: hasTreatment
+        ? data.idPatientTreatment
+        : isEdit
+          ? 0
+          : null,
+      price: hasTreatment
+        ? null
+        : data.price
+          ? Number(data.price)
+          : isEdit
+            ? 0
+            : null,
       startAt: colombiaToUtcIso(data.startAt),
       endAt: colombiaToUtcIso(data.endAt),
       notes: data.notes?.trim() || undefined,
@@ -229,5 +243,6 @@ export const useAppointmentForm = ({
     searchServices,
     treatmentItems,
     treatmentsStatus,
+    hasTreatment,
   };
 };

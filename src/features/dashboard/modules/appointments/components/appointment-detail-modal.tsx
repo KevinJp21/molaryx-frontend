@@ -6,7 +6,7 @@ import { Badge, BaseModal, Button } from "@/components";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";
-import { formatDate } from "@/utils";
+import { currencyFormat, formatDate, toColombiaDate } from "@/utils";
 import {
   PaymentFormModal,
   PaymentsTable,
@@ -14,7 +14,6 @@ import {
 import { APPOINTMENT_STATUS, getAppointmentStatusLabel } from "../consts";
 import { IAppointmentListItems } from "../interfaces";
 import { formatDuration } from "../utils/format-time";
-import { toColombiaDate } from "@/utils";
 
 type Props = {
   open: boolean;
@@ -100,6 +99,9 @@ export const AppointmentDetailModal = ({
               label="Plan de tratamiento"
               value={appointment.patientTreatmentName || "Sin plan"}
             />
+            {appointment.price != null && (
+              <Field label="Precio" value={currencyFormat(appointment.price)} />
+            )}
             <div className="flex flex-col gap-1">
               <span className="text-xs text-ink-400">Estado</span>
               <Badge variant={statusBadgeVariant(appointment.idAppointmentStatus)}>

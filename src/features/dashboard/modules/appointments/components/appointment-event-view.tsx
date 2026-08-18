@@ -2,7 +2,7 @@
 
 import { CalendarDays, Clock, Edit2, Trash2, X } from "lucide-react";
 import { Button } from "@/components";
-import { formatDate } from "@/utils";
+import { currencyFormat, formatDate } from "@/utils";
 import { formatDuration, formatEventTime } from "../utils/format-time";
 import type { TAppointmentCalendarEvent } from "../types";
 
@@ -131,6 +131,9 @@ export const AppointmentEventView = ({
           label="Plan de tratamiento"
           value={event.patientTreatmentName || "Sin plan"}
         />
+        {event.price != null && (
+          <InfoRow label="Precio" value={currencyFormat(event.price)} />
+        )}
       </div>
     </div>
   </div>

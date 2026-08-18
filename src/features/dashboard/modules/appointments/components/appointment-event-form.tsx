@@ -37,6 +37,7 @@ type Props = {
   searchServices: (query: string) => void;
   treatmentItems: SelectItem[];
   treatmentsStatus: string;
+  hasTreatment: boolean;
 };
 
 export const AppointmentEventForm = ({
@@ -62,6 +63,7 @@ export const AppointmentEventForm = ({
   searchServices,
   treatmentItems,
   treatmentsStatus,
+  hasTreatment,
 }: Props) => {
   const { setValue, getValues, control } = methods;
   const idPatient = useWatch({ control, name: "idPatient" });
@@ -138,6 +140,14 @@ export const AppointmentEventForm = ({
               (treatmentsStatus === "loading" && treatmentItems.length === 0)
             }
             emptyLabel={hasPatient ? "Sin plan de tratamiento" : undefined}
+            onChange={(value) => {
+              if (typeof value === "number" && value > 0) {
+                setValue("price", null, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+              }
+            }}
           />
 
           {hasPatient &&
@@ -147,6 +157,15 @@ export const AppointmentEventForm = ({
                 Este paciente no tiene planes de tratamiento activos.
               </p>
             )}
+
+          {!hasTreatment && (
+            <CustomFormField
+              name="price"
+              label="Precio (opcional)"
+              placeholder="0"
+              mode="currency"
+            />
+          )}
 
           <CustomFormSelect
             name="idUser"

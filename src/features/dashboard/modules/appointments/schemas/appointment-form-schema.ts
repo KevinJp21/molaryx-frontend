@@ -4,18 +4,41 @@ import { APPOINTMENT_STATUS } from "../consts/appointment-status";
 
 const requiredId = (message: string) => z.number().min(1, message);
 
+const optionalPrice = z
+  .union([z.number(), z.string(), z.null()])
+  .transform((value) => {
+    if (value === "" || value == null) return null;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  })
+  .refine((value) => value == null || value > 0, {
+    message: "El precio debe ser mayor a 0.",
+  })
+  .refine((value) => value == null || value === Number(value.toFixed(2)), {
+    message: "El precio solo admite hasta 2 decimales.",
+  });
+
 export const AppointmentFormSchema = z
   .object({
     idPatient: requiredId("Selecciona un paciente"),
     idUser: requiredId("Selecciona un profesional"),
     idService: requiredId("Selecciona un servicio"),
     idPatientTreatment: z.number().nullable(),
+    price: optionalPrice,
     idAppointmentStatus: requiredId("Selecciona un estado"),
     startAt: z.string().min(1, "La fecha de inicio es obligatoria"),
     endAt: z.string().min(1, "La fecha de fin es obligatoria"),
     notes: z.string().optional(),
   })
   .superRefine((data, ctx) => {
+    if ((data.idPatientTreatment ?? 0) > 0 && data.price != null) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["price"],
+        message: "La cita no puede tener plan de tratamiento y precio a la vez.",
+      });
+    }
+
     const start = new Date(data.startAt);
     const end = new Date(data.endAt);
 
@@ -60,6 +83,7 @@ export const buildAppointmentFormDefaults = (
     idUser: 0,
     idService: 0,
     idPatientTreatment: null,
+    price: null,
     idAppointmentStatus: APPOINTMENT_STATUS.PENDING,
     startAt: format(start, "yyyy-MM-dd'T'HH:mm"),
     endAt: format(end, "yyyy-MM-dd'T'HH:mm"),

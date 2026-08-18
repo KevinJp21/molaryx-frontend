@@ -49,6 +49,7 @@ export const mapAppointmentsToEvents = (
       idService: appointment.idService,
       idPatientTreatment: appointment.idPatientTreatment ?? null,
       patientTreatmentName: appointment.patientTreatmentName ?? null,
+      price: appointment.price ?? null,
       patientName,
       professionalName,
       serviceName,

@@ -115,6 +115,7 @@ export const AppointmentEventModal = ({
                 searchServices={form.searchServices}
                 treatmentItems={form.treatmentItems}
                 treatmentsStatus={form.treatmentsStatus}
+                hasTreatment={form.hasTreatment}
               />
             </div>
           )}
