@@ -25,7 +25,6 @@ import {
 } from "@/components";
 import {
     TREATMENT_STATUS,
-    TREATMENT_STATUS_FILTER_OPTIONS,
     getTreatmentStatusLabel,
     isFinalTreatmentStatus,
 } from "../consts";
@@ -56,23 +55,19 @@ export const PatientTreatmentsTable = ({
     const dispatch = useAppDispatch();
     const { data, status, message } = useAppSelector(selectGetPatientTreatments);
     const [currentPage, setCurrentPage] = useState(1);
-    const [statusFilter, setStatusFilter] = useState<number | undefined>(
-        undefined,
-    );
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [encodedPatientId, statusFilter]);
+    }, [encodedPatientId]);
 
     useEffect(() => {
         dispatch(
             getPatientTreatments({
                 IdPatient: encodedPatientId,
                 Page: currentPage,
-                IdTreatmentStatus: statusFilter,
             }),
         );
-    }, [dispatch, encodedPatientId, currentPage, statusFilter, refreshKey]);
+    }, [dispatch, encodedPatientId, currentPage, refreshKey]);
 
     const items = data?.items ?? [];
     const totalPages = data?.totalPages ?? 0;
@@ -86,27 +81,6 @@ export const PatientTreatmentsTable = ({
 
     return (
         <section className="flex-1 relative flex w-full flex-col overflow-hidden">
-            <div className="mb-3 flex flex-wrap gap-2">
-                <Button
-                    type="button"
-                    size="sm"
-                    variant={statusFilter == null ? "default" : "outline"}
-                    onClick={() => setStatusFilter(undefined)}
-                >
-                    Todos
-                </Button>
-                {TREATMENT_STATUS_FILTER_OPTIONS.map((option) => (
-                    <Button
-                        key={option.value}
-                        type="button"
-                        size="sm"
-                        variant={statusFilter === option.value ? "default" : "outline"}
-                        onClick={() => setStatusFilter(option.value)}
-                    >
-                        {option.name}
-                    </Button>
-                ))}
-            </div>
             <BaseTable
                 currentPage={currentPage}
                 totalPages={totalPages}

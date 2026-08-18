@@ -2,8 +2,11 @@ import { createAppSlice } from "../slice";
 import { TStatus } from "@/types";
 import {
   IGetAppointmentsResponseData,
+  IGetAppointmentsListResponseData,
   apiGetAppointmentsAction,
+  apiGetAppointmentsListAction,
   TGetAppointmentsParams,
+  TGetAppointmentsListParams,
   IPostAppointmentFormRequest,
   apiPostCreateAppointmentAction,
   IPutUpdateAppointmentFormRequest,
@@ -14,6 +17,12 @@ type TAppointmentsState = {
   getAppointments: {
     status: TStatus;
     data?: IGetAppointmentsResponseData[];
+    message?: string;
+    error?: string;
+  };
+  getAppointmentsList: {
+    status: TStatus;
+    data?: IGetAppointmentsListResponseData;
     message?: string;
     error?: string;
   };
@@ -31,6 +40,12 @@ type TAppointmentsState = {
 
 const initialState: TAppointmentsState = {
   getAppointments: {
+    status: "idle",
+    data: undefined,
+    message: undefined,
+    error: undefined,
+  },
+  getAppointmentsList: {
     status: "idle",
     data: undefined,
     message: undefined,
@@ -76,6 +91,33 @@ const appointmentsSlice = createAppSlice({
           state.getAppointments.message = action.error.message;
           state.getAppointments.error = undefined;
           state.getAppointments.data = undefined;
+        },
+      },
+    ),
+    getAppointmentsList: create.asyncThunk(
+      async (params?: TGetAppointmentsListParams) =>
+        await apiGetAppointmentsListAction(params),
+      {
+        pending: (state) => {
+          state.getAppointmentsList.status = "loading";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.getAppointmentsList.status = "error";
+            state.getAppointmentsList.message = action.payload.message;
+            state.getAppointmentsList.error = action.payload.error ?? undefined;
+            state.getAppointmentsList.data = undefined;
+            return;
+          }
+          state.getAppointmentsList.status = "success";
+          state.getAppointmentsList.message = action.payload.message;
+          state.getAppointmentsList.data = action.payload.data ?? undefined;
+        },
+        rejected: (state, action) => {
+          state.getAppointmentsList.status = "error";
+          state.getAppointmentsList.message = action.error.message;
+          state.getAppointmentsList.error = undefined;
+          state.getAppointmentsList.data = undefined;
         },
       },
     ),
@@ -136,11 +178,24 @@ const appointmentsSlice = createAppSlice({
   }),
   selectors: {
     selectGetAppointments: (state) => state.getAppointments,
+    selectGetAppointmentsList: (state) => state.getAppointmentsList,
     selectPostCreateAppointment: (state) => state.postCreateAppointment,
     selectPutUpdateAppointment: (state) => state.putUpdateAppointment,
   },
 });
 
-export const { getAppointments, postCreateAppointment, resetPostCreateAppointment, putUpdateAppointment, resetPutUpdateAppointment } = appointmentsSlice.actions;
-export const { selectGetAppointments, selectPostCreateAppointment, selectPutUpdateAppointment } = appointmentsSlice.selectors;
+export const {
+  getAppointments,
+  getAppointmentsList,
+  postCreateAppointment,
+  resetPostCreateAppointment,
+  putUpdateAppointment,
+  resetPutUpdateAppointment,
+} = appointmentsSlice.actions;
+export const {
+  selectGetAppointments,
+  selectGetAppointmentsList,
+  selectPostCreateAppointment,
+  selectPutUpdateAppointment,
+} = appointmentsSlice.selectors;
 export default appointmentsSlice.reducer;

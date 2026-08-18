@@ -8,8 +8,9 @@ import { TPaginationParams } from "@/types";
 
 export type TGetPaymentsParams = TPaginationParams &
   (
-    | { IdPatient: string; IdPatientTreatment?: never }
-    | { IdPatientTreatment: number; IdPatient?: never }
+    | { IdPatient: string; IdPatientTreatment?: never; IdAppointment?: never }
+    | { IdPatientTreatment: number; IdPatient?: never; IdAppointment?: never }
+    | { IdAppointment: number; IdPatient?: never; IdPatientTreatment?: never }
   );
 
 export const apiGetPaymentsAction = async (
@@ -21,7 +22,9 @@ export const apiGetPaymentsAction = async (
   const { Page, Size } = params;
   const query = new URLSearchParams();
 
-  if ("IdPatientTreatment" in params && params.IdPatientTreatment) {
+  if ("IdAppointment" in params && params.IdAppointment) {
+    query.append("IdAppointment", params.IdAppointment.toString());
+  } else if ("IdPatientTreatment" in params && params.IdPatientTreatment) {
     query.append("IdPatientTreatment", params.IdPatientTreatment.toString());
   } else if ("IdPatient" in params && params.IdPatient) {
     const idPatient = Number(decodeId(params.IdPatient));
@@ -37,7 +40,7 @@ export const apiGetPaymentsAction = async (
   } else {
     return {
       success: false,
-      message: "Indique solo un filtro: paciente o tratamiento del paciente.",
+      message: "Indique solo un filtro: paciente, cita o tratamiento del paciente.",
     };
   }
 

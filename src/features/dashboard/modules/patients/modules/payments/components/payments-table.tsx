@@ -23,8 +23,9 @@ import { IPaymentItems } from "../interfaces";
 import { PaymentDetailModal } from "./payment-detail-modal";
 
 type Props = {
-    encodedPatientId: string;
+    encodedPatientId?: string;
     idPatientTreatment?: number;
+    idAppointment?: number;
     refreshKey?: number;
     emptyMessage?: string;
 };
@@ -48,6 +49,7 @@ const notePreview = (notes: string | null) => {
 export const PaymentsTable = ({
     encodedPatientId,
     idPatientTreatment,
+    idAppointment,
     refreshKey = 0,
     emptyMessage = "Este paciente no tiene pagos registrados.",
 }: Props) => {
@@ -56,14 +58,25 @@ export const PaymentsTable = ({
     const [currentPage, setCurrentPage] = useState(1);
     const [detailOpen, setDetailOpen] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState<IPaymentItems | null>(null);
-    const showReference = idPatientTreatment == null;
+    const showReference =
+        idPatientTreatment == null && idAppointment == null;
     const colSpan = showReference ? 6 : 5;
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [encodedPatientId, idPatientTreatment]);
+    }, [encodedPatientId, idPatientTreatment, idAppointment]);
 
     useEffect(() => {
+        if (idAppointment != null) {
+            dispatch(
+                getPayments({
+                    IdAppointment: idAppointment,
+                    Page: currentPage,
+                }),
+            );
+            return;
+        }
+
         if (idPatientTreatment != null) {
             dispatch(
                 getPayments({
@@ -74,13 +87,22 @@ export const PaymentsTable = ({
             return;
         }
 
+        if (!encodedPatientId) return;
+
         dispatch(
             getPayments({
                 IdPatient: encodedPatientId,
                 Page: currentPage,
             }),
         );
-    }, [dispatch, encodedPatientId, idPatientTreatment, currentPage, refreshKey]);
+    }, [
+        dispatch,
+        encodedPatientId,
+        idPatientTreatment,
+        idAppointment,
+        currentPage,
+        refreshKey,
+    ]);
 
     const items = data?.items ?? [];
     const totalPages = data?.totalPages ?? 0;
