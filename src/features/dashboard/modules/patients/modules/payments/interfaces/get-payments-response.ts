@@ -6,6 +6,29 @@ export interface IGetPaymentsResponse
 export interface IGetPaymentsResponseData
   extends TPaginationResponse<IPaymentItems> {}
 
+export interface IPaymentAppointment {
+  idAppointment: number;
+  idService: number;
+  serviceName: string;
+  idAppointmentStatus: number;
+  appointmentStatus: string;
+  startAt: string;
+  endAt: string;
+  professionalName: string;
+  professionalSurname: string;
+}
+
+export interface IPaymentPatientTreatment {
+  idPatientTreatment: number;
+  idTreatment: number;
+  treatmentName: string;
+  agreedPrice: number | null;
+  idTreatmentStatus: number;
+  treatmentStatus: string;
+  startAt: string;
+  endAt: string | null;
+}
+
 export interface IPaymentItems {
   idPayment: number;
   idPatient: number;
@@ -16,4 +39,6 @@ export interface IPaymentItems {
   idPaymentMethod: number;
   paymentMethod: string;
   notes: string | null;
+  appointment: IPaymentAppointment | null;
+  patientTreatment: IPaymentPatientTreatment | null;
 }

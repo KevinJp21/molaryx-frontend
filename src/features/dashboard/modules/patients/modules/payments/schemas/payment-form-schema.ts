@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { colombiaToUtcIso } from "@/utils";
+import { PAYMENT_CONTEXT } from "../consts";
 
 const PAID_AT_TOLERANCE_MS = 5 * 60 * 1000;
 
@@ -39,6 +40,8 @@ const optionalNotes = z
   });
 
 export const PaymentFormSchema = z.object({
+  paymentContext: z.string(),
+  idAppointment: z.number().nullable(),
   idPatientTreatment: z.number().nullable(),
   amount,
   paidAt,
@@ -46,20 +49,44 @@ export const PaymentFormSchema = z.object({
   notes: optionalNotes,
 });
 
-export const PatientTreatmentPaymentFormSchema = PaymentFormSchema.extend({
-  idPatientTreatment: z
-    .number()
-    .min(1, "Selecciona un plan de tratamiento")
-    .nullable()
-    .refine((value) => value != null && value > 0, {
-      message: "Selecciona un plan de tratamiento",
-    }),
-});
+export const PatientPaymentFormSchema = PaymentFormSchema.superRefine(
+  (data, ctx) => {
+    if (data.paymentContext === PAYMENT_CONTEXT.APPOINTMENT) {
+      if (data.idAppointment == null || data.idAppointment <= 0) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["idAppointment"],
+          message: "Selecciona una cita",
+        });
+      }
+      return;
+    }
+
+    if (data.paymentContext === PAYMENT_CONTEXT.PATIENT_TREATMENT) {
+      if (data.idPatientTreatment == null || data.idPatientTreatment <= 0) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["idPatientTreatment"],
+          message: "Selecciona un plan de tratamiento",
+        });
+      }
+      return;
+    }
+
+    ctx.addIssue({
+      code: "custom",
+      path: ["paymentContext"],
+      message: "Selecciona si el pago corresponde a una cita o a un plan",
+    });
+  },
+);
 
 export type TPaymentForm = z.input<typeof PaymentFormSchema>;
 export type TPaymentFormValues = z.output<typeof PaymentFormSchema>;
 
 export const PAYMENT_FORM_DEFAULT_VALUES: TPaymentForm = {
+  paymentContext: "",
+  idAppointment: null,
   idPatientTreatment: null,
   amount: null,
   paidAt: "",

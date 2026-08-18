@@ -30,12 +30,9 @@ type Props = {
     emptyMessage?: string;
 };
 
-const paymentReference = (
-    idAppointment: number | null,
-    idPatientTreatment: number | null,
-) => {
-    if (idAppointment) return "Cita";
-    if (idPatientTreatment) return "Plan de tratamiento";
+const paymentReference = (payment: IPaymentItems) => {
+    if (payment.appointment) return "Cita";
+    if (payment.patientTreatment) return "Plan de tratamiento";
     return "—";
 };
 
@@ -183,10 +180,7 @@ export const PaymentsTable = ({
                                         <TableCell>{item.paymentMethod}</TableCell>
                                         {showReference && (
                                             <TableCell>
-                                                {paymentReference(
-                                                    item.idAppointment,
-                                                    item.idPatientTreatment,
-                                                )}
+                                                {paymentReference(item)}
                                             </TableCell>
                                         )}
                                         <TableCell>

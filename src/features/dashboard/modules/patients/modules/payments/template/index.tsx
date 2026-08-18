@@ -37,7 +37,7 @@ export const PaymentsTemplate = ({ encodedPatientId }: Props) => {
                 {canCreate && (
                     <Button onClick={() => setModalOpen(true)}>
                         <PlusIcon className="h-4 w-4" />
-                        Registrar abono
+                        Registrar pago
                     </Button>
                 )}
             </section>

@@ -24,11 +24,8 @@ const Field = ({
     </div>
 );
 
-const paymentReference = (payment: IPaymentItems) => {
-    if (payment.idAppointment) return "Cita";
-    if (payment.idPatientTreatment) return "Plan de tratamiento";
-    return "General";
-};
+const fullName = (...parts: Array<string | null | undefined>) =>
+    parts.filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
 
 export const PaymentDetailModal = ({
     open,
@@ -36,6 +33,9 @@ export const PaymentDetailModal = ({
     payment,
 }: Props) => {
     if (!payment) return null;
+
+    const appointment = payment.appointment;
+    const patientTreatment = payment.patientTreatment;
 
     return (
         <BaseModal
@@ -55,8 +55,80 @@ export const PaymentDetailModal = ({
                     />
                     <Field label="Monto" value={currencyFormat(payment.amount)} />
                     <Field label="Método de pago" value={payment.paymentMethod} />
-                    <Field label="Referencia" value={paymentReference(payment)} />
+                    <Field
+                        label="Referencia"
+                        value={
+                            appointment
+                                ? "Cita"
+                                : patientTreatment
+                                    ? "Plan de tratamiento"
+                                    : "—"
+                        }
+                    />
                 </div>
+
+                {appointment && (
+                    <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
+                        <h3 className="text-sm font-medium text-ink-50">Cita</h3>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <Field label="Servicio" value={appointment.serviceName} />
+                            <Field
+                                label="Estado"
+                                value={appointment.appointmentStatus}
+                            />
+                            <Field
+                                label="Fecha"
+                                value={formatDate(
+                                    appointment.startAt,
+                                    "d MMM yyyy · HH:mm",
+                                    { hour12: true },
+                                )}
+                            />
+                            <Field
+                                label="Profesional"
+                                value={fullName(
+                                    appointment.professionalName,
+                                    appointment.professionalSurname,
+                                )}
+                            />
+                        </div>
+                    </section>
+                )}
+
+                {patientTreatment && (
+                    <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
+                        <h3 className="text-sm font-medium text-ink-50">
+                            Plan de tratamiento
+                        </h3>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <Field
+                                label="Tratamiento"
+                                value={patientTreatment.treatmentName}
+                            />
+                            <Field
+                                label="Estado"
+                                value={patientTreatment.treatmentStatus}
+                            />
+                            <Field
+                                label="Inicio"
+                                value={formatDate(
+                                    patientTreatment.startAt,
+                                    "d MMM yyyy · HH:mm",
+                                    { hour12: true },
+                                )}
+                            />
+                            <Field
+                                label="Precio acordado"
+                                value={
+                                    patientTreatment.agreedPrice != null
+                                        ? currencyFormat(patientTreatment.agreedPrice)
+                                        : null
+                                }
+                            />
+                        </div>
+                    </section>
+                )}
+
                 <div className="mt-5 flex flex-col gap-2">
                     <span className="text-xs text-ink-400">Notas</span>
                     <p className="whitespace-pre-wrap rounded-lg border border-ink-800 bg-ink-900/30 p-4 text-sm text-ink-100">

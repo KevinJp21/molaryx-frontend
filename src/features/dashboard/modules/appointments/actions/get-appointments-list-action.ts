@@ -2,11 +2,12 @@
 
 import { serverApi } from "@/lib/api/server";
 import { handleApiError } from "@/lib/api/error-handler";
+import { decodeId } from "@/utils/code-and-decode-id";
 import { IGetAppointmentsListResponse } from "../interfaces";
 import { TPaginationParams } from "@/types";
 
 export type TGetAppointmentsListParams = TPaginationParams & {
-  IdPatient?: number;
+  IdPatient?: number | string;
   IdProfessional?: number;
   IdAppointmentStatus?: number;
 };
@@ -23,7 +24,19 @@ export const apiGetAppointmentsListAction = async (
   const query = new URLSearchParams();
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
-  if (IdPatient) query.append("IdPatient", IdPatient.toString());
+  if (IdPatient != null && IdPatient !== "") {
+    const idPatient =
+      typeof IdPatient === "number" ? IdPatient : Number(decodeId(IdPatient));
+
+    if (!idPatient) {
+      return {
+        success: false,
+        message: "El paciente no es válido.",
+      };
+    }
+
+    query.append("IdPatient", idPatient.toString());
+  }
   if (IdProfessional) query.append("IdProfessional", IdProfessional.toString());
   if (IdAppointmentStatus) {
     query.append("IdAppointmentStatus", IdAppointmentStatus.toString());
