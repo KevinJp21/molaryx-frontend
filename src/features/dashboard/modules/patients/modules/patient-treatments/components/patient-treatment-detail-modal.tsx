@@ -7,7 +7,11 @@ import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";
 import { currencyFormat, formatDate } from "@/utils";
-import { PaymentFormModal, PaymentsTable } from "@/features/dashboard/modules/payments/components";
+import {
+    PaymentFormModal,
+    PaymentSummaryByConcept,
+    PaymentsTable,
+} from "@/features/dashboard/modules/payments/components";
 import { getTreatmentStatusLabel, TREATMENT_STATUS } from "../consts";
 import { IPatientTreatmentItems } from "../interfaces";
 
@@ -49,6 +53,11 @@ export const PatientTreatmentDetailModal = ({
         userData?.permissions,
         "PAYMENTS",
         "GET_PAYMENTS",
+    );
+    const canViewPaymentSummary = hasPermissionCode(
+        userData?.permissions,
+        "PAYMENTS",
+        "GET_PAYMENTS_SUMMARY_BY_CONCEPT",
     );
     const canCreatePayment = hasPermissionCode(
         userData?.permissions,
@@ -141,6 +150,13 @@ export const PatientTreatmentDetailModal = ({
                                 </Button>
                             )}
                         </div>
+                        {canViewPaymentSummary && (
+                            <PaymentSummaryByConcept
+                                open={open}
+                                idPatientTreatment={patientTreatment.idPatientTreatment}
+                                refreshKey={paymentsRefreshKey}
+                            />
+                        )}
                         {canViewPayments ? (
                             <PaymentsTable
                                 encodedPatientId={encodedPatientId}
@@ -148,11 +164,11 @@ export const PatientTreatmentDetailModal = ({
                                 refreshKey={paymentsRefreshKey}
                                 emptyMessage="Este plan no tiene pagos registrados."
                             />
-                        ) : (
+                        ) : !canViewPaymentSummary ? (
                             <p className="text-sm text-ink-400">
                                 No tienes permiso para ver los pagos de este plan.
                             </p>
-                        )}
+                        ) : null}
                     </section>
                 </div>
             </div>

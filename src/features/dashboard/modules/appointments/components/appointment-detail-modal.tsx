@@ -9,6 +9,7 @@ import { hasPermissionCode } from "@/features/dashboard/utils";
 import { currencyFormat, formatDate, toColombiaDate } from "@/utils";
 import {
   PaymentFormModal,
+  PaymentSummaryByConcept,
   PaymentsTable,
 } from "@/features/dashboard/modules/payments/components";
 import { APPOINTMENT_STATUS, getAppointmentStatusLabel } from "../consts";
@@ -54,6 +55,11 @@ export const AppointmentDetailModal = ({
     userData?.permissions,
     "PAYMENTS",
     "GET_PAYMENTS",
+  );
+  const canViewPaymentSummary = hasPermissionCode(
+    userData?.permissions,
+    "PAYMENTS",
+    "GET_PAYMENTS_SUMMARY_BY_CONCEPT",
   );
   const canCreatePayment = hasPermissionCode(
     userData?.permissions,
@@ -122,7 +128,7 @@ export const AppointmentDetailModal = ({
             <Field label="Notas" value={appointment.notes} />
           </div>
 
-          {canViewPayments && (
+          {(canViewPayments || canViewPaymentSummary) && (
             <section className="flex flex-col gap-3">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex flex-col gap-1">
@@ -139,11 +145,21 @@ export const AppointmentDetailModal = ({
                 )}
               </div>
 
-              <PaymentsTable
-                idAppointment={appointment.idAppointment}
-                refreshKey={paymentsRefreshKey}
-                emptyMessage="Esta cita no tiene pagos registrados."
-              />
+              {canViewPaymentSummary && (
+                <PaymentSummaryByConcept
+                  open={open}
+                  idAppointment={appointment.idAppointment}
+                  refreshKey={paymentsRefreshKey}
+                />
+              )}
+
+              {canViewPayments && (
+                <PaymentsTable
+                  idAppointment={appointment.idAppointment}
+                  refreshKey={paymentsRefreshKey}
+                  emptyMessage="Esta cita no tiene pagos registrados."
+                />
+              )}
             </section>
           )}
         </div>

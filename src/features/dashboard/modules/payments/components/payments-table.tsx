@@ -181,7 +181,7 @@ export const PaymentsTable = ({
                                                 hour12: true,
                                             })}
                                         </TableCell>
-                                        <TableCell className="font-mono tabular-nums">
+                                        <TableCell className="tabular-nums">
                                             {currencyFormat(item.amount)}
                                         </TableCell>
                                         <TableCell>{item.paymentMethod}</TableCell>
