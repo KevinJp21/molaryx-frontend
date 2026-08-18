@@ -1,12 +1,13 @@
 "use client";
 
-import { ClipboardPlus } from "lucide-react";
-import { Badge, BaseModal } from "@/components";
+import { useState } from "react";
+import { ClipboardPlus, PlusIcon } from "lucide-react";
+import { Badge, BaseModal, Button } from "@/components";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";
 import { currencyFormat, formatDate } from "@/utils";
-import { PaymentsTable } from "../../payments/components";
+import { PaymentFormModal, PaymentsTable } from "../../payments/components";
 import { getTreatmentStatusLabel, TREATMENT_STATUS } from "../consts";
 import { IPatientTreatmentItems } from "../interfaces";
 
@@ -49,8 +50,18 @@ export const PatientTreatmentDetailModal = ({
         "PAYMENTS",
         "GET_PAYMENTS",
     );
+    const canCreatePayment = hasPermissionCode(
+        userData?.permissions,
+        "PAYMENTS",
+        "CREATE_PAYMENT",
+    );
+    const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+    const [paymentsRefreshKey, setPaymentsRefreshKey] = useState(0);
 
     if (!patientTreatment) return null;
+
+    const canReceivePayment =
+        patientTreatment.idTreatmentStatus !== TREATMENT_STATUS.CANCELLED;
 
     const paymentSummary =
         patientTreatment.agreedPrice != null
@@ -113,16 +124,28 @@ export const PatientTreatmentDetailModal = ({
                     </div>
 
                     <section className="flex flex-col gap-3">
-                        <div className="flex flex-col gap-1">
-                            <h3 className="text-sm font-medium text-ink-50">Pagos</h3>
-                            <p className="text-xs text-ink-400">
-                                Pagos registrados para este plan
-                            </p>
+                        <div className="flex items-center justify-between gap-3">
+                            <div className="flex flex-col gap-1">
+                                <h3 className="text-sm font-medium text-ink-50">Pagos</h3>
+                                <p className="text-xs text-ink-400">
+                                    Pagos registrados para este plan
+                                </p>
+                            </div>
+                            {canCreatePayment && canReceivePayment && (
+                                <Button
+                                    size="sm"
+                                    onClick={() => setPaymentModalOpen(true)}
+                                >
+                                    <PlusIcon className="h-4 w-4" />
+                                    Registrar abono
+                                </Button>
+                            )}
                         </div>
                         {canViewPayments ? (
                             <PaymentsTable
                                 encodedPatientId={encodedPatientId}
                                 idPatientTreatment={patientTreatment.idPatientTreatment}
+                                refreshKey={paymentsRefreshKey}
                                 emptyMessage="Este plan no tiene pagos registrados."
                             />
                         ) : (
@@ -133,6 +156,14 @@ export const PatientTreatmentDetailModal = ({
                     </section>
                 </div>
             </div>
+            <PaymentFormModal
+                open={paymentModalOpen}
+                onOpenChange={setPaymentModalOpen}
+                idPatient={patientTreatment.idPatient}
+                idPatientTreatment={patientTreatment.idPatientTreatment}
+                contextLabel={`Abono al plan ${patientTreatment.treatmentName}`}
+                onSuccess={() => setPaymentsRefreshKey((key) => key + 1)}
+            />
         </BaseModal>
     );
 };

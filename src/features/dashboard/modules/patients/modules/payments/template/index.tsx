@@ -1,12 +1,30 @@
 "use client";
 
-import { PaymentsTable } from "../components";
+import { useState } from "react";
+import { PlusIcon } from "lucide-react";
+import { Button } from "@/components";
+import { useAppSelector } from "@/store";
+import { selectGetUserData } from "@/store/authentication/authentication-slice";
+import { hasPermissionCode } from "@/features/dashboard/utils";
+import { PaymentFormModal, PaymentsTable } from "../components";
 
 type Props = {
     encodedPatientId: string;
 };
 
 export const PaymentsTemplate = ({ encodedPatientId }: Props) => {
+    const { data: userData } = useAppSelector(selectGetUserData);
+    const canCreate = hasPermissionCode(
+        userData?.permissions,
+        "PAYMENTS",
+        "CREATE_PAYMENT",
+    );
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [listRefreshKey, setListRefreshKey] = useState(0);
+
+    const refreshList = () => setListRefreshKey((key) => key + 1);
+
     return (
         <>
             <section className="mb-4 flex items-center justify-between">
@@ -16,8 +34,23 @@ export const PaymentsTemplate = ({ encodedPatientId }: Props) => {
                         Historial de pagos de este paciente
                     </p>
                 </div>
+                {canCreate && (
+                    <Button onClick={() => setModalOpen(true)}>
+                        <PlusIcon className="h-4 w-4" />
+                        Registrar abono
+                    </Button>
+                )}
             </section>
-            <PaymentsTable encodedPatientId={encodedPatientId} />
+            <PaymentsTable
+                encodedPatientId={encodedPatientId}
+                refreshKey={listRefreshKey}
+            />
+            <PaymentFormModal
+                open={modalOpen}
+                onOpenChange={setModalOpen}
+                encodedPatientId={encodedPatientId}
+                onSuccess={refreshList}
+            />
         </>
     );
 };

@@ -1,13 +1,17 @@
 "use client";
 
-import { CalendarDays } from "lucide-react";
-import { Badge, BaseModal } from "@/components";
+import { useState } from "react";
+import { CalendarDays, PlusIcon } from "lucide-react";
+import { Badge, BaseModal, Button } from "@/components";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";
 import { formatDate } from "@/utils";
-import { PaymentsTable } from "@/features/dashboard/modules/patients/modules/payments/components";
-import { getAppointmentStatusLabel } from "../consts";
+import {
+  PaymentFormModal,
+  PaymentsTable,
+} from "@/features/dashboard/modules/patients/modules/payments/components";
+import { APPOINTMENT_STATUS, getAppointmentStatusLabel } from "../consts";
 import { IAppointmentListItems } from "../interfaces";
 import { formatDuration } from "../utils/format-time";
 import { toColombiaDate } from "@/utils";
@@ -52,8 +56,19 @@ export const AppointmentDetailModal = ({
     "PAYMENTS",
     "GET_PAYMENTS",
   );
+  const canCreatePayment = hasPermissionCode(
+    userData?.permissions,
+    "PAYMENTS",
+    "CREATE_PAYMENT",
+  );
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [paymentsRefreshKey, setPaymentsRefreshKey] = useState(0);
 
   if (!appointment) return null;
+
+  const canReceivePayment =
+    appointment.idAppointmentStatus !== APPOINTMENT_STATUS.CANCELLED &&
+    appointment.idAppointmentStatus !== APPOINTMENT_STATUS.NO_SHOW;
 
   const patientName = fullName(
     appointment.patientName,
@@ -102,15 +117,24 @@ export const AppointmentDetailModal = ({
           </div>
 
           <section className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1">
-              <h3 className="text-sm font-medium text-ink-50">Pagos</h3>
-              <p className="text-xs text-ink-400">
-                Pagos registrados para esta cita
-              </p>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-col gap-1">
+                <h3 className="text-sm font-medium text-ink-50">Pagos</h3>
+                <p className="text-xs text-ink-400">
+                  Pagos registrados para esta cita
+                </p>
+              </div>
+              {canCreatePayment && canReceivePayment && (
+                <Button size="sm" onClick={() => setPaymentModalOpen(true)}>
+                  <PlusIcon className="h-4 w-4" />
+                  Registrar pago
+                </Button>
+              )}
             </div>
             {canViewPayments ? (
               <PaymentsTable
                 idAppointment={appointment.idAppointment}
+                refreshKey={paymentsRefreshKey}
                 emptyMessage="Esta cita no tiene pagos registrados."
               />
             ) : (
@@ -121,6 +145,14 @@ export const AppointmentDetailModal = ({
           </section>
         </div>
       </div>
+      <PaymentFormModal
+        open={paymentModalOpen}
+        onOpenChange={setPaymentModalOpen}
+        idPatient={appointment.idPatient}
+        idAppointment={appointment.idAppointment}
+        contextLabel={`Pago de la cita de ${appointment.serviceName}`}
+        onSuccess={() => setPaymentsRefreshKey((key) => key + 1)}
+      />
     </BaseModal>
   );
 };
