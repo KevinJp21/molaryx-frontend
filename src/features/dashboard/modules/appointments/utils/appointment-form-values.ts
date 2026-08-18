@@ -18,6 +18,7 @@ export const toAppointmentFormValues = (
     idPatient: event.idPatient,
     idUser: event.idUser,
     idService: event.idService,
+    idPatientTreatment: event.idPatientTreatment ?? null,
     idAppointmentStatus: Number(event.calendarId) || 0,
     startAt: formatDate(event.start, "yyyy-MM-dd'T'HH:mm"),
     endAt: formatDate(event.end, "yyyy-MM-dd'T'HH:mm"),

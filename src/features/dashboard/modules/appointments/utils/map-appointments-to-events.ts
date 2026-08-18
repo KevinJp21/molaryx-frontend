@@ -47,6 +47,8 @@ export const mapAppointmentsToEvents = (
       idPatient: appointment.idPatient,
       idUser: appointment.idUser,
       idService: appointment.idService,
+      idPatientTreatment: appointment.idPatientTreatment ?? null,
+      patientTreatmentName: appointment.patientTreatmentName ?? null,
       patientName,
       professionalName,
       serviceName,

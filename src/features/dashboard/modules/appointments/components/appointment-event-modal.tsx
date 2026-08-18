@@ -66,6 +66,13 @@ export const AppointmentEventModal = ({
             "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
           )}
+          onCloseAutoFocus={(event) => event.preventDefault()}
+          onInteractOutside={(event) => {
+            const target = event.target as HTMLElement | null;
+            if (target?.closest("[data-slot='select-content']")) {
+              event.preventDefault();
+            }
+          }}
         >
           <DialogTitle className="sr-only">
             {mode === "view"
@@ -106,6 +113,8 @@ export const AppointmentEventModal = ({
                 searchPatients={form.searchPatients}
                 searchProfessionals={form.searchProfessionals}
                 searchServices={form.searchServices}
+                treatmentItems={form.treatmentItems}
+                treatmentsStatus={form.treatmentsStatus}
               />
             </div>
           )}

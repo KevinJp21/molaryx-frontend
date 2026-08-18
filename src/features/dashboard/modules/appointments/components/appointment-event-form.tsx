@@ -1,7 +1,7 @@
 "use client";
 
 import { Trash2, X } from "lucide-react";
-import { FormProvider, type UseFormReturn } from "react-hook-form";
+import { FormProvider, useWatch, type UseFormReturn } from "react-hook-form";
 import {
   Button,
   CustomFormField,
@@ -35,6 +35,8 @@ type Props = {
   searchPatients: (query: string) => void;
   searchProfessionals: (query: string) => void;
   searchServices: (query: string) => void;
+  treatmentItems: SelectItem[];
+  treatmentsStatus: string;
 };
 
 export const AppointmentEventForm = ({
@@ -58,8 +60,13 @@ export const AppointmentEventForm = ({
   searchPatients,
   searchProfessionals,
   searchServices,
+  treatmentItems,
+  treatmentsStatus,
 }: Props) => {
-  const { setValue, getValues } = methods;
+  const { setValue, getValues, control } = methods;
+  const idPatient = useWatch({ control, name: "idPatient" });
+  const hasPatient = typeof idPatient === "number" && idPatient > 0;
+  const hasActiveTreatments = treatmentItems.length > 0;
 
   return (
     <FormProvider {...methods}>
@@ -107,7 +114,39 @@ export const AppointmentEventForm = ({
             searchPlaceholder="Buscar paciente..."
             isSearching={patientsStatus === "loading"}
             onSearch={searchPatients}
+            onChange={() =>
+              setValue("idPatientTreatment", null, {
+                shouldDirty: true,
+                shouldValidate: true,
+              })
+            }
           />
+
+          <CustomFormSelect
+            name="idPatientTreatment"
+            label="Plan de tratamiento"
+            placeholder={
+              !hasPatient
+                ? "Selecciona un paciente primero"
+                : treatmentsStatus === "loading"
+                  ? "Cargando planes..."
+                  : "Selecciona un plan (opcional)"
+            }
+            items={treatmentItems}
+            disabled={
+              !hasPatient ||
+              (treatmentsStatus === "loading" && treatmentItems.length === 0)
+            }
+            emptyLabel={hasPatient ? "Sin plan de tratamiento" : undefined}
+          />
+
+          {hasPatient &&
+            treatmentsStatus === "success" &&
+            !hasActiveTreatments && (
+              <p className="text-xs text-ink-400">
+                Este paciente no tiene planes de tratamiento activos.
+              </p>
+            )}
 
           <CustomFormSelect
             name="idUser"

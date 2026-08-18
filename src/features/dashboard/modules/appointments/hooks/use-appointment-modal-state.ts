@@ -13,6 +13,11 @@ type ModalState = {
   initialDate?: Date;
 };
 
+const blurActiveElement = () => {
+  const active = document.activeElement;
+  if (active instanceof HTMLElement) active.blur();
+};
+
 export const useAppointmentModalState = () => {
   const [modalState, setModalState] = useState<ModalState>({
     open: false,
@@ -20,19 +25,25 @@ export const useAppointmentModalState = () => {
     event: null,
   });
 
-  const openEvent = (event: TAppointmentCalendarEvent) =>
+  const openEvent = (event: TAppointmentCalendarEvent) => {
+    blurActiveElement();
     setModalState({ open: true, mode: "view", event });
+  };
 
-  const openCreate = (initialDate?: Date) =>
+  const openCreate = (initialDate?: Date) => {
+    blurActiveElement();
     setModalState({
       open: true,
       mode: "create",
       event: null,
       initialDate: initialDate ?? new Date(),
     });
+  };
 
-  const openEdit = (event: TAppointmentCalendarEvent) =>
+  const openEdit = (event: TAppointmentCalendarEvent) => {
+    blurActiveElement();
     setModalState({ open: true, mode: "edit", event });
+  };
 
   const closeModal = () =>
     setModalState((current) => ({ ...current, open: false }));

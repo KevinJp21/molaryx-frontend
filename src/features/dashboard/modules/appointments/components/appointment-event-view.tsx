@@ -122,10 +122,14 @@ export const AppointmentEventView = ({
           {formatDuration(event.start, event.end)}
         </span>
       </div>
-      <div className="mt-6">
+      <div className="mt-6 space-y-3">
         <InfoRow
           label="Profesional"
           value={event.professionalName || "Sin asignar"}
+        />
+        <InfoRow
+          label="Plan de tratamiento"
+          value={event.patientTreatmentName || "Sin plan"}
         />
       </div>
     </div>

@@ -16,7 +16,7 @@ interface Props<T extends string | number | boolean> {
     items: Item<T>[];
     itemBadge?: boolean;
     errorMessage?: string;
-    onChange?: (e: T) => void;
+    onChange?: (e: T | null) => void;
     name: string;
     disabled?: boolean;
     className?: string;
@@ -31,7 +31,11 @@ interface Props<T extends string | number | boolean> {
     onSearch?: (query: string) => void;
     searchDebounceMs?: number;
     isSearching?: boolean;
+    /** Opción que escribe `null` en el formulario (Radix no admite value vacío). */
+    emptyLabel?: string;
 }
+
+const EMPTY_SELECT_VALUE = "__empty__";
 
 type Item<T extends string | number | boolean> = {
     name: string,
@@ -56,6 +60,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
     onSearch,
     searchDebounceMs = 300,
     isSearching = false,
+    emptyLabel,
 }: Props<T>) => {
     const { control, trigger } = useFormContext();
     const hasError = Boolean(errorMessage);
@@ -131,12 +136,6 @@ export const CustomFormSelect = <T extends string | number | boolean>({
         setHideFocusStyles(true);
         window.setTimeout(() => {
             triggerRef.current?.blur();
-            if (
-                document.activeElement instanceof HTMLElement &&
-                document.activeElement !== searchInputRef.current
-            ) {
-                document.activeElement.blur();
-            }
         }, 50);
     };
 
@@ -180,11 +179,22 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                             : items;
 
                     const listItems = (() => {
-                        if (!selectedItem) return sourceItems;
-                        const alreadyIncluded = sourceItems.some(
-                            (item) => String(item.value) === String(selectedItem.value),
-                        );
-                        return alreadyIncluded ? sourceItems : [selectedItem, ...sourceItems];
+                        let next = sourceItems;
+                        if (selectedItem) {
+                            const alreadyIncluded = sourceItems.some(
+                                (item) => String(item.value) === String(selectedItem.value),
+                            );
+                            next = alreadyIncluded ? sourceItems : [selectedItem, ...sourceItems];
+                        }
+                        if (emptyLabel) {
+                            return [
+                                { name: emptyLabel, value: EMPTY_SELECT_VALUE as T },
+                                ...next.filter(
+                                    (item) => String(item.value) !== EMPTY_SELECT_VALUE,
+                                ),
+                            ];
+                        }
+                        return next;
                     })();
 
                     return (
@@ -204,6 +214,15 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                     if (searchable) clearTriggerFocus();
                                 }}
                                 onValueChange={(val) => {
+                                    if (val === EMPTY_SELECT_VALUE) {
+                                        setSelectedCache(null);
+                                        onChange?.(null);
+                                        field.onChange(null);
+                                        field.onBlur();
+                                        void trigger(name);
+                                        if (searchable) clearTriggerFocus();
+                                        return;
+                                    }
                                     const nextItem = listItems.find(
                                         (item) => String(item.value) === val,
                                     );
@@ -217,9 +236,11 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                     }
                                 }}
                                 value={
-                                    field.value !== undefined && field.value !== null
-                                        ? String(field.value)
-                                        : ""
+                                    field.value === undefined || field.value === null || field.value === ""
+                                        ? emptyLabel
+                                            ? EMPTY_SELECT_VALUE
+                                            : ""
+                                        : String(field.value)
                                 }
                             >
                                 <SelectTrigger

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { colombiaToUtcIso } from "@/utils";
@@ -57,20 +57,6 @@ export const useAppointmentForm = ({
     error: updateError,
   } = useAppSelector(selectPutUpdateAppointment);
 
-  const {
-    patientItems,
-    patientsStatus,
-    professionalItems,
-    professionalsStatus,
-    serviceItems,
-    servicesStatus,
-    statusItems,
-    searchPatients,
-    searchProfessionals,
-    searchServices,
-    loadOptions,
-  } = useAppointmentFormOptions();
-
   const isCreate = mode === "create";
   const isEdit = mode === "edit";
   const isSubmitting =
@@ -82,10 +68,38 @@ export const useAppointmentForm = ({
     defaultValues: buildAppointmentFormDefaults(initialDate),
   });
 
-  const { reset, handleSubmit, setValue, getValues, watch } = methods;
-  const startAt = watch("startAt");
-  const endAt = watch("endAt");
-  const watchedStatusId = watch("idAppointmentStatus");
+  const { reset, handleSubmit, setValue, getValues, control } = methods;
+  const startAt = useWatch({ control, name: "startAt" });
+  const endAt = useWatch({ control, name: "endAt" });
+  const watchedStatusId = useWatch({ control, name: "idAppointmentStatus" });
+  const idPatient = useWatch({ control, name: "idPatient" });
+
+  const {
+    patientItems,
+    patientsStatus,
+    professionalItems,
+    professionalsStatus,
+    serviceItems,
+    servicesStatus,
+    treatmentItems,
+    treatmentsStatus,
+    statusItems,
+    searchPatients,
+    searchProfessionals,
+    searchServices,
+    loadOptions,
+  } = useAppointmentFormOptions({
+    open,
+    idPatient,
+    currentIdPatientTreatment:
+      event && idPatient === event.idPatient
+        ? event.idPatientTreatment
+        : null,
+    currentPatientTreatmentName:
+      event && idPatient === event.idPatient
+        ? event.patientTreatmentName
+        : null,
+  });
 
   const statusColor = getAppointmentStatusColor(
     isEdit || isCreate
@@ -170,6 +184,7 @@ export const useAppointmentForm = ({
       idPatient: data.idPatient,
       idUser: data.idUser,
       idService: data.idService,
+      idPatientTreatment: data.idPatientTreatment ?? null,
       startAt: colombiaToUtcIso(data.startAt),
       endAt: colombiaToUtcIso(data.endAt),
       notes: data.notes?.trim() || undefined,
@@ -212,5 +227,7 @@ export const useAppointmentForm = ({
     searchPatients,
     searchProfessionals,
     searchServices,
+    treatmentItems,
+    treatmentsStatus,
   };
 };

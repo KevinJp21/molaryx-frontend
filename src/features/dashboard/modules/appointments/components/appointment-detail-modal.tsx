@@ -96,6 +96,10 @@ export const AppointmentDetailModal = ({
             <Field label="Paciente" value={patientName} />
             <Field label="Profesional" value={professionalName} />
             <Field label="Servicio" value={appointment.serviceName} />
+            <Field
+              label="Plan de tratamiento"
+              value={appointment.patientTreatmentName || "Sin plan"}
+            />
             <div className="flex flex-col gap-1">
               <span className="text-xs text-ink-400">Estado</span>
               <Badge variant={statusBadgeVariant(appointment.idAppointmentStatus)}>

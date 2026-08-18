@@ -7,7 +7,7 @@ import { IGetPatientTreatmentsResponse } from "../interfaces";
 import { TPaginationParams } from "@/types";
 
 export type TGetPatientTreatmentsParams = TPaginationParams & {
-  IdPatient: string;
+  IdPatient: number | string;
   IdTreatmentStatus?: number;
 };
 
@@ -18,7 +18,8 @@ export const apiGetPatientTreatmentsAction = async (
   const GET_PATIENT_TREATMENTS = process.env.GET_PATIENT_TREATMENTS;
 
   const { Page, Size, IdPatient, IdTreatmentStatus } = params;
-  const idPatient = Number(decodeId(IdPatient));
+  const idPatient =
+    typeof IdPatient === "number" ? IdPatient : Number(decodeId(IdPatient));
 
   if (!idPatient) {
     return {

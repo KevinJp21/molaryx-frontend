@@ -17,6 +17,8 @@ export interface IAppointmentListItems {
   professionalSurname: string;
   idService: number;
   serviceName: string;
+  idPatientTreatment?: number | null;
+  patientTreatmentName?: string | null;
   idAppointmentStatus: number;
   appointmentStatus: string;
   startAt: string;
