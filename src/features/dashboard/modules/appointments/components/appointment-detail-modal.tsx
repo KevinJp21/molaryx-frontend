@@ -116,33 +116,30 @@ export const AppointmentDetailModal = ({
             <Field label="Notas" value={appointment.notes} />
           </div>
 
-          <section className="flex flex-col gap-3">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex flex-col gap-1">
-                <h3 className="text-sm font-medium text-ink-50">Pagos</h3>
-                <p className="text-xs text-ink-400">
-                  Pagos registrados para esta cita
-                </p>
+          {canViewPayments && (
+            <section className="flex flex-col gap-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex flex-col gap-1">
+                  <h3 className="text-sm font-medium text-ink-50">Pagos</h3>
+                  <p className="text-xs text-ink-400">
+                    Pagos registrados para esta cita
+                  </p>
+                </div>
+                {canCreatePayment && canReceivePayment && (
+                  <Button size="sm" onClick={() => setPaymentModalOpen(true)}>
+                    <PlusIcon className="h-4 w-4" />
+                    Registrar pago
+                  </Button>
+                )}
               </div>
-              {canCreatePayment && canReceivePayment && (
-                <Button size="sm" onClick={() => setPaymentModalOpen(true)}>
-                  <PlusIcon className="h-4 w-4" />
-                  Registrar pago
-                </Button>
-              )}
-            </div>
-            {canViewPayments ? (
+
               <PaymentsTable
                 idAppointment={appointment.idAppointment}
                 refreshKey={paymentsRefreshKey}
                 emptyMessage="Esta cita no tiene pagos registrados."
               />
-            ) : (
-              <p className="text-sm text-ink-400">
-                No tienes permiso para ver los pagos de esta cita.
-              </p>
-            )}
-          </section>
+            </section>
+          )}
         </div>
       </div>
       <PaymentFormModal
