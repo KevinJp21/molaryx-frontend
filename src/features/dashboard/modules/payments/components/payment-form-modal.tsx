@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Wallet } from "lucide-react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,15 +27,20 @@ import {
     getAppointmentsList,
     selectGetAppointmentsList,
 } from "@/store/appointments/appointments-slice";
+import {
+    getPatients,
+    selectGetPatients,
+} from "@/store/patients/patiens-slice";
 import { colombiaToUtcIso, currencyFormat, formatDate } from "@/utils";
 import { APPOINTMENT_STATUS } from "@/features/dashboard/modules/appointments/consts";
-import { TREATMENT_STATUS } from "../../patient-treatments/consts";
+import { TREATMENT_STATUS } from "@/features/dashboard/modules/patients/modules/patient-treatments/consts";
 import {
     PAYMENT_CONTEXT,
     PAYMENT_CONTEXT_OPTIONS,
     PAYMENT_METHOD_OPTIONS,
 } from "../consts";
 import {
+    GlobalPaymentFormSchema,
     PAYMENT_FORM_DEFAULT_VALUES,
     PatientPaymentFormSchema,
     PaymentFormSchema,
@@ -54,6 +59,9 @@ type Props = {
     onSuccess?: () => void;
 };
 
+const fullName = (...parts: Array<string | null | undefined>) =>
+    parts.filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+
 export const PaymentFormModal = ({
     open,
     onOpenChange,
@@ -67,28 +75,38 @@ export const PaymentFormModal = ({
     const dispatch = useAppDispatch();
     const needsContextSelect =
         idAppointment == null && idPatientTreatment == null;
+    const needsPatientSelect =
+        needsContextSelect && !encodedPatientId && !idPatient;
     const { data: treatmentsData, status: treatmentsStatus } = useAppSelector(
         selectGetPatientTreatments,
     );
     const { data: appointmentsData, status: appointmentsStatus } =
         useAppSelector(selectGetAppointmentsList);
+    const { data: patientsData, status: patientsStatus } =
+        useAppSelector(selectGetPatients);
     const { status, message, error } = useAppSelector(selectPostCreatePayment);
     const isSubmitting = status === "loading";
 
     const methods = useForm<TPaymentForm, unknown, TPaymentFormValues>({
         mode: "onTouched",
         resolver: zodResolver(
-            needsContextSelect ? PatientPaymentFormSchema : PaymentFormSchema,
+            needsPatientSelect
+                ? GlobalPaymentFormSchema
+                : needsContextSelect
+                    ? PatientPaymentFormSchema
+                    : PaymentFormSchema,
         ),
         defaultValues: PAYMENT_FORM_DEFAULT_VALUES,
     });
 
     const { reset, handleSubmit, control, setValue } = methods;
     const paymentContext = useWatch({ control, name: "paymentContext" });
+    const formEncodedPatientId = useWatch({ control, name: "encodedPatientId" });
     const selectedIdPatientTreatment = useWatch({
         control,
         name: "idPatientTreatment",
     });
+    const patientKey = encodedPatientId ?? formEncodedPatientId;
 
     const treatmentItems = useMemo(
         () =>
@@ -120,6 +138,34 @@ export const PaymentFormModal = ({
         [appointmentsData],
     );
 
+    const patientItems = useMemo(
+        () =>
+            (patientsData?.items ?? [])
+                .filter((item) => Boolean(item.encodedId))
+                .map((item) => ({
+                    value: item.encodedId as string,
+                    name: fullName(
+                        item.firstName,
+                        item.secondName,
+                        item.firstSurname,
+                        item.secondSurname,
+                    ),
+                })),
+        [patientsData],
+    );
+
+    const searchPatients = useCallback(
+        (Search: string) => {
+            dispatch(
+                getPatients({
+                    IsActive: true,
+                    ...(Search ? { Search } : {}),
+                }),
+            );
+        },
+        [dispatch],
+    );
+
     useEffect(() => {
         if (!open) return;
 
@@ -130,24 +176,29 @@ export const PaymentFormModal = ({
     }, [open, reset]);
 
     useEffect(() => {
-        if (!open || !needsContextSelect || !encodedPatientId) return;
+        if (!open || !needsPatientSelect) return;
+        dispatch(getPatients({ IsActive: true }));
+    }, [open, needsPatientSelect, dispatch]);
+
+    useEffect(() => {
+        if (!open || !needsContextSelect || !patientKey) return;
 
         if (paymentContext === PAYMENT_CONTEXT.APPOINTMENT) {
             dispatch(
-                getAppointmentsList({ IdPatient: encodedPatientId, Size: 50 }),
+                getAppointmentsList({ IdPatient: patientKey, Size: 50 }),
             );
             return;
         }
 
         if (paymentContext === PAYMENT_CONTEXT.PATIENT_TREATMENT) {
             dispatch(
-                getPatientTreatments({ IdPatient: encodedPatientId, Size: 50 }),
+                getPatientTreatments({ IdPatient: patientKey, Size: 50 }),
             );
         }
     }, [
         open,
         needsContextSelect,
-        encodedPatientId,
+        patientKey,
         paymentContext,
         dispatch,
     ]);
@@ -165,6 +216,11 @@ export const PaymentFormModal = ({
         formIdPatientTreatment: number | null,
     ) => {
         if (idPatient) return idPatient;
+
+        const selectedPatient = (patientsData?.items ?? []).find(
+            (item) => item.encodedId === patientKey,
+        );
+        if (selectedPatient) return selectedPatient.idPatient;
 
         const appointmentPatient = (appointmentsData?.items ?? []).find(
             (item) => item.idAppointment === formIdAppointment,
@@ -244,9 +300,11 @@ export const PaymentFormModal = ({
                 contextLabel ??
                 (idAppointment
                     ? "Registra el pago del servicio realizado en esta cita."
-                    : needsContextSelect
-                        ? "Elige si el pago corresponde a una cita o a un plan de tratamiento."
-                        : "Registra un abono al plan de tratamiento del paciente.")
+                    : needsPatientSelect
+                        ? "Selecciona el paciente y si el pago corresponde a una cita o a un plan."
+                        : needsContextSelect
+                            ? "Elige si el pago corresponde a una cita o a un plan de tratamiento."
+                            : "Registra un abono al plan de tratamiento del paciente.")
             }
         >
             <FormProvider {...methods}>
@@ -256,7 +314,34 @@ export const PaymentFormModal = ({
                 >
                     <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
                         <div className="flex flex-col gap-3">
-                            {needsContextSelect && (
+                            {needsPatientSelect && (
+                                <CustomFormSelect
+                                    name="encodedPatientId"
+                                    label="Paciente"
+                                    placeholder={
+                                        patientsStatus === "loading"
+                                            ? "Cargando pacientes..."
+                                            : "Selecciona un paciente"
+                                    }
+                                    items={patientItems}
+                                    disabled={
+                                        patientsStatus === "loading" &&
+                                        patientItems.length === 0
+                                    }
+                                    searchable
+                                    searchPlaceholder="Buscar paciente..."
+                                    onSearch={searchPatients}
+                                    isSearching={patientsStatus === "loading"}
+                                    onChange={() => {
+                                        setValue("paymentContext", "");
+                                        setValue("idAppointment", null);
+                                        setValue("idPatientTreatment", null);
+                                    }}
+                                />
+                            )}
+
+                            {needsContextSelect &&
+                                (!needsPatientSelect || Boolean(formEncodedPatientId)) && (
                                 <CustomFormSelect
                                     name="paymentContext"
                                     label="Qué se está cobrando"

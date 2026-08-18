@@ -40,6 +40,7 @@ const optionalNotes = z
   });
 
 export const PaymentFormSchema = z.object({
+  encodedPatientId: z.string(),
   paymentContext: z.string(),
   idAppointment: z.number().nullable(),
   idPatientTreatment: z.number().nullable(),
@@ -49,35 +50,53 @@ export const PaymentFormSchema = z.object({
   notes: optionalNotes,
 });
 
+const refinePaymentContext = (
+  data: z.output<typeof PaymentFormSchema>,
+  ctx: z.RefinementCtx,
+) => {
+  if (data.paymentContext === PAYMENT_CONTEXT.APPOINTMENT) {
+    if (data.idAppointment == null || data.idAppointment <= 0) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["idAppointment"],
+        message: "Selecciona una cita",
+      });
+    }
+    return;
+  }
+
+  if (data.paymentContext === PAYMENT_CONTEXT.PATIENT_TREATMENT) {
+    if (data.idPatientTreatment == null || data.idPatientTreatment <= 0) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["idPatientTreatment"],
+        message: "Selecciona un plan de tratamiento",
+      });
+    }
+    return;
+  }
+
+  ctx.addIssue({
+    code: "custom",
+    path: ["paymentContext"],
+    message: "Selecciona si el pago corresponde a una cita o a un plan",
+  });
+};
+
 export const PatientPaymentFormSchema = PaymentFormSchema.superRefine(
+  refinePaymentContext,
+);
+
+export const GlobalPaymentFormSchema = PaymentFormSchema.superRefine(
   (data, ctx) => {
-    if (data.paymentContext === PAYMENT_CONTEXT.APPOINTMENT) {
-      if (data.idAppointment == null || data.idAppointment <= 0) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["idAppointment"],
-          message: "Selecciona una cita",
-        });
-      }
-      return;
+    if (!data.encodedPatientId) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["encodedPatientId"],
+        message: "Selecciona un paciente",
+      });
     }
-
-    if (data.paymentContext === PAYMENT_CONTEXT.PATIENT_TREATMENT) {
-      if (data.idPatientTreatment == null || data.idPatientTreatment <= 0) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["idPatientTreatment"],
-          message: "Selecciona un plan de tratamiento",
-        });
-      }
-      return;
-    }
-
-    ctx.addIssue({
-      code: "custom",
-      path: ["paymentContext"],
-      message: "Selecciona si el pago corresponde a una cita o a un plan",
-    });
+    refinePaymentContext(data, ctx);
   },
 );
 
@@ -85,6 +104,7 @@ export type TPaymentForm = z.input<typeof PaymentFormSchema>;
 export type TPaymentFormValues = z.output<typeof PaymentFormSchema>;
 
 export const PAYMENT_FORM_DEFAULT_VALUES: TPaymentForm = {
+  encodedPatientId: "",
   paymentContext: "",
   idAppointment: null,
   idPatientTreatment: null,

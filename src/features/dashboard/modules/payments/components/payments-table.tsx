@@ -48,7 +48,7 @@ export const PaymentsTable = ({
     idPatientTreatment,
     idAppointment,
     refreshKey = 0,
-    emptyMessage = "Este paciente no tiene pagos registrados.",
+    emptyMessage = "No hay pagos registrados.",
 }: Props) => {
     const dispatch = useAppDispatch();
     const { data, status, message } = useAppSelector(selectGetPayments);
@@ -84,7 +84,14 @@ export const PaymentsTable = ({
             return;
         }
 
-        if (!encodedPatientId) return;
+        if (!encodedPatientId) {
+            dispatch(
+                getPayments({
+                    Page: currentPage,
+                }),
+            );
+            return;
+        }
 
         dispatch(
             getPayments({

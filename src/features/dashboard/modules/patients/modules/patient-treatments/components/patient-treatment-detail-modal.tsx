@@ -7,7 +7,7 @@ import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";
 import { currencyFormat, formatDate } from "@/utils";
-import { PaymentFormModal, PaymentsTable } from "../../payments/components";
+import { PaymentFormModal, PaymentsTable } from "@/features/dashboard/modules/payments/components";
 import { getTreatmentStatusLabel, TREATMENT_STATUS } from "../consts";
 import { IPatientTreatmentItems } from "../interfaces";
 

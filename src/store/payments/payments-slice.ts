@@ -3,11 +3,11 @@ import {
   apiGetPaymentsAction,
   apiPostCreatePaymentAction,
   TGetPaymentsParams,
-} from "@/features/dashboard/modules/patients/modules/payments/actions";
+} from "@/features/dashboard/modules/payments/actions";
 import {
   IGetPaymentsResponseData,
   IPostCreatePaymentFormRequest,
-} from "@/features/dashboard/modules/patients/modules/payments/interfaces";
+} from "@/features/dashboard/modules/payments/interfaces";
 import { TStatus } from "@/types";
 
 type TPaymentsState = {
@@ -41,7 +41,7 @@ const paymentsSlice = createAppSlice({
   initialState,
   reducers: (create) => ({
     getPayments: create.asyncThunk(
-      async (params: TGetPaymentsParams) => await apiGetPaymentsAction(params),
+      async (params?: TGetPaymentsParams) => await apiGetPaymentsAction(params),
       {
         pending: (state) => {
           state.getPayments.status = "loading";

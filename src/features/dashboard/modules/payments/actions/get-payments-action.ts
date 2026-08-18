@@ -6,28 +6,42 @@ import { decodeId } from "@/utils/code-and-decode-id";
 import { IGetPaymentsResponse } from "../interfaces";
 import { TPaginationParams } from "@/types";
 
-export type TGetPaymentsParams = TPaginationParams &
-  (
-    | { IdPatient: string; IdPatientTreatment?: never; IdAppointment?: never }
-    | { IdPatientTreatment: number; IdPatient?: never; IdAppointment?: never }
-    | { IdAppointment: number; IdPatient?: never; IdPatientTreatment?: never }
-  );
+export type TGetPaymentsParams = TPaginationParams & {
+  IdPatient?: string;
+  IdPatientTreatment?: number;
+  IdAppointment?: number;
+};
 
 export const apiGetPaymentsAction = async (
-  params: TGetPaymentsParams,
+  params?: TGetPaymentsParams,
 ): Promise<IGetPaymentsResponse> => {
   const PAYMENT = process.env.PAYMENT;
   const GET_PAYMENTS = process.env.GET_PAYMENTS;
 
-  const { Page, Size } = params;
+  const { Page, Size, IdPatient, IdPatientTreatment, IdAppointment } =
+    params ?? {};
   const query = new URLSearchParams();
 
-  if ("IdAppointment" in params && params.IdAppointment) {
-    query.append("IdAppointment", params.IdAppointment.toString());
-  } else if ("IdPatientTreatment" in params && params.IdPatientTreatment) {
-    query.append("IdPatientTreatment", params.IdPatientTreatment.toString());
-  } else if ("IdPatient" in params && params.IdPatient) {
-    const idPatient = Number(decodeId(params.IdPatient));
+  const filters = [
+    Boolean(IdAppointment),
+    Boolean(IdPatientTreatment),
+    Boolean(IdPatient),
+  ].filter(Boolean).length;
+
+  if (filters > 1) {
+    return {
+      success: false,
+      message:
+        "Indique como máximo un filtro: paciente, cita o tratamiento del paciente.",
+    };
+  }
+
+  if (IdAppointment) {
+    query.append("IdAppointment", IdAppointment.toString());
+  } else if (IdPatientTreatment) {
+    query.append("IdPatientTreatment", IdPatientTreatment.toString());
+  } else if (IdPatient) {
+    const idPatient = Number(decodeId(IdPatient));
 
     if (!idPatient) {
       return {
@@ -37,11 +51,6 @@ export const apiGetPaymentsAction = async (
     }
 
     query.append("IdPatient", idPatient.toString());
-  } else {
-    return {
-      success: false,
-      message: "Indique solo un filtro: paciente, cita o tratamiento del paciente.",
-    };
   }
 
   if (Page) query.append("Page", Page.toString());

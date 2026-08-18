@@ -10,7 +10,7 @@ import { formatDate } from "@/utils";
 import {
   PaymentFormModal,
   PaymentsTable,
-} from "@/features/dashboard/modules/patients/modules/payments/components";
+} from "@/features/dashboard/modules/payments/components";
 import { APPOINTMENT_STATUS, getAppointmentStatusLabel } from "../consts";
 import { IAppointmentListItems } from "../interfaces";
 import { formatDuration } from "../utils/format-time";
