@@ -18,7 +18,6 @@ type Props = {
     open: boolean;
     onOpenChange: (next: boolean) => void;
     idPatient?: number;
-    encodedPatientId?: string;
     idAppointment?: number;
     idPatientTreatment?: number;
     contextLabel?: string;
@@ -29,7 +28,6 @@ export const PaymentFormModal = ({
     open,
     onOpenChange,
     idPatient,
-    encodedPatientId,
     idAppointment,
     idPatientTreatment,
     contextLabel,
@@ -59,7 +57,6 @@ export const PaymentFormModal = ({
         open,
         onOpenChange,
         idPatient,
-        encodedPatientId,
         idAppointment,
         idPatientTreatment,
         onSuccess,
@@ -91,7 +88,7 @@ export const PaymentFormModal = ({
                         <div className="flex flex-col gap-3">
                             {needsPatientSelect && (
                                 <CustomFormSelect
-                                    name="encodedPatientId"
+                                    name="idPatient"
                                     label="Paciente"
                                     placeholder={
                                         patientsStatus === "loading"

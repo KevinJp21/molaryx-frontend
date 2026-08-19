@@ -7,10 +7,10 @@ import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";
 import { currencyFormat, formatDate, toColombiaDate } from "@/utils";
+import { RelatedPaymentsTable } from "@/features/dashboard/components";
 import {
   PaymentFormModal,
   PaymentSummaryByConcept,
-  PaymentsTable,
 } from "@/features/dashboard/modules/payments/components";
 import { APPOINTMENT_STATUS, getAppointmentStatusLabel } from "../consts";
 import { IAppointmentListItems } from "../interfaces";
@@ -154,7 +154,7 @@ export const AppointmentDetailModal = ({
               )}
 
               {canViewPayments && (
-                <PaymentsTable
+                <RelatedPaymentsTable
                   idAppointment={appointment.idAppointment}
                   refreshKey={paymentsRefreshKey}
                   emptyMessage="Esta cita no tiene pagos registrados."

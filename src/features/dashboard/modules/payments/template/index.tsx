@@ -8,18 +8,13 @@ import { selectGetUserData } from "@/store/authentication/authentication-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";
 import { PaymentFormModal, PaymentsTable } from "../components";
 
-type Props = {
-    encodedPatientId?: string;
-};
-
-export const PaymentsTemplate = ({ encodedPatientId }: Props) => {
+export const PaymentsTemplate = () => {
     const { data: userData } = useAppSelector(selectGetUserData);
     const canCreate = hasPermissionCode(
         userData?.permissions,
         "PAYMENTS",
         "CREATE_PAYMENT",
     );
-    const isPatientContext = Boolean(encodedPatientId);
 
     const [modalOpen, setModalOpen] = useState(false);
     const [listRefreshKey, setListRefreshKey] = useState(0);
@@ -30,21 +25,10 @@ export const PaymentsTemplate = ({ encodedPatientId }: Props) => {
         <>
             <section className="mb-4 flex items-center justify-between">
                 <div className="flex flex-col gap-1">
-                    {isPatientContext ? (
-                        <>
-                            <h2 className="text-lg font-medium text-ink-50">Pagos</h2>
-                            <p className="text-sm text-ink-300">
-                                Historial de pagos de este paciente
-                            </p>
-                        </>
-                    ) : (
-                        <>
-                            <h1 className="text-xl font-medium text-ink-50">Pagos</h1>
-                            <p className="text-sm text-ink-300">
-                                Historial de pagos del consultorio
-                            </p>
-                        </>
-                    )}
+                    <h1 className="text-xl font-medium text-ink-50">Pagos</h1>
+                    <p className="text-sm text-ink-300">
+                        Historial de pagos del consultorio
+                    </p>
                 </div>
                 {canCreate && (
                     <Button onClick={() => setModalOpen(true)}>
@@ -53,19 +37,10 @@ export const PaymentsTemplate = ({ encodedPatientId }: Props) => {
                     </Button>
                 )}
             </section>
-            <PaymentsTable
-                encodedPatientId={encodedPatientId}
-                refreshKey={listRefreshKey}
-                emptyMessage={
-                    isPatientContext
-                        ? "Este paciente no tiene pagos registrados."
-                        : "No hay pagos registrados."
-                }
-            />
+            <PaymentsTable refreshKey={listRefreshKey} />
             <PaymentFormModal
                 open={modalOpen}
                 onOpenChange={setModalOpen}
-                encodedPatientId={encodedPatientId}
                 onSuccess={refreshList}
             />
         </>

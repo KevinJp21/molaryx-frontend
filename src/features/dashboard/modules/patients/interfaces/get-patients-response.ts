@@ -6,7 +6,6 @@ export interface IGetPatientsResponseData extends TPaginationResponse<IPatientsI
 
 export interface IPatientsItems {
     idPatient: number;
-    encodedId?: string;
     idIdentificationType: number;
     identificationType: string;
     identificationNumber: string;

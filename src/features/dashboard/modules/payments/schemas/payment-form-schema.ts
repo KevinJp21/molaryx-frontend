@@ -40,7 +40,7 @@ const optionalNotes = z
   });
 
 export const PaymentFormSchema = z.object({
-  encodedPatientId: z.string(),
+  idPatient: z.number(),
   paymentContext: z.string(),
   idAppointment: z.number().nullable(),
   idPatientTreatment: z.number().nullable(),
@@ -89,10 +89,10 @@ export const PatientPaymentFormSchema = PaymentFormSchema.superRefine(
 
 export const GlobalPaymentFormSchema = PaymentFormSchema.superRefine(
   (data, ctx) => {
-    if (!data.encodedPatientId) {
+    if (data.idPatient <= 0) {
       ctx.addIssue({
         code: "custom",
-        path: ["encodedPatientId"],
+        path: ["idPatient"],
         message: "Selecciona un paciente",
       });
     }
@@ -104,7 +104,7 @@ export type TPaymentForm = z.input<typeof PaymentFormSchema>;
 export type TPaymentFormValues = z.output<typeof PaymentFormSchema>;
 
 export const PAYMENT_FORM_DEFAULT_VALUES: TPaymentForm = {
-  encodedPatientId: "",
+  idPatient: 0,
   paymentContext: "",
   idAppointment: null,
   idPatientTreatment: null,

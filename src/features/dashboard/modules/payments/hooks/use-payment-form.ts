@@ -26,7 +26,6 @@ type Params = {
   open: boolean;
   onOpenChange: (next: boolean) => void;
   idPatient?: number;
-  encodedPatientId?: string;
   idAppointment?: number;
   idPatientTreatment?: number;
   onSuccess?: () => void;
@@ -36,7 +35,6 @@ export const usePaymentForm = ({
   open,
   onOpenChange,
   idPatient,
-  encodedPatientId,
   idAppointment,
   idPatientTreatment,
   onSuccess,
@@ -44,8 +42,7 @@ export const usePaymentForm = ({
   const dispatch = useAppDispatch();
   const needsContextSelect =
     idAppointment == null && idPatientTreatment == null;
-  const needsPatientSelect =
-    needsContextSelect && !encodedPatientId && !idPatient;
+  const needsPatientSelect = needsContextSelect && !idPatient;
   const { status, message, error } = useAppSelector(selectPostCreatePayment);
   const isSubmitting = status === "loading";
 
@@ -63,12 +60,12 @@ export const usePaymentForm = ({
 
   const { reset, handleSubmit, control, setValue } = methods;
   const paymentContext = useWatch({ control, name: "paymentContext" });
-  const formEncodedPatientId = useWatch({ control, name: "encodedPatientId" });
+  const formIdPatient = useWatch({ control, name: "idPatient" });
   const selectedIdPatientTreatment = useWatch({
     control,
     name: "idPatientTreatment",
   });
-  const patientKey = encodedPatientId ?? formEncodedPatientId;
+  const patientKey = idPatient ?? (formIdPatient > 0 ? formIdPatient : undefined);
 
   const {
     patientItems,
@@ -163,7 +160,7 @@ export const usePaymentForm = ({
     paymentContext === PAYMENT_CONTEXT.PATIENT_TREATMENT;
   const showContextSelect =
     needsContextSelect &&
-    (!needsPatientSelect || Boolean(formEncodedPatientId));
+    (!needsPatientSelect || formIdPatient > 0);
 
   const clearContextSelection = () => {
     setValue("idAppointment", null);

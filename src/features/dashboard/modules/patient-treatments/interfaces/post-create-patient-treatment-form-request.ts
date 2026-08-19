@@ -1,5 +1,5 @@
 export interface IPostCreatePatientTreatmentFormRequest {
-  idPatient: string;
+  idPatient: number;
   idTreatment: number;
   agreedPrice?: number | null;
   idPaymentFrequency?: number | null;

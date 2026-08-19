@@ -24,7 +24,7 @@ type Params = {
   open: boolean;
   needsPatientSelect: boolean;
   needsContextSelect: boolean;
-  patientKey?: string;
+  patientKey?: number;
   paymentContext: string;
 };
 
@@ -45,17 +45,15 @@ export const usePaymentFormOptions = ({
 
   const patientItems = useMemo(
     () =>
-      (patientsData?.items ?? [])
-        .filter((item) => Boolean(item.encodedId))
-        .map((item) => ({
-          value: item.encodedId as string,
-          name: fullName(
-            item.firstName,
-            item.secondName,
-            item.firstSurname,
-            item.secondSurname,
-          ),
-        })),
+      (patientsData?.items ?? []).map((item) => ({
+        value: item.idPatient,
+        name: fullName(
+          item.firstName,
+          item.secondName,
+          item.firstSurname,
+          item.secondSurname,
+        ),
+      })),
     [patientsData],
   );
 
@@ -127,7 +125,7 @@ export const usePaymentFormOptions = ({
     if (idPatient) return idPatient;
 
     const selectedPatient = (patientsData?.items ?? []).find(
-      (item) => item.encodedId === patientKey,
+      (item) => item.idPatient === patientKey,
     );
     if (selectedPatient) return selectedPatient.idPatient;
 

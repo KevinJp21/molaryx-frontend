@@ -19,19 +19,16 @@ import {
     TableRow,
     TableSkeleton,
 } from "@/components";
-import { IPaymentItems } from "../interfaces";
-import { PaymentDetailModal } from "./payment-detail-modal";
+import { PaymentDetailModal } from "@/features/dashboard/modules/payments/components/payment-detail-modal";
+import { IPaymentItems } from "@/features/dashboard/modules/payments/interfaces";
 
-type Props = {
+type RelatedPaymentsTableProps = {
     refreshKey?: number;
     emptyMessage?: string;
-};
-
-const paymentReference = (payment: IPaymentItems) => {
-    if (payment.appointment) return "Cita";
-    if (payment.patientTreatment) return "Plan de tratamiento";
-    return "—";
-};
+} & (
+    | { idAppointment: number; idPatientTreatment?: never }
+    | { idPatientTreatment: number; idAppointment?: never }
+);
 
 const notePreview = (notes: string | null) => {
     const trimmed = notes?.trim();
@@ -40,24 +37,41 @@ const notePreview = (notes: string | null) => {
     return `${trimmed.slice(0, 60)}…`;
 };
 
-export const PaymentsTable = ({
+export const RelatedPaymentsTable = ({
+    idAppointment,
+    idPatientTreatment,
     refreshKey = 0,
     emptyMessage = "No hay pagos registrados.",
-}: Props) => {
+}: RelatedPaymentsTableProps) => {
     const dispatch = useAppDispatch();
     const { data, status, message } = useAppSelector(selectGetPayments);
     const [currentPage, setCurrentPage] = useState(1);
     const [detailOpen, setDetailOpen] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState<IPaymentItems | null>(null);
-    const colSpan = 7;
+    const colSpan = 5;
 
     useEffect(() => {
+        setCurrentPage(1);
+    }, [idAppointment, idPatientTreatment]);
+
+    useEffect(() => {
+        if (idAppointment != null) {
+            dispatch(
+                getPayments({
+                    IdAppointment: idAppointment,
+                    Page: currentPage,
+                }),
+            );
+            return;
+        }
+
         dispatch(
             getPayments({
+                IdPatientTreatment: idPatientTreatment,
                 Page: currentPage,
             }),
         );
-    }, [dispatch, currentPage, refreshKey]);
+    }, [dispatch, idAppointment, idPatientTreatment, currentPage, refreshKey]);
 
     const items = data?.items ?? [];
     const totalPages = data?.totalPages ?? 0;
@@ -92,17 +106,15 @@ export const PaymentsTable = ({
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Paciente</TableHead>
                                 <TableHead>Fecha</TableHead>
                                 <TableHead>Monto</TableHead>
                                 <TableHead>Método</TableHead>
-                                <TableHead>Referencia</TableHead>
                                 <TableHead>Notas</TableHead>
                                 <TableHead className="w-14 text-right">Acciones</TableHead>
                             </TableRow>
                         </TableHeader>
                         {(status === "loading" || status === "idle") && (
-                            <TableSkeleton columns={colSpan} rows={10} />
+                            <TableSkeleton columns={colSpan} rows={5} />
                         )}
                         <TableBody>
                             {status === "error" && (
@@ -129,12 +141,6 @@ export const PaymentsTable = ({
                                 items.map((item) => (
                                     <TableRow key={item.idPayment}>
                                         <TableCell>
-                                            <div className="flex min-w-48 flex-col gap-0.5">
-                                                <span>{item.patient.name} {item.patient.surname}</span>
-                                                <span className="text-xs">{item.patient.email}</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
                                             {formatDate(item.paidAt, "d MMM yyyy · HH:mm", {
                                                 hour12: true,
                                             })}
@@ -143,9 +149,6 @@ export const PaymentsTable = ({
                                             {currencyFormat(item.amount)}
                                         </TableCell>
                                         <TableCell>{item.paymentMethod}</TableCell>
-                                        <TableCell>
-                                            {paymentReference(item)}
-                                        </TableCell>
                                         <TableCell>
                                             <span className="line-clamp-1 text-ink-300">
                                                 {notePreview(item.notes)}

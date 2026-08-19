@@ -2,7 +2,6 @@
 
 import { serverApi } from "@/lib/api/server";
 import { handleApiError } from "@/lib/api/error-handler";
-import { decodeId } from "@/utils/code-and-decode-id";
 import { TBaseResponse } from "@/types";
 import { IPostCreatePatientTreatmentFormRequest } from "../interfaces";
 
@@ -12,9 +11,8 @@ export const apiPostCreatePatientTreatmentAction = async (
   const PATIENT_TREATMENT = process.env.PATIENT_TREATMENT;
   const POST_CREATE_PATIENT_TREATMENT =
     process.env.POST_CREATE_PATIENT_TREATMENT;
-  const idPatient = Number(decodeId(data.idPatient));
 
-  if (!idPatient) {
+  if (!data.idPatient) {
     return {
       success: false,
       message: "El paciente no es válido.",
@@ -24,10 +22,7 @@ export const apiPostCreatePatientTreatmentAction = async (
   try {
     const response = await serverApi.post<TBaseResponse<boolean>>(
       `${PATIENT_TREATMENT}${POST_CREATE_PATIENT_TREATMENT}`,
-      {
-        ...data,
-        idPatient,
-      },
+      data,
     );
 
     return {

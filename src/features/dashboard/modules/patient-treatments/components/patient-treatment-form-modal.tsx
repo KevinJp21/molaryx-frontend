@@ -48,7 +48,6 @@ import {
 type Props = {
     open: boolean;
     onOpenChange: (next: boolean) => void;
-    encodedPatientId?: string;
     patientTreatment?: IPatientTreatmentItems | null;
     onSuccess?: () => void;
 };
@@ -61,18 +60,16 @@ const toOptionalNumber = (value: number | string | null | undefined) => {
 
 const toFormValues = (
     patientTreatment?: IPatientTreatmentItems | null,
-    encodedPatientId?: string,
 ): TPatientTreatmentForm => {
     if (!patientTreatment) {
         return {
             ...PATIENT_TREATMENT_FORM_DEFAULT_VALUES,
-            encodedPatientId: encodedPatientId ?? "",
             startAt: formatDate(new Date(), "yyyy-MM-dd'T'HH:mm"),
         };
     }
 
     return {
-        encodedPatientId: encodedPatientId ?? "",
+        idPatient: 0,
         idTreatment: patientTreatment.idTreatment,
         startAt: formatDate(patientTreatment.startAt, "yyyy-MM-dd'T'HH:mm"),
         agreedPrice: patientTreatment.agreedPrice,
@@ -87,13 +84,12 @@ const toFormValues = (
 export const PatientTreatmentFormModal = ({
     open,
     onOpenChange,
-    encodedPatientId,
     patientTreatment = null,
     onSuccess,
 }: Props) => {
     const dispatch = useAppDispatch();
     const isEdit = Boolean(patientTreatment);
-    const needsPatientSelect = !isEdit && !encodedPatientId;
+    const needsPatientSelect = !isEdit;
     const { data: patientsData, status: patientsStatus } =
         useAppSelector(selectGetPatients);
     const { data: treatmentsData, status: treatmentsStatus } =
@@ -133,17 +129,15 @@ export const PatientTreatmentFormModal = ({
         name: item.name,
     }));
 
-    const patientItems = (patientsData?.items ?? [])
-        .filter((item) => Boolean(item.encodedId))
-        .map((item) => ({
-            value: item.encodedId as string,
-            name: patientFullName(
-                item.firstName,
-                item.secondName,
-                item.firstSurname,
-                item.secondSurname,
-            ),
-        }));
+    const patientItems = (patientsData?.items ?? []).map((item) => ({
+        value: item.idPatient,
+        name: patientFullName(
+            item.firstName,
+            item.secondName,
+            item.firstSurname,
+            item.secondSurname,
+        ),
+    }));
 
     const searchPatients = useCallback(
         (Search: string) => {
@@ -167,8 +161,8 @@ export const PatientTreatmentFormModal = ({
                 dispatch(getPatients({ IsActive: true }));
             }
         }
-        reset(toFormValues(patientTreatment, encodedPatientId));
-    }, [open, isEdit, patientTreatment, encodedPatientId, needsPatientSelect, dispatch, reset]);
+        reset(toFormValues(patientTreatment));
+    }, [open, isEdit, patientTreatment, needsPatientSelect, dispatch, reset]);
 
     const handleDialogOpenChange = (next: boolean) => {
         if (!next) {
@@ -210,7 +204,7 @@ export const PatientTreatmentFormModal = ({
 
         dispatch(
             postCreatePatientTreatment({
-                idPatient: data.encodedPatientId || encodedPatientId || "",
+                idPatient: data.idPatient,
                 idTreatment: data.idTreatment,
                 agreedPrice: toOptionalNumber(data.agreedPrice),
                 idPaymentFrequency,
@@ -278,7 +272,7 @@ export const PatientTreatmentFormModal = ({
                         <div className="flex flex-col gap-3">
                             {needsPatientSelect && (
                                 <CustomFormSelect
-                                    name="encodedPatientId"
+                                    name="idPatient"
                                     label="Paciente"
                                     placeholder={
                                         patientsStatus === "loading"

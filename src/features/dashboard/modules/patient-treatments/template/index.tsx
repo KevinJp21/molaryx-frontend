@@ -13,11 +13,7 @@ import {
 } from "../components";
 import { IPatientTreatmentItems } from "../interfaces";
 
-type Props = {
-  encodedPatientId?: string;
-};
-
-export const PatientTreatmentsTemplate = ({ encodedPatientId }: Props) => {
+export const PatientTreatmentsTemplate = () => {
   const { data: userData } = useAppSelector(selectGetUserData);
   const canCreate = hasPermissionCode(
     userData?.permissions,
@@ -83,7 +79,6 @@ export const PatientTreatmentsTemplate = ({ encodedPatientId }: Props) => {
         )}
       </section>
       <PatientTreatmentsTable
-        encodedPatientId={encodedPatientId}
         onEdit={openEdit}
         onViewDetails={openDetails}
         canUpdate={canUpdate}
@@ -92,7 +87,6 @@ export const PatientTreatmentsTemplate = ({ encodedPatientId }: Props) => {
       <PatientTreatmentFormModal
         open={modalOpen}
         onOpenChange={handleModalOpenChange}
-        encodedPatientId={encodedPatientId}
         patientTreatment={selected}
         onSuccess={refreshList}
       />
