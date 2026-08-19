@@ -67,6 +67,16 @@ export const PaymentDetailModal = ({
                     />
                 </div>
 
+                <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
+                    <h3 className="text-sm font-medium text-ink-50">Paciente</h3>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <Field label="Nombre" value={fullName(payment.patient.name, payment.patient.surname)} />
+                        <Field label={`${payment.patient.identificationType}`} value={payment.patient.identificationNumber} />
+                        <Field label="Email" value={payment.patient.email} />
+                        <Field label="Teléfono" value={payment.patient.phoneNumber} />
+                    </div>
+                </section>
+
                 {appointment && (
                     <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
                         <h3 className="text-sm font-medium text-ink-50">Cita</h3>

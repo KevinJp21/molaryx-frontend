@@ -141,6 +141,7 @@ export const PaymentsTable = ({
                     <Table>
                         <TableHeader>
                             <TableRow>
+                                <TableHead>Paciente</TableHead>
                                 <TableHead>Fecha</TableHead>
                                 <TableHead>Monto</TableHead>
                                 <TableHead>Método</TableHead>
@@ -176,6 +177,12 @@ export const PaymentsTable = ({
                             {status === "success" &&
                                 items.map((item) => (
                                     <TableRow key={item.idPayment}>
+                                        <TableCell>
+                                            <div className="flex min-w-48 flex-col gap-0.5">
+                                                <span>{item.patient.name} {item.patient.surname}</span>
+                                                <span className="text-xs">{item.patient.email}</span>
+                                            </div>
+                                        </TableCell>
                                         <TableCell>
                                             {formatDate(item.paidAt, "d MMM yyyy · HH:mm", {
                                                 hour12: true,
