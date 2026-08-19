@@ -4,12 +4,12 @@ import {
   TGetPatientTreatmentsParams,
   apiPostCreatePatientTreatmentAction,
   apiPutUpdatePatientTreatmentAction,
-} from "@/features/dashboard/modules/patients/modules/patient-treatments/actions";
+} from "@/features/dashboard/modules/patient-treatments/actions";
 import {
   IGetPatientTreatmentsResponseData,
   IPostCreatePatientTreatmentFormRequest,
   IPutUpdatePatientTreatmentFormRequest,
-} from "@/features/dashboard/modules/patients/modules/patient-treatments/interfaces";
+} from "@/features/dashboard/modules/patient-treatments/interfaces";
 import { TStatus } from "@/types";
 
 type TPatientTreatmentsState = {
@@ -53,7 +53,7 @@ const patientTreatmentsSlice = createAppSlice({
   initialState,
   reducers: (create) => ({
     getPatientTreatments: create.asyncThunk(
-      async (params: TGetPatientTreatmentsParams) =>
+      async (params?: TGetPatientTreatmentsParams) =>
         await apiGetPatientTreatmentsAction(params),
       {
         pending: (state) => {

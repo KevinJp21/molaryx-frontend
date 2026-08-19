@@ -1,4 +1,4 @@
-import { Home, User, Layers, Calendar, Users, ClipboardPlus, Wallet } from "lucide-react";
+import { Home, User, Layers, Calendar, Users, ClipboardPlus, ClipboardList, Wallet } from "lucide-react";
 import { SidebarSection } from "../types";
 
 export const SIDEBAR_SECTIONS: SidebarSection[] = [
@@ -47,6 +47,12 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         href: "/dashboard/treatments",
         icon: ClipboardPlus,
         permission: { module: "TREATMENTS" },
+      },
+      {
+        label: "Planes de tratamiento",
+        href: "/dashboard/patient-treatments",
+        icon: ClipboardList,
+        permission: { module: "PATIENT_TREATMENTS" },
       },
     ],
   },

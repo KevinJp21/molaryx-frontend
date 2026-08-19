@@ -16,7 +16,7 @@ import {
 } from "@/store/patient-treatments/patient-treatments-slice";
 import { currencyFormat, formatDate } from "@/utils";
 import { APPOINTMENT_STATUS } from "@/features/dashboard/modules/appointments/consts";
-import { TREATMENT_STATUS } from "@/features/dashboard/modules/patients/modules/patient-treatments/consts";
+import { TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
 import { PAYMENT_CONTEXT } from "../consts";
 import { fullName } from "../utils";
 

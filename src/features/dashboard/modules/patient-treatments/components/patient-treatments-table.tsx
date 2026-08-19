@@ -8,6 +8,7 @@ import {
     selectGetPatientTreatments,
 } from "@/store/patient-treatments/patient-treatments-slice";
 import { currencyFormat, formatDate } from "@/utils";
+import { patientFullName } from "@/features/dashboard/modules/patients/utils";
 import {
     Badge,
     BaseTable,
@@ -31,7 +32,7 @@ import {
 import { IPatientTreatmentItems } from "../interfaces";
 
 type Props = {
-    encodedPatientId: string;
+    encodedPatientId?: string;
     onEdit: (item: IPatientTreatmentItems) => void;
     onViewDetails: (item: IPatientTreatmentItems) => void;
     canUpdate: boolean;
@@ -55,6 +56,10 @@ export const PatientTreatmentsTable = ({
     const dispatch = useAppDispatch();
     const { data, status, message } = useAppSelector(selectGetPatientTreatments);
     const [currentPage, setCurrentPage] = useState(1);
+    const items = data?.items ?? [];
+    const totalPages = data?.totalPages ?? 0;
+    const showPatient = !encodedPatientId;
+    const colSpan = showPatient ? 7 : 6;
 
     useEffect(() => {
         setCurrentPage(1);
@@ -63,15 +68,11 @@ export const PatientTreatmentsTable = ({
     useEffect(() => {
         dispatch(
             getPatientTreatments({
-                IdPatient: encodedPatientId,
+                ...(encodedPatientId ? { IdPatient: encodedPatientId } : {}),
                 Page: currentPage,
             }),
         );
     }, [dispatch, encodedPatientId, currentPage, refreshKey]);
-
-    const items = data?.items ?? [];
-    const totalPages = data?.totalPages ?? 0;
-    const colSpan = 6;
 
     useEffect(() => {
         if (status === "success" && items.length === 0 && currentPage > 1) {
@@ -92,6 +93,7 @@ export const PatientTreatmentsTable = ({
                 <Table>
                     <TableHeader>
                         <TableRow>
+                            {showPatient && <TableHead>Paciente</TableHead>}
                             <TableHead>Tratamiento</TableHead>
                             <TableHead>Estado</TableHead>
                             <TableHead>Inicio</TableHead>
@@ -120,13 +122,23 @@ export const PatientTreatmentsTable = ({
                                     colSpan={colSpan}
                                     className="py-16 text-center text-sm text-ink-400 group-hover/row:bg-transparent"
                                 >
-                                    Este paciente no tiene tratamientos asignados.
+                                    {showPatient
+                                        ? "No hay planes de tratamiento asignados."
+                                        : "Este paciente no tiene tratamientos asignados."}
                                 </TableCell>
                             </TableRow>
                         )}
                         {status === "success" &&
                             items.map((item) => (
                                 <TableRow key={item.idPatientTreatment}>
+                                    {showPatient && (
+                                        <TableCell>
+                                            {patientFullName(
+                                                item.patientName,
+                                                item.patientSurname,
+                                            ) || "—"}
+                                        </TableCell>
+                                    )}
                                     <TableCell>
                                         <div className="flex min-w-40 flex-col gap-0.5">
                                             <span>{item.treatmentName}</span>

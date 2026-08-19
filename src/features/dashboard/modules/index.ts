@@ -3,4 +3,5 @@ export * from './services';
 export * from './appointments'
 export * from './team'
 export * from './treatments'
+export * from './patient-treatments'
 export * from './payments'

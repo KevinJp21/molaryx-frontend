@@ -14,11 +14,9 @@ import {
     resetPostCreatePatient,
     resetPutUpdatePatient,
     selectPostCreatePatient,
-    setCurrentPatient,
     selectPutUpdatePatient,
 } from '@/store/patients/patiens-slice';
 import { IPatientsItems } from '../interfaces';
-import { persistPatientChart } from '../utils';
 import {
     PATIENT_FORM_DEFAULT_VALUES,
     PatientFormSchema,
@@ -88,7 +86,7 @@ export const PatientFormModal = ({
         defaultValues: PATIENT_FORM_DEFAULT_VALUES,
     });
 
-    const { reset, handleSubmit, getValues } = methods;
+    const { reset, handleSubmit } = methods;
 
     useEffect(() => {
         if (open && status !== 'success') {
@@ -159,17 +157,6 @@ export const PatientFormModal = ({
         }
         if (putUpdatePatientStatus === 'success') {
             toast.success(putUpdatePatientMessage);
-            if (patient) {
-                const values = getValues();
-                const nextPatient: IPatientsItems = {
-                    ...patient,
-                    ...values,
-                    secondName: values.secondName ?? "",
-                    secondSurname: values.secondSurname ?? "",
-                };
-                persistPatientChart(nextPatient);
-                dispatch(setCurrentPatient(nextPatient));
-            }
             handleDialogOpenChange(false);
             dispatch(resetPutUpdatePatient());
             onSuccess?.();

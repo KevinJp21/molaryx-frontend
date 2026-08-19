@@ -9,6 +9,8 @@ export interface IGetPatientTreatmentsResponseData
 export interface IPatientTreatmentItems {
   idPatientTreatment: number;
   idPatient: number;
+  patientName: string;
+  patientSurname: string;
   idTreatment: number;
   treatmentName: string;
   agreedPrice: number | null;

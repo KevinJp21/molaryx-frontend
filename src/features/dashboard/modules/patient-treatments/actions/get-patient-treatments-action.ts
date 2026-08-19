@@ -7,29 +7,33 @@ import { IGetPatientTreatmentsResponse } from "../interfaces";
 import { TPaginationParams } from "@/types";
 
 export type TGetPatientTreatmentsParams = TPaginationParams & {
-  IdPatient: number | string;
+  IdPatient?: number | string;
   IdTreatmentStatus?: number;
 };
 
 export const apiGetPatientTreatmentsAction = async (
-  params: TGetPatientTreatmentsParams,
+  params?: TGetPatientTreatmentsParams,
 ): Promise<IGetPatientTreatmentsResponse> => {
   const PATIENT_TREATMENT = process.env.PATIENT_TREATMENT;
   const GET_PATIENT_TREATMENTS = process.env.GET_PATIENT_TREATMENTS;
 
-  const { Page, Size, IdPatient, IdTreatmentStatus } = params;
-  const idPatient =
-    typeof IdPatient === "number" ? IdPatient : Number(decodeId(IdPatient));
+  const { Page, Size, IdPatient, IdTreatmentStatus } = params ?? {};
+  const query = new URLSearchParams();
 
-  if (!idPatient) {
-    return {
-      success: false,
-      message: "El paciente no es válido.",
-    };
+  if (IdPatient != null && IdPatient !== "") {
+    const idPatient =
+      typeof IdPatient === "number" ? IdPatient : Number(decodeId(IdPatient));
+
+    if (!idPatient) {
+      return {
+        success: false,
+        message: "El paciente no es válido.",
+      };
+    }
+
+    query.append("IdPatient", idPatient.toString());
   }
 
-  const query = new URLSearchParams();
-  query.append("IdPatient", idPatient.toString());
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
   if (IdTreatmentStatus) {

@@ -25,6 +25,7 @@ const optionalNotes = z
 
 export const PatientTreatmentFormSchema = z
   .object({
+    encodedPatientId: z.string(),
     idTreatment: z.number().min(1, "Selecciona un tratamiento"),
     startAt: z.string().min(1, "La fecha de inicio es obligatoria"),
     agreedPrice: optionalMoney,
@@ -34,6 +35,14 @@ export const PatientTreatmentFormSchema = z
     notes: optionalNotes,
   })
   .superRefine((data, ctx) => {
+    if (!data.idTreatmentStatus && !data.encodedPatientId) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["encodedPatientId"],
+        message: "Selecciona un paciente",
+      });
+    }
+
     const frequency = data.idPaymentFrequency;
     const needsPeriodic =
       frequency !== PAYMENT_FREQUENCY.NONE &&
@@ -65,6 +74,7 @@ export type TPatientTreatmentFormValues = z.output<
 >;
 
 export const PATIENT_TREATMENT_FORM_DEFAULT_VALUES: TPatientTreatmentForm = {
+  encodedPatientId: "",
   idTreatment: 0,
   startAt: "",
   agreedPrice: null,

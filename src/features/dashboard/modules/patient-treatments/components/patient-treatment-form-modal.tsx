@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { ClipboardPlus, SquarePen } from "lucide-react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +15,10 @@ import {
 } from "@/components";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
+    getPatients,
+    selectGetPatients,
+} from "@/store/patients/patiens-slice";
+import {
     getTreatments,
     selectGetTreatments,
 } from "@/store/treatments/treatments-slice";
@@ -27,6 +31,7 @@ import {
     selectPutUpdatePatientTreatment,
 } from "@/store/patient-treatments/patient-treatments-slice";
 import { colombiaToUtcIso, formatDate } from "@/utils";
+import { patientFullName } from "@/features/dashboard/modules/patients/utils";
 import {
     PAYMENT_FREQUENCY,
     PAYMENT_FREQUENCY_OPTIONS,
@@ -44,7 +49,7 @@ import {
 type Props = {
     open: boolean;
     onOpenChange: (next: boolean) => void;
-    idPatient: string;
+    encodedPatientId?: string;
     patientTreatment?: IPatientTreatmentItems | null;
     onSuccess?: () => void;
 };
@@ -57,15 +62,18 @@ const toOptionalNumber = (value: number | string | null | undefined) => {
 
 const toFormValues = (
     patientTreatment?: IPatientTreatmentItems | null,
+    encodedPatientId?: string,
 ): TPatientTreatmentForm => {
     if (!patientTreatment) {
         return {
             ...PATIENT_TREATMENT_FORM_DEFAULT_VALUES,
+            encodedPatientId: encodedPatientId ?? "",
             startAt: formatDate(new Date(), "yyyy-MM-dd'T'HH:mm"),
         };
     }
 
     return {
+        encodedPatientId: encodedPatientId ?? "",
         idTreatment: patientTreatment.idTreatment,
         startAt: formatDate(patientTreatment.startAt, "yyyy-MM-dd'T'HH:mm"),
         agreedPrice: patientTreatment.agreedPrice,
@@ -80,12 +88,15 @@ const toFormValues = (
 export const PatientTreatmentFormModal = ({
     open,
     onOpenChange,
-    idPatient,
+    encodedPatientId,
     patientTreatment = null,
     onSuccess,
 }: Props) => {
     const dispatch = useAppDispatch();
     const isEdit = Boolean(patientTreatment);
+    const needsPatientSelect = !isEdit && !encodedPatientId;
+    const { data: patientsData, status: patientsStatus } =
+        useAppSelector(selectGetPatients);
     const { data: treatmentsData, status: treatmentsStatus } =
         useAppSelector(selectGetTreatments);
     const {
@@ -123,6 +134,30 @@ export const PatientTreatmentFormModal = ({
         name: item.name,
     }));
 
+    const patientItems = (patientsData?.items ?? [])
+        .filter((item) => Boolean(item.encodedId))
+        .map((item) => ({
+            value: item.encodedId as string,
+            name: patientFullName(
+                item.firstName,
+                item.secondName,
+                item.firstSurname,
+                item.secondSurname,
+            ),
+        }));
+
+    const searchPatients = useCallback(
+        (Search: string) => {
+            dispatch(
+                getPatients({
+                    IsActive: true,
+                    ...(Search ? { Search } : {}),
+                }),
+            );
+        },
+        [dispatch],
+    );
+
     const statusOptions = patientTreatment
         ? getAllowedTreatmentStatuses(patientTreatment.idTreatmentStatus).map(
             (id) => ({
@@ -136,9 +171,12 @@ export const PatientTreatmentFormModal = ({
         if (!open) return;
         if (!isEdit) {
             dispatch(getTreatments({ IsActive: true, Size: 10 }));
+            if (needsPatientSelect) {
+                dispatch(getPatients({ IsActive: true }));
+            }
         }
-        reset(toFormValues(patientTreatment));
-    }, [open, isEdit, patientTreatment, dispatch, reset]);
+        reset(toFormValues(patientTreatment, encodedPatientId));
+    }, [open, isEdit, patientTreatment, encodedPatientId, needsPatientSelect, dispatch, reset]);
 
     const handleDialogOpenChange = (next: boolean) => {
         if (!next) {
@@ -180,7 +218,7 @@ export const PatientTreatmentFormModal = ({
 
         dispatch(
             postCreatePatientTreatment({
-                idPatient,
+                idPatient: data.encodedPatientId || encodedPatientId || "",
                 idTreatment: data.idTreatment,
                 agreedPrice: toOptionalNumber(data.agreedPrice),
                 idPaymentFrequency,
@@ -236,7 +274,7 @@ export const PatientTreatmentFormModal = ({
             description={
                 isEdit
                     ? "Actualiza el plan. El tratamiento asignado no se puede cambiar."
-                    : "Asigna un tratamiento del catálogo a este paciente."
+                    : "Asigna un tratamiento del catálogo a un paciente."
             }
         >
             <FormProvider {...methods}>
@@ -246,6 +284,27 @@ export const PatientTreatmentFormModal = ({
                 >
                     <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
                         <div className="flex flex-col gap-3">
+                            {needsPatientSelect && (
+                                <CustomFormSelect
+                                    name="encodedPatientId"
+                                    label="Paciente"
+                                    placeholder={
+                                        patientsStatus === "loading"
+                                            ? "Cargando pacientes..."
+                                            : "Selecciona un paciente"
+                                    }
+                                    items={patientItems}
+                                    disabled={
+                                        patientsStatus === "loading" &&
+                                        patientItems.length === 0
+                                    }
+                                    searchable
+                                    searchPlaceholder="Buscar paciente..."
+                                    onSearch={searchPatients}
+                                    isSearching={patientsStatus === "loading"}
+                                />
+                            )}
+
                             {isEdit && patientTreatment ? (
                                 <div className="flex flex-col gap-1">
                                     <span className="text-xs text-ink-400">Tratamiento</span>

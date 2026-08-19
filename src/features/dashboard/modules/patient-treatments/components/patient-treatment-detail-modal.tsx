@@ -18,7 +18,6 @@ import { IPatientTreatmentItems } from "../interfaces";
 type Props = {
     open: boolean;
     onOpenChange: (next: boolean) => void;
-    encodedPatientId: string;
     patientTreatment: IPatientTreatmentItems | null;
 };
 
@@ -45,7 +44,6 @@ const statusBadgeVariant = (id: number) => {
 export const PatientTreatmentDetailModal = ({
     open,
     onOpenChange,
-    encodedPatientId,
     patientTreatment,
 }: Props) => {
     const { data: userData } = useAppSelector(selectGetUserData);
@@ -98,6 +96,15 @@ export const PatientTreatmentDetailModal = ({
             <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
                 <div className="flex flex-col gap-6">
                     <div className="grid grid-cols-1 gap-4 rounded-lg border border-ink-800 bg-ink-900/30 p-4 md:grid-cols-2">
+                        <Field
+                            label="Paciente"
+                            value={
+                                [patientTreatment.patientName, patientTreatment.patientSurname]
+                                    .filter(Boolean)
+                                    .join(" ")
+                                    .trim() || "—"
+                            }
+                        />
                         <Field label="Tratamiento" value={patientTreatment.treatmentName} />
                         <div className="flex flex-col gap-1">
                             <span className="text-xs text-ink-400">Estado</span>
@@ -159,7 +166,6 @@ export const PatientTreatmentDetailModal = ({
                         )}
                         {canViewPayments ? (
                             <PaymentsTable
-                                encodedPatientId={encodedPatientId}
                                 idPatientTreatment={patientTreatment.idPatientTreatment}
                                 refreshKey={paymentsRefreshKey}
                                 emptyMessage="Este plan no tiene pagos registrados."
