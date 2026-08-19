@@ -21,6 +21,8 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components"
+import { PatientsTableFilter } from "."
+import { TGetPatientsParams } from "../actions"
 
 type Props = {
     onEdit: (patient: IPatientsItems) => void;
@@ -32,16 +34,25 @@ export const PatientsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
     const dispatch = useAppDispatch();
     const { data, status, message } = useAppSelector(selectGetPatients);
     const [currentPage, setCurrentPage] = useState(1);
+    const [listFilters, setListFilters] = useState<Pick<TGetPatientsParams, "Search" | "IsActive">>({});
+
+    const handleFiltersChange = (filters: TGetPatientsParams) => {
+        setListFilters(filters);
+        setCurrentPage(1);
+    }
 
     useEffect(() => {
         dispatch(getPatients({
             Page: currentPage,
+            ...listFilters,
         }));
-    }, [dispatch, currentPage, refreshKey]);
+    }, [dispatch, currentPage, refreshKey, listFilters]);
 
     const items = data?.items ?? [];
     const totalPages = data?.totalPages ?? 0;
     const colSpan = 6;
+
+    const filterParamsForForm: TGetPatientsParams = { Page: 1, ...listFilters };
 
     useEffect(() => {
         if (status === "success" && items.length === 0 && currentPage > 1) {
@@ -58,6 +69,12 @@ export const PatientsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
                 isLoading={status === "loading" || status === "idle"}
                 totalItems={data?.totalItems ?? 0}
                 totalItemsView={items.length}
+                actions={
+                    <PatientsTableFilter
+                        params={filterParamsForForm}
+                        onFiltersChange={handleFiltersChange}
+                    />
+                }
             >
                 <Table>
                     <TableHeader>
