@@ -20,6 +20,7 @@ import {
     TableSkeleton,
 } from "@/components";
 import { PaymentDetailModal } from "@/features/dashboard/modules/payments/components/payment-detail-modal";
+import { useDetailModalState } from "@/features/dashboard/hooks";
 import { IPaymentItems } from "@/features/dashboard/modules/payments/interfaces";
 
 type RelatedPaymentsTableProps = {
@@ -46,8 +47,12 @@ export const RelatedPaymentsTable = ({
     const dispatch = useAppDispatch();
     const { data, status, message, error } = useAppSelector(selectGetPayments);
     const [currentPage, setCurrentPage] = useState(1);
-    const [detailOpen, setDetailOpen] = useState(false);
-    const [selectedPayment, setSelectedPayment] = useState<IPaymentItems | null>(null);
+    const {
+        open: detailOpen,
+        selected: selectedPayment,
+        openDetails,
+        handleOpenChange: handleDetailOpenChange,
+    } = useDetailModalState<IPaymentItems>();
     const colSpan = 5;
 
     useEffect(() => {
@@ -81,16 +86,6 @@ export const RelatedPaymentsTable = ({
             setCurrentPage((page) => page - 1);
         }
     }, [status, items.length, currentPage]);
-
-    const openDetails = (payment: IPaymentItems) => {
-        setSelectedPayment(payment);
-        setDetailOpen(true);
-    };
-
-    const handleDetailOpenChange = (next: boolean) => {
-        setDetailOpen(next);
-        if (!next) setSelectedPayment(null);
-    };
 
     return (
         <>

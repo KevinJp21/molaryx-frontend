@@ -26,6 +26,7 @@ import {
   getAppointmentStatusLabel,
 } from "../consts";
 import { IAppointmentListItems } from "../interfaces";
+import { useDetailModalState } from "@/features/dashboard/hooks";
 import { toColombiaDate, formatDate } from "@/utils";
 import { AppointmentDetailModal } from "./appointment-detail-modal";
 
@@ -43,8 +44,12 @@ export const AppointmentsListTable = () => {
   const dispatch = useAppDispatch();
   const { data, status, message, error } = useAppSelector(selectGetAppointmentsList);
   const [currentPage, setCurrentPage] = useState(1);
-  const [detailOpen, setDetailOpen] = useState(false);
-  const [selected, setSelected] = useState<IAppointmentListItems | null>(null);
+  const {
+    open: detailOpen,
+    selected,
+    openDetails,
+    handleOpenChange: handleDetailOpenChange,
+  } = useDetailModalState<IAppointmentListItems>();
 
   useEffect(() => {
     dispatch(
@@ -63,16 +68,6 @@ export const AppointmentsListTable = () => {
       setCurrentPage((page) => page - 1);
     }
   }, [status, items.length, currentPage]);
-
-  const openDetails = (item: IAppointmentListItems) => {
-    setSelected(item);
-    setDetailOpen(true);
-  };
-
-  const handleDetailOpenChange = (next: boolean) => {
-    setDetailOpen(next);
-    if (!next) setSelected(null);
-  };
 
   return (
     <>

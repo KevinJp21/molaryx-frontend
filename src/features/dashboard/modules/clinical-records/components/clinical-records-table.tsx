@@ -23,6 +23,7 @@ import {
   TableSkeleton,
 } from "@/components";
 import { IClinicalRecordItems } from "../interfaces";
+import { useDetailModalState } from "@/features/dashboard/hooks";
 import { ClinicalRecordDetailModal } from "./clinical-record-detail-modal";
 
 type Props = {
@@ -51,9 +52,12 @@ export const ClinicalRecordsTable = ({
     selectGetClinicalRecords,
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const [detailOpen, setDetailOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] =
-    useState<IClinicalRecordItems | null>(null);
+  const {
+    open: detailOpen,
+    selected: selectedRecord,
+    openDetails,
+    handleOpenChange: handleDetailOpenChange,
+  } = useDetailModalState<IClinicalRecordItems>();
   const colSpan = 6;
 
   useEffect(() => {
@@ -72,16 +76,6 @@ export const ClinicalRecordsTable = ({
       setCurrentPage((page) => page - 1);
     }
   }, [status, items.length, currentPage]);
-
-  const openDetails = (record: IClinicalRecordItems) => {
-    setSelectedRecord(record);
-    setDetailOpen(true);
-  };
-
-  const handleDetailOpenChange = (next: boolean) => {
-    setDetailOpen(next);
-    if (!next) setSelectedRecord(null);
-  };
 
   return (
     <>

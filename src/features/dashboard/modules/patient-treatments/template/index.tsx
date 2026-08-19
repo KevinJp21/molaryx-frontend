@@ -6,6 +6,7 @@ import { Button } from "@/components";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";
+import { useDetailModalState } from "@/features/dashboard/hooks";
 import {
   PatientTreatmentDetailModal,
   PatientTreatmentFormModal,
@@ -27,10 +28,13 @@ export const PatientTreatmentsTemplate = () => {
   );
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const {
+    open: detailModalOpen,
+    selected: detailSelected,
+    openDetails,
+    handleOpenChange: handleDetailModalOpenChange,
+  } = useDetailModalState<IPatientTreatmentItems>();
   const [selected, setSelected] = useState<IPatientTreatmentItems | null>(null);
-  const [detailSelected, setDetailSelected] =
-    useState<IPatientTreatmentItems | null>(null);
   const [listRefreshKey, setListRefreshKey] = useState(0);
 
   const refreshList = () => setListRefreshKey((key) => key + 1);
@@ -45,19 +49,9 @@ export const PatientTreatmentsTemplate = () => {
     setModalOpen(true);
   };
 
-  const openDetails = (item: IPatientTreatmentItems) => {
-    setDetailSelected(item);
-    setDetailModalOpen(true);
-  };
-
   const handleModalOpenChange = (next: boolean) => {
     setModalOpen(next);
     if (!next) setSelected(null);
-  };
-
-  const handleDetailModalOpenChange = (next: boolean) => {
-    setDetailModalOpen(next);
-    if (!next) setDetailSelected(null);
   };
 
   return (
