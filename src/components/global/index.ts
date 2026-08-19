@@ -9,3 +9,4 @@ export * from "./base-table";
 export * from "./base-modal";
 export * from "./custom-pagination";
 export * from "./table-skeleton";
+export * from "./table-filters";
