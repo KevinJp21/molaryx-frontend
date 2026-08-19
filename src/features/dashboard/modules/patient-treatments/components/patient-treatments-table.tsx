@@ -102,13 +102,11 @@ export const PatientTreatmentsTable = ({
                 isLoading={status === "loading" || status === "idle"}
                 totalItems={data?.totalItems ?? 0}
                 totalItemsView={items.length}
-                actions={
-                    <PatientsTreatmentFilter
-                        params={filterParamsForForm}
-                        onFiltersChange={handleFiltersChange}
-                    />
-                }
             >
+                <PatientsTreatmentFilter
+                    params={filterParamsForForm}
+                    onFiltersChange={handleFiltersChange}
+                />
                 <Table>
                     <TableHeader>
                         <TableRow>

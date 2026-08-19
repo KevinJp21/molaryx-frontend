@@ -69,13 +69,11 @@ export const PatientsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
                 isLoading={status === "loading" || status === "idle"}
                 totalItems={data?.totalItems ?? 0}
                 totalItemsView={items.length}
-                actions={
-                    <PatientsTableFilter
-                        params={filterParamsForForm}
-                        onFiltersChange={handleFiltersChange}
-                    />
-                }
             >
+                <PatientsTableFilter
+                    params={filterParamsForForm}
+                    onFiltersChange={handleFiltersChange}
+                />
                 <Table>
                     <TableHeader>
                         <TableRow>

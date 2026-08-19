@@ -26,8 +26,15 @@ type TPatientsTableFilterProps = {
 
 type TFormValues = {
     searchTerm: string;
-    idPatientTreatmentStatus: number | null;
+    idPatientTreatmentStatus: number | typeof ALL_PATIENT_TREATMENT_STATUS_VALUE;
 };
+
+const ALL_PATIENT_TREATMENT_STATUS_VALUE = "all";
+
+const PATIENT_TREATMENT_STATUS_ITEMS = [
+    { value: ALL_PATIENT_TREATMENT_STATUS_VALUE, name: "Todos" },
+    ...PATIENT_TREATMENT_STATUS_OPTION.map((s) => ({ value: s.value, name: s.name })),
+];
 
 export const PatientsTreatmentFilter = ({
     params,
@@ -38,7 +45,7 @@ export const PatientsTreatmentFilter = ({
     const filterForm = useForm<TFormValues>({
         defaultValues: {
             searchTerm: params.Search ?? "",
-            idPatientTreatmentStatus: params.IdPatientTreatmentStatus ?? null,
+            idPatientTreatmentStatus: ALL_PATIENT_TREATMENT_STATUS_VALUE,
         },
     });
 
@@ -58,12 +65,12 @@ export const PatientsTreatmentFilter = ({
         const queryParams: TGetPatientTreatmentsParams = {};
         const term = debouncedSearch?.trim();
         if (term) queryParams.Search = term;
-        if (idPatientTreatmentStatus) queryParams.IdPatientTreatmentStatus = idPatientTreatmentStatus;
+        if (idPatientTreatmentStatus !== ALL_PATIENT_TREATMENT_STATUS_VALUE) queryParams.IdPatientTreatmentStatus = idPatientTreatmentStatus;
         onFiltersChange(queryParams);
     }, [debouncedSearch, idPatientTreatmentStatus, onFiltersChange]);
 
     const handleReset = () => {
-        reset({ searchTerm: "", idPatientTreatmentStatus: null });
+        reset({ searchTerm: "", idPatientTreatmentStatus: ALL_PATIENT_TREATMENT_STATUS_VALUE });
     };
 
     const activeCount = [
@@ -73,24 +80,36 @@ export const PatientsTreatmentFilter = ({
 
     return (
         <Sheet open={open} onOpenChange={setOpen}>
-            <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setOpen(true)}
-                className="relative gap-2"
-            >
-                <SlidersHorizontal className="size-4" />
-                Filtros
-                {activeCount > 0 && (
-                    <span className="flex size-5 items-center justify-center rounded-full bg-accent-500 text-[10px] font-bold text-white">
-                        {activeCount}
-                    </span>
-                )}
-            </Button>
+            <FormProvider {...filterForm}>
+                <div className="flex flex-wrap justify-between items-end gap-3 border-b border-ink-800 px-4 py-3">
+                    <div className="max-w-75 w-full">
 
-            <SheetContent>
-                <FormProvider {...filterForm}>
+                    <CustomFormField
+                        name="searchTerm"
+                        label="Buscar"
+                        type="text"
+                        placeholder="Nombre, cédula, teléfono…"
+                    />
+                    </div>
+
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setOpen(true)}
+                        className="relative gap-2"
+                    >
+                        <SlidersHorizontal className="size-4" />
+                        Filtros
+                        {activeCount > 0 && (
+                            <span className="flex size-5 items-center justify-center rounded-full bg-accent-500 text-[10px] font-bold text-white">
+                                {activeCount}
+                            </span>
+                        )}
+                    </Button>
+                </div>
+                <SheetContent>
+
                     <form className="flex h-full flex-col">
                         <SheetHeader>
                             <SheetTitle>Filtros</SheetTitle>
@@ -100,17 +119,11 @@ export const PatientsTreatmentFilter = ({
                         </SheetHeader>
 
                         <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-6">
-                            <CustomFormField
-                                name="searchTerm"
-                                label="Buscar"
-                                type="text"
-                                placeholder="Nombre, cédula, teléfono…"
-                            />
                             <CustomFormSelect
                                 name="idPatientTreatmentStatus"
                                 label="Estado"
                                 placeholder="Todos"
-                                items={PATIENT_TREATMENT_STATUS_OPTION}
+                                items={PATIENT_TREATMENT_STATUS_ITEMS.map((s) => ({ value: s.value, name: s.name }))}
                             />
                         </div>
 
@@ -126,8 +139,8 @@ export const PatientsTreatmentFilter = ({
                             </Button>
                         </SheetFooter>
                     </form>
-                </FormProvider>
-            </SheetContent>
+                </SheetContent>
+            </FormProvider>
         </Sheet>
     );
 };

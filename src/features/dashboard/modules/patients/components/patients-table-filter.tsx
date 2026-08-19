@@ -73,30 +73,40 @@ export const PatientsTableFilter = ({
     };
 
     const activeCount = [
-        debouncedSearch?.trim() ? 1 : 0,
         isActive !== ALL_STATUSES_VALUE ? 1 : 0,
     ].reduce((a, b) => a + b, 0);
 
     return (
         <Sheet open={open} onOpenChange={setOpen}>
-            <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setOpen(true)}
-                className="relative gap-2"
-            >
-                <SlidersHorizontal className="size-4" />
-                Filtros
-                {activeCount > 0 && (
-                    <span className="flex size-5 items-center justify-center rounded-full bg-accent-500 text-[10px] font-bold text-white">
-                        {activeCount}
-                    </span>
-                )}
-            </Button>
+            <FormProvider {...filterForm}>
+                <div className="flex flex-wrap items-end justify-between gap-3 border-b border-ink-800 px-4 py-3">
+                    <div className="w-full max-w-75">
+                        <CustomFormField
+                            name="searchTerm"
+                            label="Buscar"
+                            type="text"
+                            placeholder="Nombre, cédula, teléfono…"
+                        />
+                    </div>
 
-            <SheetContent>
-                <FormProvider {...filterForm}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setOpen(true)}
+                        className="relative gap-2"
+                    >
+                        <SlidersHorizontal className="size-4" />
+                        Filtros
+                        {activeCount > 0 && (
+                            <span className="flex size-5 items-center justify-center rounded-full bg-accent-500 text-[10px] font-bold text-white">
+                                {activeCount}
+                            </span>
+                        )}
+                    </Button>
+                </div>
+
+                <SheetContent>
                     <form className="flex h-full flex-col">
                         <SheetHeader>
                             <SheetTitle>Filtros</SheetTitle>
@@ -106,12 +116,6 @@ export const PatientsTableFilter = ({
                         </SheetHeader>
 
                         <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-6">
-                            <CustomFormField
-                                name="searchTerm"
-                                label="Buscar"
-                                type="text"
-                                placeholder="Nombre, cédula, teléfono…"
-                            />
                             <CustomFormSelect
                                 name="isActive"
                                 label="Estado"
@@ -128,15 +132,15 @@ export const PatientsTableFilter = ({
                                 type="button"
                                 variant="destructive"
                                 onClick={handleReset}
-                                className="gap-2 w-full"
+                                className="w-full gap-2"
                             >
                                 <RotateCcw className="size-4" />
                                 Reiniciar filtros
                             </Button>
                         </SheetFooter>
                     </form>
-                </FormProvider>
-            </SheetContent>
+                </SheetContent>
+            </FormProvider>
         </Sheet>
     );
 };
