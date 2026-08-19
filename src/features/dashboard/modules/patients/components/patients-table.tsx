@@ -32,7 +32,7 @@ type Props = {
 
 export const PatientsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
     const dispatch = useAppDispatch();
-    const { data, status, message } = useAppSelector(selectGetPatients);
+    const { data, status, message, error } = useAppSelector(selectGetPatients);
     const [currentPage, setCurrentPage] = useState(1);
     const [listFilters, setListFilters] = useState<Pick<TGetPatientsParams, "Search" | "IsActive">>({});
 
@@ -93,7 +93,7 @@ export const PatientsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
                         {status === "error" && (
                             <TableRow>
                                 <TableCell colSpan={colSpan} className="py-16 text-center text-sm text-coral-500 bg-coral-500/10 hover:bg-coral-500/15">
-                                    {message}
+                                    {error ?? message}
                                 </TableCell>
                             </TableRow>
                         )}

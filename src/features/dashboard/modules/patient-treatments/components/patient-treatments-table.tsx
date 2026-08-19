@@ -53,7 +53,7 @@ export const PatientTreatmentsTable = ({
     refreshKey = 0,
 }: Props) => {
     const dispatch = useAppDispatch();
-    const { data, status, message } = useAppSelector(selectGetPatientTreatments);
+    const { data, status, message, error } = useAppSelector(selectGetPatientTreatments);
     const [currentPage, setCurrentPage] = useState(1);
     const [listFilters, setListFilters] = useState<Pick<TGetPatientTreatmentsParams, "Search" | "IdPatientTreatmentStatus">>({});
     const items = data?.items ?? [];
@@ -121,7 +121,7 @@ export const PatientTreatmentsTable = ({
                                     colSpan={colSpan}
                                     className="py-16 text-center text-sm text-coral-500 bg-coral-500/10 hover:bg-coral-500/15"
                                 >
-                                    {message}
+                                    {error ?? message}
                                 </TableCell>
                             </TableRow>
                         )}

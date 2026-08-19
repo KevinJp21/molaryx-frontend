@@ -29,7 +29,7 @@ type Props = {
 
 export const TreatmentsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
     const dispatch = useAppDispatch();
-    const { data, status, message } = useAppSelector(selectGetTreatments);
+    const { data, status, message, error } = useAppSelector(selectGetTreatments);
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
@@ -74,7 +74,7 @@ export const TreatmentsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => 
                         {status === "error" && (
                             <TableRow>
                                 <TableCell colSpan={colSpan} className="py-16 text-center text-sm text-coral-500 bg-coral-500/10 hover:bg-coral-500/15">
-                                    {message}
+                                    {error ?? message}
                                 </TableCell>
                             </TableRow>
                         )}

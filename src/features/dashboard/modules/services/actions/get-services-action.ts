@@ -35,10 +35,11 @@ export const apiGetServicesAction = async (
       data: response.data.data,
     };
   } catch (error) {
-    const { message } = await handleApiError(error);
+    const { message, error: errorResponse } = await handleApiError(error);
     return {
       success: false,
       message,
+      error: errorResponse,
     };
   }
 };

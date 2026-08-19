@@ -9,7 +9,7 @@ import {
 } from "@/store/payments/payments-slice";
 import { currencyFormat } from "@/utils";
 import { cn } from "@/lib/utils";
-import { Skeleton } from "@/components";
+import { Skeleton, ErrorMessage } from "@/components";
 
 type Props = {
   open: boolean;
@@ -79,7 +79,7 @@ export const PaymentSummaryByConcept = ({
   refreshKey = 0,
 }: Props) => {
   const dispatch = useAppDispatch();
-  const { data, status, message } = useAppSelector(
+  const { data, status, message, error } = useAppSelector(
     selectGetPaymentsSummaryByConcept,
   );
 
@@ -132,7 +132,7 @@ export const PaymentSummaryByConcept = ({
       )}
 
       {status === "error" && (
-        <p className="text-sm text-coral-500">{message}</p>
+        <ErrorMessage message={message} error={error} />
       )}
 
       {status === "success" && data && (

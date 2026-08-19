@@ -20,6 +20,7 @@ type TPatientsState = {
   getPatients: {
     status: TStatus;
     message?: string;
+    error?: string;
     data?: IGetPatientsResponseData;
   };
   putUpdatePatient: {
@@ -43,6 +44,7 @@ const initialState: TPatientsState = {
   getPatients: {
     status: "idle",
     message: undefined,
+    error: undefined,
     data: undefined,
   },
   putUpdatePatient: {
@@ -69,16 +71,19 @@ const patientsSlice = createAppSlice({
           if (!action.payload.success) {
             state.getPatients.status = "error";
             state.getPatients.message = action.payload.message;
+            state.getPatients.error = action.payload.error ?? undefined;
             state.getPatients.data = undefined;
             return;
           }
           state.getPatients.status = "success";
           state.getPatients.message = action.payload.message;
+          state.getPatients.error = undefined;
           state.getPatients.data = action.payload.data;
         },
         rejected: (state, action) => {
           state.getPatients.status = "error";
           state.getPatients.message = action.error.message;
+          state.getPatients.error = undefined;
           state.getPatients.data = undefined;
         },
       },

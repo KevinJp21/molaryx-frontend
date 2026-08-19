@@ -84,6 +84,7 @@ const appointmentsSlice = createAppSlice({
           }
           state.getAppointments.status = "success";
           state.getAppointments.message = action.payload.message;
+          state.getAppointments.error = undefined;
           state.getAppointments.data = action.payload.data;
         },
         rejected: (state, action) => {
@@ -111,6 +112,7 @@ const appointmentsSlice = createAppSlice({
           }
           state.getAppointmentsList.status = "success";
           state.getAppointmentsList.message = action.payload.message;
+          state.getAppointmentsList.error = undefined;
           state.getAppointmentsList.data = action.payload.data ?? undefined;
         },
         rejected: (state, action) => {

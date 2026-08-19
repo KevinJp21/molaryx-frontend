@@ -11,6 +11,7 @@ type TProfessionalsState = {
     status: TStatus;
     data?: TPaginationResponse<IGetProfessionalsResponseData>;
     message?: string;
+    error?: string;
   };
 };
 
@@ -19,6 +20,7 @@ const initialState: TProfessionalsState = {
     status: "idle",
     data: undefined,
     message: undefined,
+    error: undefined,
   },
 };
 
@@ -37,16 +39,19 @@ const professionalsSlice = createAppSlice({
           if (!action.payload.success) {
             state.getProfessionals.status = "error";
             state.getProfessionals.message = action.payload.message;
+            state.getProfessionals.error = action.payload.error ?? undefined;
             state.getProfessionals.data = undefined;
             return;
           }
           state.getProfessionals.status = "success";
           state.getProfessionals.message = action.payload.message;
+          state.getProfessionals.error = undefined;
           state.getProfessionals.data = action.payload.data;
         },
         rejected: (state, action) => {
           state.getProfessionals.status = "error";
           state.getProfessionals.message = action.error.message;
+          state.getProfessionals.error = undefined;
           state.getProfessionals.data = undefined;
         },
       },

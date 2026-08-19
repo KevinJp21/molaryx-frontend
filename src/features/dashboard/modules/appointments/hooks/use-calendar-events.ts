@@ -26,7 +26,7 @@ type Params = {
 
 export const useCalendarEvents = ({ date, view }: Params) => {
   const dispatch = useAppDispatch();
-  const { data, status } = useAppSelector(selectGetAppointments);
+  const { data, status, message, error } = useAppSelector(selectGetAppointments);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [inactiveStatusIds, setInactiveStatusIds] = useState<
@@ -100,6 +100,7 @@ export const useCalendarEvents = ({ date, view }: Params) => {
   };
 
   const isLoading = status === "loading" || status === "idle";
+  const hasError = status === "error";
 
   return {
     events,
@@ -107,6 +108,9 @@ export const useCalendarEvents = ({ date, view }: Params) => {
     resources,
     calendars,
     isLoading,
+    hasError,
+    message,
+    error,
     isSidebarOpen,
     setIsSidebarOpen,
     activeResourceId,

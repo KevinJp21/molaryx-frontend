@@ -22,6 +22,7 @@ type TTreatmentsState = {
   getTreatments: {
     status: TStatus;
     message?: string;
+    error?: string;
     data?: IGetTreatmentsResponseData;
   };
   putUpdateTreatment: {
@@ -45,6 +46,7 @@ const initialState: TTreatmentsState = {
   getTreatments: {
     status: "idle",
     message: undefined,
+    error: undefined,
     data: undefined,
   },
   putUpdateTreatment: {
@@ -74,16 +76,19 @@ const treatmentsSlice = createAppSlice({
           if (!action.payload.success) {
             state.getTreatments.status = "error";
             state.getTreatments.message = action.payload.message;
+            state.getTreatments.error = action.payload.error ?? undefined;
             state.getTreatments.data = undefined;
             return;
           }
           state.getTreatments.status = "success";
           state.getTreatments.message = action.payload.message;
+          state.getTreatments.error = undefined;
           state.getTreatments.data = action.payload.data ?? undefined;
         },
         rejected: (state, action) => {
           state.getTreatments.status = "error";
           state.getTreatments.message = action.error.message;
+          state.getTreatments.error = undefined;
           state.getTreatments.data = undefined;
         },
       },

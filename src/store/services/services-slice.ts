@@ -22,6 +22,7 @@ type TServicesState = {
   getServices: {
     status: TStatus;
     message?: string;
+    error?: string;
     data?: IGetServicesResponseData;
   };
   putUpdateService: {
@@ -45,6 +46,7 @@ const initialState: TServicesState = {
   getServices: {
     status: "idle",
     message: undefined,
+    error: undefined,
     data: undefined,
   },
   putUpdateService: {
@@ -73,16 +75,19 @@ const servicesSlice = createAppSlice({
           if (!action.payload.success) {
             state.getServices.status = "error";
             state.getServices.message = action.payload.message;
+            state.getServices.error = action.payload.error ?? undefined;
             state.getServices.data = undefined;
             return;
           }
           state.getServices.status = "success";
           state.getServices.message = action.payload.message;
+          state.getServices.error = undefined;
           state.getServices.data = action.payload.data;
         },
         rejected: (state, action) => {
           state.getServices.status = "error";
           state.getServices.message = action.error.message;
+          state.getServices.error = undefined;
           state.getServices.data = undefined;
         },
       },

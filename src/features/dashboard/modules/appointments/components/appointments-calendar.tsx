@@ -51,6 +51,9 @@ export const AppointmentsCalendar = () => {
     resources,
     calendars,
     isLoading,
+    hasError,
+    message,
+    error,
     isSidebarOpen,
     setIsSidebarOpen,
     activeResourceId,
@@ -225,6 +228,15 @@ export const AppointmentsCalendar = () => {
               <div className="h-full min-w-full">
                 {isLoading ? (
                   <CalendarViewSkeleton view={view} />
+                ) : hasError ? (
+                  <div className="flex h-full items-center justify-center p-6">
+                    <div className="flex max-w-md flex-col gap-1 text-center text-sm text-coral-500">
+                      <span>{message}</span>
+                      {error && (
+                        <span className="text-xs opacity-90">{error}</span>
+                      )}
+                    </div>
+                  </div>
                 ) : (
                   <div
                     key={`${view}-${date.toDateString()}`}

@@ -45,7 +45,7 @@ export const PaymentsTable = ({
     emptyMessage = "No hay pagos registrados.",
 }: Props) => {
     const dispatch = useAppDispatch();
-    const { data, status, message } = useAppSelector(selectGetPayments);
+    const { data, status, message, error } = useAppSelector(selectGetPayments);
     const [currentPage, setCurrentPage] = useState(1);
     const [detailOpen, setDetailOpen] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState<IPaymentItems | null>(null);
@@ -111,7 +111,7 @@ export const PaymentsTable = ({
                                         colSpan={colSpan}
                                         className="py-16 text-center text-sm text-coral-500 bg-coral-500/10 hover:bg-coral-500/15"
                                     >
-                                        {message}
+                                        {error ?? message}
                                     </TableCell>
                                 </TableRow>
                             )}

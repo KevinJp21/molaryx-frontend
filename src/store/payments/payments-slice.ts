@@ -17,11 +17,13 @@ type TPaymentsState = {
   getPayments: {
     status: TStatus;
     message?: string;
+    error?: string;
     data?: IGetPaymentsResponseData;
   };
   getPaymentsSummaryByConcept: {
     status: TStatus;
     message?: string;
+    error?: string;
     data?: IGetPaymentsSummaryByConceptData;
   };
   postCreatePayment: {
@@ -35,11 +37,13 @@ const initialState: TPaymentsState = {
   getPayments: {
     status: "idle",
     message: undefined,
+    error: undefined,
     data: undefined,
   },
   getPaymentsSummaryByConcept: {
     status: "idle",
     message: undefined,
+    error: undefined,
     data: undefined,
   },
   postCreatePayment: {
@@ -63,16 +67,19 @@ const paymentsSlice = createAppSlice({
           if (!action.payload.success) {
             state.getPayments.status = "error";
             state.getPayments.message = action.payload.message;
+            state.getPayments.error = action.payload.error ?? undefined;
             state.getPayments.data = undefined;
             return;
           }
           state.getPayments.status = "success";
           state.getPayments.message = action.payload.message;
+          state.getPayments.error = undefined;
           state.getPayments.data = action.payload.data ?? undefined;
         },
         rejected: (state, action) => {
           state.getPayments.status = "error";
           state.getPayments.message = action.error.message;
+          state.getPayments.error = undefined;
           state.getPayments.data = undefined;
         },
       },
@@ -88,17 +95,21 @@ const paymentsSlice = createAppSlice({
           if (!action.payload.success) {
             state.getPaymentsSummaryByConcept.status = "error";
             state.getPaymentsSummaryByConcept.message = action.payload.message;
+            state.getPaymentsSummaryByConcept.error =
+              action.payload.error ?? undefined;
             state.getPaymentsSummaryByConcept.data = undefined;
             return;
           }
           state.getPaymentsSummaryByConcept.status = "success";
           state.getPaymentsSummaryByConcept.message = action.payload.message;
+          state.getPaymentsSummaryByConcept.error = undefined;
           state.getPaymentsSummaryByConcept.data =
             action.payload.data ?? undefined;
         },
         rejected: (state, action) => {
           state.getPaymentsSummaryByConcept.status = "error";
           state.getPaymentsSummaryByConcept.message = action.error.message;
+          state.getPaymentsSummaryByConcept.error = undefined;
           state.getPaymentsSummaryByConcept.data = undefined;
         },
       },

@@ -41,7 +41,7 @@ const statusBadgeVariant = (id: number) => {
 
 export const AppointmentsListTable = () => {
   const dispatch = useAppDispatch();
-  const { data, status, message } = useAppSelector(selectGetAppointmentsList);
+  const { data, status, message, error } = useAppSelector(selectGetAppointmentsList);
   const [currentPage, setCurrentPage] = useState(1);
   const [detailOpen, setDetailOpen] = useState(false);
   const [selected, setSelected] = useState<IAppointmentListItems | null>(null);
@@ -106,7 +106,7 @@ export const AppointmentsListTable = () => {
                     colSpan={colSpan}
                     className="py-16 text-center text-sm text-coral-500 bg-coral-500/10 hover:bg-coral-500/15"
                   >
-                    {message}
+                    {error ?? message}
                   </TableCell>
                 </TableRow>
               )}
