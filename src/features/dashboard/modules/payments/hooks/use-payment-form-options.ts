@@ -16,7 +16,7 @@ import {
 } from "@/store/patient-treatments/patient-treatments-slice";
 import { currencyFormat, formatDate } from "@/utils";
 import { APPOINTMENT_STATUS } from "@/features/dashboard/modules/appointments/consts";
-import { TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
+import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
 import { PAYMENT_CONTEXT } from "../consts";
 import { fullName } from "../utils";
 
@@ -78,7 +78,7 @@ export const usePaymentFormOptions = ({
     () =>
       (treatmentsData?.items ?? [])
         .filter(
-          (item) => item.idTreatmentStatus !== TREATMENT_STATUS.CANCELLED,
+          (item) => item.idPatientTreatmentStatus !== PATIENT_TREATMENT_STATUS.CANCELLED,
         )
         .map((item) => ({
           value: item.idPatientTreatment,

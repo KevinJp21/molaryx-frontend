@@ -4,6 +4,6 @@ export interface IPutUpdatePatientTreatmentFormRequest {
   idPaymentFrequency?: number | null;
   periodicAmount?: number | null;
   startAt?: string;
-  idTreatmentStatus?: number;
+  idPatientTreatmentStatus?: number;
   notes?: string | null;
 }

@@ -19,7 +19,7 @@ export interface IPatientTreatmentItems {
   periodicAmount: number | null;
   startAt: string;
   endAt: string | null;
-  idTreatmentStatus: number;
-  treatmentStatus: string;
+  idPatientTreatmentStatus: number; 
+  patientTreatmentStatus: string;
   notes: string | null;
 }

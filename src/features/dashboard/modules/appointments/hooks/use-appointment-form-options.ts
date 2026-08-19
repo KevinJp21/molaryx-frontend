@@ -18,7 +18,7 @@ import {
   getPatientTreatments,
   selectGetPatientTreatments,
 } from "@/store/patient-treatments/patient-treatments-slice";
-import { TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
+import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
 import { APPOINTMENT_STATUS_OPTIONS } from "../consts/appointment-status";
 import { USER_STATUS } from "../consts/user-status";
 import { fullName } from "../utils/appointment-form-values";
@@ -155,7 +155,7 @@ export const useAppointmentFormOptions = ({
     dispatch(
       getPatientTreatments({
         IdPatient: idPatient,
-        IdTreatmentStatus: TREATMENT_STATUS.ACTIVE,
+        idPatientTreatmentStatus: PATIENT_TREATMENT_STATUS.ACTIVE,
         Size: 50,
       }),
     );

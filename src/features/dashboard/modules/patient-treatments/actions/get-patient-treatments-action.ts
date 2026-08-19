@@ -8,7 +8,8 @@ import { TPaginationParams } from "@/types";
 
 export type TGetPatientTreatmentsParams = TPaginationParams & {
   IdPatient?: number | string;
-  IdTreatmentStatus?: number;
+  Search?: string;
+  IdPatientTreatmentStatus?: number;
 };
 
 export const apiGetPatientTreatmentsAction = async (
@@ -17,7 +18,7 @@ export const apiGetPatientTreatmentsAction = async (
   const PATIENT_TREATMENT = process.env.PATIENT_TREATMENT;
   const GET_PATIENT_TREATMENTS = process.env.GET_PATIENT_TREATMENTS;
 
-  const { Page, Size, IdPatient, IdTreatmentStatus } = params ?? {};
+  const { Page, Size, IdPatient, Search, IdPatientTreatmentStatus } = params ?? {};
   const query = new URLSearchParams();
 
   if (IdPatient != null && IdPatient !== "") {
@@ -36,8 +37,9 @@ export const apiGetPatientTreatmentsAction = async (
 
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
-  if (IdTreatmentStatus) {
-    query.append("IdTreatmentStatus", IdTreatmentStatus.toString());
+  if (Search) query.append("Search", Search);
+  if (IdPatientTreatmentStatus) {
+    query.append("IdPatientTreatmentStatus", IdPatientTreatmentStatus.toString());
   }
 
   const url = `${PATIENT_TREATMENT}${GET_PATIENT_TREATMENTS}?${query.toString()}`;

@@ -23,8 +23,8 @@ export interface IPaymentPatientTreatment {
   idTreatment: number;
   treatmentName: string;
   agreedPrice: number | null;
-  idTreatmentStatus: number;
-  treatmentStatus: string;
+  idPatientTreatmentStatus: number;
+  patientTreatmentStatus: string;
   startAt: string;
   endAt: string | null;
 }

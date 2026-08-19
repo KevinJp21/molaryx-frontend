@@ -31,11 +31,11 @@ export const PatientTreatmentFormSchema = z
     agreedPrice: optionalMoney,
     idPaymentFrequency: z.number(),
     periodicAmount: optionalMoney,
-    idTreatmentStatus: z.number().optional(),
+    idPatientTreatmentStatus: z.number().optional(),
     notes: optionalNotes,
   })
   .superRefine((data, ctx) => {
-    if (!data.idTreatmentStatus && !data.encodedPatientId) {
+    if (!data.idPatientTreatmentStatus && !data.encodedPatientId) {
       ctx.addIssue({
         code: "custom",
         path: ["encodedPatientId"],

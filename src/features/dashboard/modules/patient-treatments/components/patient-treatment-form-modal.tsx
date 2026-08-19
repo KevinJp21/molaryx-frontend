@@ -35,8 +35,7 @@ import { patientFullName } from "@/features/dashboard/modules/patients/utils";
 import {
     PAYMENT_FREQUENCY,
     PAYMENT_FREQUENCY_OPTIONS,
-    getAllowedTreatmentStatuses,
-    TREATMENT_STATUS_LABEL,
+    PATIENT_TREATMENT_STATUS_FILTER_OPTIONS,
 } from "../consts";
 import { IPatientTreatmentItems } from "../interfaces";
 import {
@@ -80,7 +79,7 @@ const toFormValues = (
         idPaymentFrequency:
             patientTreatment.idPaymentFrequency ?? PAYMENT_FREQUENCY.NONE,
         periodicAmount: patientTreatment.periodicAmount,
-        idTreatmentStatus: patientTreatment.idTreatmentStatus,
+        idPatientTreatmentStatus: patientTreatment.idPatientTreatmentStatus,
         notes: patientTreatment.notes,
     };
 };
@@ -158,14 +157,7 @@ export const PatientTreatmentFormModal = ({
         [dispatch],
     );
 
-    const statusOptions = patientTreatment
-        ? getAllowedTreatmentStatuses(patientTreatment.idTreatmentStatus).map(
-            (id) => ({
-                value: id,
-                name: TREATMENT_STATUS_LABEL[id],
-            }),
-        )
-        : [];
+    const statusOptions = isEdit ? PATIENT_TREATMENT_STATUS_FILTER_OPTIONS : [];
 
     useEffect(() => {
         if (!open) return;
@@ -209,7 +201,7 @@ export const PatientTreatmentFormModal = ({
                     idPaymentFrequency,
                     periodicAmount,
                     startAt: colombiaToUtcIso(data.startAt),
-                    idTreatmentStatus: data.idTreatmentStatus,
+                    idPatientTreatmentStatus: data.idPatientTreatmentStatus,
                     notes: data.notes,
                 }),
             );
@@ -340,7 +332,7 @@ export const PatientTreatmentFormModal = ({
 
                             {isEdit && patientTreatment && (
                                 <CustomFormSelect
-                                    name="idTreatmentStatus"
+                                    name="idPatientTreatmentStatus"
                                     label="Estado"
                                     placeholder="Selecciona el estado"
                                     items={statusOptions}

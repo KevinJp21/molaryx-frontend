@@ -25,11 +25,12 @@ import {
     TableSkeleton,
 } from "@/components";
 import {
-    TREATMENT_STATUS,
+    PATIENT_TREATMENT_STATUS,
     getTreatmentStatusLabel,
-    isFinalTreatmentStatus,
 } from "../consts";
 import { IPatientTreatmentItems } from "../interfaces";
+import { PatientsTreatmentFilter } from "./patients-treatment-filter";
+import { TGetPatientTreatmentsParams } from "../actions";
 
 type Props = {
     encodedPatientId?: string;
@@ -40,9 +41,9 @@ type Props = {
 };
 
 const statusBadgeVariant = (id: number) => {
-    if (id === TREATMENT_STATUS.ACTIVE) return "success" as const;
-    if (id === TREATMENT_STATUS.CANCELLED) return "destructive" as const;
-    if (id === TREATMENT_STATUS.COMPLETED) return "secondary" as const;
+    if (id === PATIENT_TREATMENT_STATUS.ACTIVE) return "success" as const;
+    if (id === PATIENT_TREATMENT_STATUS.CANCELLED) return "destructive" as const;
+    if (id === PATIENT_TREATMENT_STATUS.COMPLETED) return "secondary" as const;
     return "muted" as const;
 };
 
@@ -56,10 +57,21 @@ export const PatientTreatmentsTable = ({
     const dispatch = useAppDispatch();
     const { data, status, message } = useAppSelector(selectGetPatientTreatments);
     const [currentPage, setCurrentPage] = useState(1);
+    const [listFilters, setListFilters] = useState<Pick<TGetPatientTreatmentsParams, "Search" | "IdPatientTreatmentStatus">>({});
     const items = data?.items ?? [];
     const totalPages = data?.totalPages ?? 0;
     const showPatient = !encodedPatientId;
     const colSpan = showPatient ? 7 : 6;
+
+    const handleFiltersChange = (filters: TGetPatientTreatmentsParams) => {
+        setListFilters(filters);
+        setCurrentPage(1);
+    }
+
+    const filterParamsForForm: TGetPatientTreatmentsParams = {
+        Page: 1,
+        ...listFilters,
+    }
 
     useEffect(() => {
         setCurrentPage(1);
@@ -70,9 +82,10 @@ export const PatientTreatmentsTable = ({
             getPatientTreatments({
                 ...(encodedPatientId ? { IdPatient: encodedPatientId } : {}),
                 Page: currentPage,
+                ...listFilters,
             }),
         );
-    }, [dispatch, encodedPatientId, currentPage, refreshKey]);
+    }, [dispatch, encodedPatientId, currentPage, refreshKey, listFilters]);
 
     useEffect(() => {
         if (status === "success" && items.length === 0 && currentPage > 1) {
@@ -89,6 +102,12 @@ export const PatientTreatmentsTable = ({
                 isLoading={status === "loading" || status === "idle"}
                 totalItems={data?.totalItems ?? 0}
                 totalItemsView={items.length}
+                actions={
+                    <PatientsTreatmentFilter
+                        params={filterParamsForForm}
+                        onFiltersChange={handleFiltersChange}
+                    />
+                }
             >
                 <Table>
                     <TableHeader>
@@ -150,10 +169,10 @@ export const PatientTreatmentsTable = ({
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant={statusBadgeVariant(item.idTreatmentStatus)}>
+                                        <Badge variant={statusBadgeVariant(item.idPatientTreatmentStatus)}>
                                             {getTreatmentStatusLabel(
-                                                item.idTreatmentStatus,
-                                                item.treatmentStatus,
+                                                item.idPatientTreatmentStatus,
+                                                item.patientTreatmentStatus,
                                             )}
                                         </Badge>
                                     </TableCell>
@@ -202,23 +221,20 @@ export const PatientTreatmentsTable = ({
                                                         <Logs className="size-4" strokeWidth={1.75} />
                                                         Ver detalles
                                                     </Button>
-                                                    {canUpdate &&
-                                                        !isFinalTreatmentStatus(
-                                                            item.idTreatmentStatus,
-                                                        ) && (
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                className="text-xs justify-start text-ink-200 font-normal"
-                                                                onClick={() => onEdit(item)}
-                                                            >
-                                                                <SquarePen
-                                                                    className="size-4"
-                                                                    strokeWidth={1.75}
-                                                                />
-                                                                Editar
-                                                            </Button>
-                                                        )}
+                                                    {canUpdate && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="text-xs justify-start text-ink-200 font-normal"
+                                                            onClick={() => onEdit(item)}
+                                                        >
+                                                            <SquarePen
+                                                                className="size-4"
+                                                                strokeWidth={1.75}
+                                                            />
+                                                            Editar
+                                                        </Button>
+                                                    )}
                                                 </div>
                                             </PopoverContent>
                                         </Popover>

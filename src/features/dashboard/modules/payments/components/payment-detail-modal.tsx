@@ -107,7 +107,7 @@ export const PaymentDetailModal = ({
                             />
                             <Field
                                 label="Estado"
-                                value={patientTreatment.treatmentStatus}
+                                value={patientTreatment.patientTreatmentStatus}
                             />
                             <Field
                                 label="Inicio"

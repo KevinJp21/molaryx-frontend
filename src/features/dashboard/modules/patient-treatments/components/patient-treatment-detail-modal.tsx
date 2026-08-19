@@ -12,7 +12,7 @@ import {
     PaymentSummaryByConcept,
     PaymentsTable,
 } from "@/features/dashboard/modules/payments/components";
-import { getTreatmentStatusLabel, TREATMENT_STATUS } from "../consts";
+import { getTreatmentStatusLabel, PATIENT_TREATMENT_STATUS } from "../consts";
 import { IPatientTreatmentItems } from "../interfaces";
 
 type Props = {
@@ -35,9 +35,9 @@ const Field = ({
 );
 
 const statusBadgeVariant = (id: number) => {
-    if (id === TREATMENT_STATUS.ACTIVE) return "success" as const;
-    if (id === TREATMENT_STATUS.CANCELLED) return "destructive" as const;
-    if (id === TREATMENT_STATUS.COMPLETED) return "secondary" as const;
+    if (id === PATIENT_TREATMENT_STATUS.ACTIVE) return "success" as const;
+    if (id === PATIENT_TREATMENT_STATUS.CANCELLED) return "destructive" as const;
+    if (id === PATIENT_TREATMENT_STATUS.COMPLETED) return "secondary" as const;
     return "muted" as const;
 };
 
@@ -68,7 +68,7 @@ export const PatientTreatmentDetailModal = ({
     if (!patientTreatment) return null;
 
     const canReceivePayment =
-        patientTreatment.idTreatmentStatus !== TREATMENT_STATUS.CANCELLED;
+        patientTreatment.idPatientTreatmentStatus !== PATIENT_TREATMENT_STATUS.CANCELLED;
 
     const paymentSummary =
         patientTreatment.agreedPrice != null
@@ -108,10 +108,10 @@ export const PatientTreatmentDetailModal = ({
                         <Field label="Tratamiento" value={patientTreatment.treatmentName} />
                         <div className="flex flex-col gap-1">
                             <span className="text-xs text-ink-400">Estado</span>
-                            <Badge variant={statusBadgeVariant(patientTreatment.idTreatmentStatus)}>
+                            <Badge variant={statusBadgeVariant(patientTreatment.idPatientTreatmentStatus)}>
                                 {getTreatmentStatusLabel(
-                                    patientTreatment.idTreatmentStatus,
-                                    patientTreatment.treatmentStatus,
+                                    patientTreatment.idPatientTreatmentStatus,
+                                    patientTreatment.patientTreatmentStatus,
                                 )}
                             </Badge>
                         </div>

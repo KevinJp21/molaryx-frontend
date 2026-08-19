@@ -1,2 +1,2 @@
 export * from "./payment-frequency";
-export * from "./treatment-status";
+export * from "./patient-treatment-status";
