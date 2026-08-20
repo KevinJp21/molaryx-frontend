@@ -63,10 +63,13 @@ function SelectContent({
   position = "popper",
   align = "center",
   header,
+  footer,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Content> & {
   /** Contenido fijo arriba del listado (fuera del scroll / flechas). */
   header?: React.ReactNode
+  /** Contenido fijo abajo del listado (fuera del scroll / flechas). */
+  footer?: React.ReactNode
 }) {
   return (
     <SelectPrimitive.Portal>
@@ -98,6 +101,11 @@ function SelectContent({
           {children}
         </SelectPrimitive.Viewport>
         <SelectScrollDownButton />
+        {footer ? (
+          <div data-slot="select-footer" className="shrink-0">
+            {footer}
+          </div>
+        ) : null}
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
   )

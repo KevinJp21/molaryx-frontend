@@ -10,10 +10,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { InputErrorMessage } from "./input-error-message";
 
+export type TSelectItem<T extends string | number | boolean> = {
+    name: string;
+    value: T;
+    image?: string;
+    disabled?: boolean;
+};
+
 interface Props<T extends string | number | boolean> {
     label: string;
     placeholder: string;
-    items: Item<T>[];
+    /** Página actual (o listado completo). Con `onLoadMore` se acumula. */
+    items: TSelectItem<T>[];
     itemBadge?: boolean;
     errorMessage?: string;
     onChange?: (e: T | null) => void;
@@ -27,21 +35,40 @@ interface Props<T extends string | number | boolean> {
     /**
      * Búsqueda remota. Si se define, el padre actualiza `items`
      * (p. ej. con el param Search de la API). Sin filtro local.
+     * Reinicia el acumulado de paginación.
      */
     onSearch?: (query: string) => void;
     searchDebounceMs?: number;
     isSearching?: boolean;
     /** Opción que escribe `null` en el formulario (Radix no admite value vacío). */
     emptyLabel?: string;
+    /**
+     * Paginación: botón “Cargar más” en el footer del listado.
+     * Preferir `usePaginatedSelect` (`@/hooks`) en el padre para Page/Search/hasMore.
+     * Este select acumula los `items` nuevos entre páginas.
+     */
+    onLoadMore?: () => void;
+    hasMore?: boolean;
+    isLoadingMore?: boolean;
+    /** Cambia (p. ej. idPatient) para vaciar el acumulado y volver a página 1. */
+    resetKey?: string | number | null;
 }
 
 const EMPTY_SELECT_VALUE = "__empty__";
 
-type Item<T extends string | number | boolean> = {
-    name: string,
-    value: T,
-    image?: string,
-    disabled?: boolean
+const mergeUniqueItems = <T extends string | number | boolean>(
+    current: TSelectItem<T>[],
+    incoming: TSelectItem<T>[],
+) => {
+    const seen = new Set(current.map((item) => String(item.value)));
+    const next = [...current];
+    for (const item of incoming) {
+        const key = String(item.value);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        next.push(item);
+    }
+    return next;
 };
 
 export const CustomFormSelect = <T extends string | number | boolean>({
@@ -61,22 +88,59 @@ export const CustomFormSelect = <T extends string | number | boolean>({
     searchDebounceMs = 300,
     isSearching = false,
     emptyLabel,
+    onLoadMore,
+    hasMore = false,
+    isLoadingMore = false,
+    resetKey,
 }: Props<T>) => {
     const { control, trigger } = useFormContext();
     const hasError = Boolean(errorMessage);
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
-    const [selectedCache, setSelectedCache] = useState<Item<T> | null>(null);
+    const [selectedCache, setSelectedCache] = useState<TSelectItem<T> | null>(null);
+    const [accumulatedItems, setAccumulatedItems] = useState<TSelectItem<T>[]>(items);
     /** Evita el anillo :focus-visible tras escribir en el buscador y seleccionar. */
     const [hideFocusStyles, setHideFocusStyles] = useState(false);
     const skipSearchOnOpen = useRef(false);
+    const hadRemoteSearchRef = useRef(false);
     const searchInputRef = useRef<HTMLInputElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
     const selectionRef = useRef({ start: 0, end: 0 });
     const onSearchRef = useRef(onSearch);
+    const onLoadMoreRef = useRef(onLoadMore);
+    const mergeModeRef = useRef<"replace" | "append">("replace");
     onSearchRef.current = onSearch;
+    onLoadMoreRef.current = onLoadMore;
 
+    const infinite = Boolean(onLoadMore);
     const itemsKey = items.map((item) => String(item.value)).join("|");
+    const itemsRef = useRef(items);
+    itemsRef.current = items;
+
+    useEffect(() => {
+        mergeModeRef.current = "replace";
+        // Sembrar con la página actual; vaciar a [] dejaba el listado
+        // vacío si itemsKey no cambiaba después.
+        setAccumulatedItems(itemsRef.current);
+    }, [resetKey]);
+
+    useEffect(() => {
+        if (!infinite) {
+            setAccumulatedItems(items);
+            return;
+        }
+
+        setAccumulatedItems((current) => {
+            if (mergeModeRef.current === "append") {
+                return mergeUniqueItems(current, items);
+            }
+            // Evita vaciar el listado mientras llega la respuesta del GET.
+            if (items.length === 0 && current.length > 0) {
+                return current;
+            }
+            return items;
+        });
+    }, [itemsKey, infinite]); // eslint-disable-line react-hooks/exhaustive-deps -- items via itemsKey
 
     useEffect(() => {
         if (!onSearchRef.current || !searchable) return;
@@ -89,7 +153,10 @@ export const CustomFormSelect = <T extends string | number | boolean>({
         if (!open) return;
 
         const timeoutId = window.setTimeout(() => {
-            onSearchRef.current?.(search.trim());
+            mergeModeRef.current = "replace";
+            const query = search.trim();
+            hadRemoteSearchRef.current = query.length > 0;
+            onSearchRef.current?.(query);
         }, searchDebounceMs);
 
         return () => window.clearTimeout(timeoutId);
@@ -125,6 +192,12 @@ export const CustomFormSelect = <T extends string | number | boolean>({
         return () => cancelAnimationFrame(frameId);
     }, [itemsKey, isSearching, open, searchable]);
 
+    const requestLoadMore = () => {
+        if (!hasMore || isLoadingMore || isSearching) return;
+        mergeModeRef.current = "append";
+        onLoadMoreRef.current?.();
+    };
+
     const rememberSelection = (el: HTMLInputElement) => {
         selectionRef.current = {
             start: el.selectionStart ?? el.value.length,
@@ -139,6 +212,9 @@ export const CustomFormSelect = <T extends string | number | boolean>({
         }, 50);
     };
 
+    const displayItems =
+        infinite && accumulatedItems.length > 0 ? accumulatedItems : items;
+
     return (
         <div className="flex flex-col gap-1.5">
             <label htmlFor={name} className="text-sm font-medium text-ink-200">
@@ -151,7 +227,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                 defaultValue={defaultValue}
                 render={({ field, fieldState }) => {
                     const invalid = hasError || Boolean(fieldState.error && fieldState.isTouched);
-                    const selectedFromItems = items.find(
+                    const selectedFromItems = displayItems.find(
                         (item) => String(item.value) === String(field.value),
                     );
                     const selectedItem = selectedFromItems ?? (
@@ -161,9 +237,9 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                     );
 
                     const sourceItems = onSearch
-                        ? items
+                        ? displayItems
                         : searchable && search.trim()
-                            ? items.filter((item) =>
+                            ? displayItems.filter((item) =>
                                   item.name
                                       .normalize("NFD")
                                       .replace(/\p{M}/gu, "")
@@ -176,7 +252,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                               .trim(),
                                       ),
                               )
-                            : items;
+                            : displayItems;
 
                     const listItems = (() => {
                         let next = sourceItems;
@@ -205,20 +281,35 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                 onOpenChange={(nextOpen) => {
                                     setOpen(nextOpen);
                                     if (nextOpen) {
-                                        skipSearchOnOpen.current = false;
+                                        // Evita el debounce duplicado al abrir.
+                                        skipSearchOnOpen.current = true;
                                         setHideFocusStyles(false);
+                                        setSearch("");
+                                        // Resincroniza si el acumulado quedó vacío con datos en Redux.
+                                        if (infinite && itemsRef.current.length > 0) {
+                                            setAccumulatedItems((current) =>
+                                                current.length > 0
+                                                    ? current
+                                                    : itemsRef.current,
+                                            );
+                                        }
+                                        // Si había búsqueda remota, al reabrir pedimos la lista base
+                                        // para no dejar solo el resultado filtrado.
+                                        if (onSearchRef.current && hadRemoteSearchRef.current) {
+                                            hadRemoteSearchRef.current = false;
+                                            mergeModeRef.current = "replace";
+                                            onSearchRef.current("");
+                                        }
                                         return;
                                     }
-                                    // Solo limpia el texto local; el GET lo hace el padre
-                                    // al montar / al buscar, no al cerrar el listado.
                                     setSearch("");
                                     if (searchable) clearTriggerFocus();
                                 }}
                                 onValueChange={(val) => {
                                     if (val === EMPTY_SELECT_VALUE) {
                                         setSelectedCache(null);
-                                        onChange?.(null);
                                         field.onChange(null);
+                                        onChange?.(null);
                                         field.onBlur();
                                         void trigger(name);
                                         if (searchable) clearTriggerFocus();
@@ -273,7 +364,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                 </SelectTrigger>
                                 <SelectContent
                                     className={cn(
-                                        "max-h-50 w-(--radix-select-trigger-width) rounded-xl border-ink-700 bg-ink-950 text-ink-50 shadow-md",
+                                        "max-h-80 w-(--radix-select-trigger-width) rounded-xl border-ink-700 bg-ink-950 text-ink-50 shadow-md",
                                     )}
                                     onCloseAutoFocus={(e) => {
                                         e.preventDefault();
@@ -308,6 +399,31 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                                         aria-label={searchPlaceholder}
                                                     />
                                                 </div>
+                                            </div>
+                                        ) : undefined
+                                    }
+                                    footer={
+                                        infinite && hasMore ? (
+                                            <div
+                                                className="border-t border-ink-800 bg-ink-950 p-2"
+                                                onPointerDown={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                }}
+                                                onKeyDown={(e) => e.stopPropagation()}
+                                            >
+                                                <button
+                                                    type="button"
+                                                    disabled={isLoadingMore || isSearching}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        requestLoadMore();
+                                                    }}
+                                                    className="w-full rounded-lg px-2 py-1.5 text-center text-xs font-medium text-accent-400 transition-colors hover:bg-ink-850 hover:text-accent-300 disabled:cursor-not-allowed disabled:opacity-60"
+                                                >
+                                                    {isLoadingMore ? "Cargando más..." : "Cargar más"}
+                                                </button>
                                             </div>
                                         ) : undefined
                                     }

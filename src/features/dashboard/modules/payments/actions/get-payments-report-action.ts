@@ -51,8 +51,6 @@ export const apiGetPaymentsReportAction = async (
     const disposition = response.headers.get("Content-Disposition");
     const filename = parseFilenameFromContentDisposition(disposition);
 
-    console.log(response);
-
     return {
       success: true,
       message: "Reporte de pagos exportado correctamente",

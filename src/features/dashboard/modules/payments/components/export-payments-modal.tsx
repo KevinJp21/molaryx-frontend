@@ -1,21 +1,22 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FileDownIcon } from "lucide-react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { BaseModal, Button, CustomFormField, CustomFormSelect, InputErrorMessage, Spinner, } from "@/components";
+import { BaseModal, Button, CustomFormField, CustomFormSelect, InputErrorMessage, Spinner } from "@/components";
+import { usePaginatedSelect } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { getPatients, selectGetPatients, } from "@/store/patients/patiens-slice";
-import { getAppointmentsList, selectGetAppointmentsList, } from "@/store/appointments/appointments-slice";
-import { getPatientTreatments, selectGetPatientTreatments, } from "@/store/patient-treatments/patient-treatments-slice";
+import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice";
+import { getAppointmentsList, selectGetAppointmentsList } from "@/store/appointments/appointments-slice";
+import { getPatientTreatments, selectGetPatientTreatments } from "@/store/patient-treatments/patient-treatments-slice";
 import { currencyFormat, downloadReport, formatDate } from "@/utils";
 import { APPOINTMENT_STATUS } from "@/features/dashboard/modules/appointments/consts";
 import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
-import { apiGetPaymentsReportAction, TGetPaymentsReportParams, } from "../actions";
-import { EXPORT_PAYMENT_FILTER, EXPORT_PAYMENT_FILTER_OPTIONS, } from "../consts";
-import { EXPORT_PAYMENTS_DEFAULT_VALUES, ExportPaymentsSchema, TExportPaymentsForm, TExportPaymentsValues, } from "../schemas";
+import { apiGetPaymentsReportAction, TGetPaymentsReportParams } from "../actions";
+import { EXPORT_PAYMENT_FILTER, EXPORT_PAYMENT_FILTER_OPTIONS } from "../consts";
+import { EXPORT_PAYMENTS_DEFAULT_VALUES, ExportPaymentsSchema, TExportPaymentsForm, TExportPaymentsValues } from "../schemas";
 import { fullName } from "../utils";
 
 type TProps = {
@@ -59,7 +60,55 @@ export const ExportPaymentsModal = ({ open, onOpenChange }: TProps) => {
   const showTreatmentSelect =
     filterType === EXPORT_PAYMENT_FILTER.PATIENT_TREATMENT && Boolean(idPatient);
 
-  const patientItems = (patientsData?.items ?? []).map((patient) => ({
+  const patients = usePaginatedSelect({
+    enabled: open && showPatientSelect,
+    data: patientsData,
+    status: patientsStatus,
+    resetKey: filterType,
+    fetchPage: ({ page, search }) => {
+      dispatch(
+        getPatients({
+          IsActive: true,
+          Page: page,
+          ...(search ? { Search: search } : {}),
+        }),
+      );
+    },
+  });
+
+  const appointments = usePaginatedSelect({
+    enabled: open && showAppointmentSelect && Boolean(idPatient),
+    data: appointmentsData,
+    status: appointmentsStatus,
+    resetKey: idPatient,
+    fetchPage: ({ page }) => {
+      if (!idPatient) return;
+      dispatch(
+        getAppointmentsList({
+          IdPatient: idPatient,
+          Page: page,
+        }),
+      );
+    },
+  });
+
+  const treatments = usePaginatedSelect({
+    enabled: open && showTreatmentSelect && Boolean(idPatient),
+    data: treatmentsData,
+    status: treatmentsStatus,
+    resetKey: idPatient,
+    fetchPage: ({ page }) => {
+      if (!idPatient) return;
+      dispatch(
+        getPatientTreatments({
+          IdPatient: idPatient,
+          Page: page,
+        }),
+      );
+    },
+  });
+
+  const patientItems = patients.items.map((patient) => ({
     value: patient.idPatient,
     name: fullName(
       patient.firstName,
@@ -69,7 +118,7 @@ export const ExportPaymentsModal = ({ open, onOpenChange }: TProps) => {
     ),
   }));
 
-  const appointmentItems = (appointmentsData?.items ?? [])
+  const appointmentItems = appointments.items
     .filter(
       (item) =>
         item.idAppointmentStatus !== APPOINTMENT_STATUS.CANCELLED &&
@@ -80,7 +129,7 @@ export const ExportPaymentsModal = ({ open, onOpenChange }: TProps) => {
       name: `${item.serviceName} · ${formatDate(item.startAt, "d MMM yyyy · HH:mm", { hour12: true })}`,
     }));
 
-  const treatmentItems = (treatmentsData?.items ?? [])
+  const treatmentItems = treatments.items
     .filter(
       (item) =>
         item.idPatientTreatmentStatus !== PATIENT_TREATMENT_STATUS.CANCELLED,
@@ -92,40 +141,10 @@ export const ExportPaymentsModal = ({ open, onOpenChange }: TProps) => {
         : item.treatmentName,
     }));
 
-  const searchPatients = useCallback(
-    (Search: string) => {
-      dispatch(
-        getPatients({
-          IsActive: true,
-          ...(Search ? { Search } : {}),
-        }),
-      );
-    },
-    [dispatch],
-  );
-
   useEffect(() => {
     if (!open) return;
     reset(EXPORT_PAYMENTS_DEFAULT_VALUES);
   }, [open, reset]);
-
-  useEffect(() => {
-    if (!open || !showPatientSelect) return;
-    dispatch(getPatients({ IsActive: true }));
-  }, [open, showPatientSelect, dispatch]);
-
-  useEffect(() => {
-    if (!open || !idPatient) return;
-
-    if (filterType === EXPORT_PAYMENT_FILTER.APPOINTMENT) {
-      dispatch(getAppointmentsList({ IdPatient: idPatient, Size: 50 }));
-      return;
-    }
-
-    if (filterType === EXPORT_PAYMENT_FILTER.PATIENT_TREATMENT) {
-      dispatch(getPatientTreatments({ IdPatient: idPatient, Size: 50 }));
-    }
-  }, [open, idPatient, filterType, dispatch]);
 
   const clearContextFields = () => {
     setValue("idPatient", null);
@@ -236,19 +255,19 @@ export const ExportPaymentsModal = ({ open, onOpenChange }: TProps) => {
                     name="idPatient"
                     label="Paciente"
                     placeholder={
-                      patientsStatus === "loading"
+                      patients.isSearching
                         ? "Cargando pacientes..."
                         : "Selecciona un paciente"
                     }
                     items={patientItems}
-                    disabled={
-                      patientsStatus === "loading" && patientItems.length === 0
-                    }
+                    disabled={patients.isSearching && patientItems.length === 0}
                     searchable
                     searchPlaceholder="Buscar paciente..."
                     searchDebounceMs={300}
-                    onSearch={searchPatients}
-                    isSearching={patientsStatus === "loading"}
+                    onSearch={patients.onSearch}
+                    isSearching={patients.isSearching}
+                    {...patients.paginationProps}
+                    resetKey={filterType}
                     onChange={clearPatientDependentFields}
                   />
                   {errors.idPatient && !touchedFields.idPatient && (
@@ -263,17 +282,18 @@ export const ExportPaymentsModal = ({ open, onOpenChange }: TProps) => {
                     name="idAppointment"
                     label="Cita"
                     placeholder={
-                      appointmentsStatus === "loading"
+                      appointments.isSearching
                         ? "Cargando citas..."
                         : "Selecciona una cita"
                     }
                     items={appointmentItems}
                     disabled={
-                      appointmentsStatus === "loading" &&
-                      appointmentItems.length === 0
+                      appointments.isSearching && appointmentItems.length === 0
                     }
                     searchable
                     searchPlaceholder="Buscar cita..."
+                    {...appointments.paginationProps}
+                    resetKey={idPatient}
                   />
                   {errors.idAppointment && !touchedFields.idAppointment && (
                     <InputErrorMessage
@@ -289,17 +309,18 @@ export const ExportPaymentsModal = ({ open, onOpenChange }: TProps) => {
                     name="idPatientTreatment"
                     label="Plan de tratamiento"
                     placeholder={
-                      treatmentsStatus === "loading"
+                      treatments.isSearching
                         ? "Cargando planes..."
                         : "Selecciona un plan"
                     }
                     items={treatmentItems}
                     disabled={
-                      treatmentsStatus === "loading" &&
-                      treatmentItems.length === 0
+                      treatments.isSearching && treatmentItems.length === 0
                     }
                     searchable
                     searchPlaceholder="Buscar plan..."
+                    {...treatments.paginationProps}
+                    resetKey={idPatient}
                   />
                   {errors.idPatientTreatment &&
                     !touchedFields.idPatientTreatment && (

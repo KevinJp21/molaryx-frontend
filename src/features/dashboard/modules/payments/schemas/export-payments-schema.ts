@@ -3,7 +3,10 @@ import { EXPORT_PAYMENT_FILTER } from "../consts";
 
 export const ExportPaymentsSchema = z
   .object({
-    filterType: z.string(),
+    filterType: z
+      .string()
+      .nullable()
+      .transform((value) => value ?? EXPORT_PAYMENT_FILTER.NONE),
     idPatient: z.number().nullable(),
     idAppointment: z.number().nullable(),
     idPatientTreatment: z.number().nullable(),
