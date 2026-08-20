@@ -102,28 +102,6 @@ export const ClinicalRecordDetailModal = ({
           </div>
         </section>
 
-        <section className="mt-5 flex flex-col gap-4 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
-          <ScrollableTextField
-            label="Motivo"
-            value={record.reason}
-            maxHeightClass="max-h-28"
-          />
-          <ScrollableTextField
-            label="Diagnóstico"
-            value={record.diagnosis}
-            maxHeightClass="max-h-36"
-          />
-          <ScrollableTextField
-            label="Evolución"
-            value={record.evolution}
-            maxHeightClass="max-h-48"
-          />
-          <ScrollableTextField
-            label="Notas"
-            value={record.notes}
-            maxHeightClass="max-h-36"
-          />
-        </section>
 
         {appointment && (
           <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
@@ -164,14 +142,37 @@ export const ClinicalRecordDetailModal = ({
                 value={
                   patientTreatment.endAt
                     ? formatDate(patientTreatment.endAt, "d MMM yyyy", {
-                        hour12: true,
-                      })
+                      hour12: true,
+                    })
                     : "—"
                 }
               />
             </div>
           </section>
         )}
+
+        <section className="mt-5 flex flex-col gap-4 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
+          <ScrollableTextField
+            label="Motivo"
+            value={record.reason}
+            maxHeightClass="max-h-28"
+          />
+          <ScrollableTextField
+            label="Diagnóstico"
+            value={record.diagnosis}
+            maxHeightClass="max-h-36"
+          />
+          <ScrollableTextField
+            label="Evolución"
+            value={record.evolution}
+            maxHeightClass="max-h-48"
+          />
+          <ScrollableTextField
+            label="Notas"
+            value={record.notes}
+            maxHeightClass="max-h-36"
+          />
+        </section>
       </div>
     </BaseModal>
   );

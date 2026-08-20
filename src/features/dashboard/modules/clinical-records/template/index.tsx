@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { PlusIcon } from "lucide-react";
+import { FileDownIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";
-import { ClinicalRecordFormModal, ClinicalRecordsTable } from "../components";
+import { ClinicalRecordFormModal, ClinicalRecordsTable, ExportClinicalHistoryModal } from "../components";
 
 export const ClinicalRecordsTemplate = () => {
   const { data: userData } = useAppSelector(selectGetUserData);
@@ -21,27 +21,39 @@ export const ClinicalRecordsTemplate = () => {
 
   const refreshList = () => setListRefreshKey((key) => key + 1);
 
+  const [exportModalOpen, setExportModalOpen] = useState(false);
+
   return (
     <>
-      <section className="mb-4 flex items-center justify-between">
+      <section className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-medium text-ink-50">Historia clínica</h1>
           <p className="text-sm text-ink-300">
             Registros clínicos del consultorio
           </p>
         </div>
-        {canCreate && (
-          <Button onClick={() => setModalOpen(true)}>
-            <PlusIcon className="h-4 w-4" />
-            Crear registro
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="destructive" onClick={() => setExportModalOpen(true)}>
+            <FileDownIcon className="h-4 w-4" />
+            Exportar historia clínica
           </Button>
-        )}
+          {canCreate && (
+            <Button onClick={() => setModalOpen(true)}>
+              <PlusIcon className="h-4 w-4" />
+              Crear registro
+            </Button>
+          )}
+        </div>
       </section>
       <ClinicalRecordsTable refreshKey={listRefreshKey} />
       <ClinicalRecordFormModal
         open={modalOpen}
         onOpenChange={setModalOpen}
         onSuccess={refreshList}
+      />
+      <ExportClinicalHistoryModal
+        open={exportModalOpen}
+        onOpenChange={setExportModalOpen}
       />
     </>
   );

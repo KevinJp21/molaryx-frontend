@@ -209,8 +209,9 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                         setHideFocusStyles(false);
                                         return;
                                     }
+                                    // Solo limpia el texto local; el GET lo hace el padre
+                                    // al montar / al buscar, no al cerrar el listado.
                                     setSearch("");
-                                    onSearchRef.current?.("");
                                     if (searchable) clearTriggerFocus();
                                 }}
                                 onValueChange={(val) => {
