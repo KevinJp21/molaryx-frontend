@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch, useSelector } from 'react-redux'
 import mastersReducer from './masters/masters-slice'
 import plansReducer from './plans/plans-slice'
+import dashboardReducer from './dashboard/dashboard-slice'
 import authenticationReducer from './authentication/authentication-slice'
 import patientsReducer from './patients/patiens-slice'
 import servicesReducer from './services/services-slice'
@@ -15,6 +16,7 @@ export const store = configureStore({
     reducer: {
         masters: mastersReducer,
         plans: plansReducer,
+        dashboard: dashboardReducer,
         authentication: authenticationReducer,
         patients: patientsReducer,
         services: servicesReducer,

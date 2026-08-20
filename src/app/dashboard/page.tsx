@@ -1,5 +1,7 @@
+import { DashboardHomeTemplate } from "@/features/dashboard/template/dashboard-home-template";
+
 export const DashboardPage = () => {
-  return <div>DashboardPage</div>;
+  return <DashboardHomeTemplate />;
 };
 
 export default DashboardPage;
