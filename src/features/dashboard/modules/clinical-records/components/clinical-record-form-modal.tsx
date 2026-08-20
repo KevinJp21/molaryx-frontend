@@ -37,14 +37,20 @@ export const ClinicalRecordFormModal = ({
     needsPatientSelect,
     showPatientAssociations,
     patientItems,
-    patientsStatus,
     appointmentItems,
-    appointmentsStatus,
     treatmentItems,
-    treatmentsStatus,
     serviceItems,
-    servicesStatus,
     searchPatients,
+    searchServices,
+    patientsPagination,
+    patientsSearching,
+    appointmentsPagination,
+    appointmentsSearching,
+    treatmentsPagination,
+    treatmentsSearching,
+    servicesPagination,
+    servicesSearching,
+    patientKey,
     handleDialogOpenChange,
     onSubmit,
     clearPatientDependentFields,
@@ -75,18 +81,17 @@ export const ClinicalRecordFormModal = ({
                   name="idPatient"
                   label="Paciente"
                   placeholder={
-                    patientsStatus === "loading"
+                    patientsSearching
                       ? "Cargando pacientes..."
                       : "Selecciona un paciente"
                   }
                   items={patientItems}
-                  disabled={
-                    patientsStatus === "loading" && patientItems.length === 0
-                  }
+                  disabled={patientsSearching && patientItems.length === 0}
                   searchable
                   searchPlaceholder="Buscar paciente..."
                   onSearch={searchPatients}
-                  isSearching={patientsStatus === "loading"}
+                  isSearching={patientsSearching}
+                  {...patientsPagination}
                   onChange={clearPatientDependentFields}
                 />
               )}
@@ -97,38 +102,40 @@ export const ClinicalRecordFormModal = ({
                     name="idAppointment"
                     label="Cita (opcional)"
                     placeholder={
-                      appointmentsStatus === "loading"
+                      appointmentsSearching
                         ? "Cargando citas..."
                         : "Sin cita asociada"
                     }
                     items={appointmentItems}
                     disabled={
                       idAppointment != null ||
-                      (appointmentsStatus === "loading" &&
-                        appointmentItems.length === 0)
+                      (appointmentsSearching && appointmentItems.length === 0)
                     }
                     searchable
                     searchPlaceholder="Buscar cita..."
                     emptyLabel="Sin cita asociada"
+                    {...appointmentsPagination}
+                    resetKey={patientKey}
                   />
 
                   <CustomFormSelect
                     name="idPatientTreatment"
                     label="Plan de tratamiento (opcional)"
                     placeholder={
-                      treatmentsStatus === "loading"
+                      treatmentsSearching
                         ? "Cargando planes..."
                         : "Sin plan asociado"
                     }
                     items={treatmentItems}
                     disabled={
                       idPatientTreatment != null ||
-                      (treatmentsStatus === "loading" &&
-                        treatmentItems.length === 0)
+                      (treatmentsSearching && treatmentItems.length === 0)
                     }
                     searchable
                     searchPlaceholder="Buscar plan..."
                     emptyLabel="Sin plan asociado"
+                    {...treatmentsPagination}
+                    resetKey={patientKey}
                   />
                 </>
               )}
@@ -137,18 +144,21 @@ export const ClinicalRecordFormModal = ({
                 name="idService"
                 label="Servicio (opcional)"
                 placeholder={
-                  servicesStatus === "loading"
+                  servicesSearching
                     ? "Cargando servicios..."
                     : "Sin servicio asociado"
                 }
                 items={serviceItems}
                 disabled={
                   idService != null ||
-                  (servicesStatus === "loading" && serviceItems.length === 0)
+                  (servicesSearching && serviceItems.length === 0)
                 }
                 searchable
                 searchPlaceholder="Buscar servicio..."
                 emptyLabel="Sin servicio asociado"
+                onSearch={searchServices}
+                isSearching={servicesSearching}
+                {...servicesPagination}
               />
 
               <CustomFormField

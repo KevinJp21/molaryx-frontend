@@ -1,23 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useMemo } from "react";
+import { usePaginatedSelect } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  getPatients,
-  selectGetPatients,
-} from "@/store/patients/patiens-slice";
-import {
-  getAppointmentsList,
-  selectGetAppointmentsList,
-} from "@/store/appointments/appointments-slice";
-import {
-  getPatientTreatments,
-  selectGetPatientTreatments,
-} from "@/store/patient-treatments/patient-treatments-slice";
-import {
-  getServices,
-  selectGetServices,
-} from "@/store/services/services-slice";
+import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice";
+import { getAppointmentsList, selectGetAppointmentsList } from "@/store/appointments/appointments-slice";
+import { getPatientTreatments, selectGetPatientTreatments } from "@/store/patient-treatments/patient-treatments-slice";
+import { getServices, selectGetServices } from "@/store/services/services-slice";
 import { formatDate } from "@/utils";
 import { APPOINTMENT_STATUS } from "@/features/dashboard/modules/appointments/consts";
 import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
@@ -44,9 +33,71 @@ export const useClinicalRecordFormOptions = ({
   const { data: servicesData, status: servicesStatus } =
     useAppSelector(selectGetServices);
 
+  const patients = usePaginatedSelect({
+    enabled: open && needsPatientSelect,
+    data: patientsData,
+    status: patientsStatus,
+    fetchPage: ({ page, search }) => {
+      dispatch(
+        getPatients({
+          IsActive: true,
+          Page: page,
+          ...(search ? { Search: search } : {}),
+        }),
+      );
+    },
+  });
+
+  const appointments = usePaginatedSelect({
+    enabled: open && Boolean(patientKey),
+    data: appointmentsData,
+    status: appointmentsStatus,
+    resetKey: patientKey,
+    fetchPage: ({ page }) => {
+      if (!patientKey) return;
+      dispatch(
+        getAppointmentsList({
+          IdPatient: patientKey,
+          Page: page,
+        }),
+      );
+    },
+  });
+
+  const treatments = usePaginatedSelect({
+    enabled: open && Boolean(patientKey),
+    data: treatmentsData,
+    status: treatmentsStatus,
+    resetKey: patientKey,
+    fetchPage: ({ page }) => {
+      if (!patientKey) return;
+      dispatch(
+        getPatientTreatments({
+          IdPatient: patientKey,
+          Page: page,
+        }),
+      );
+    },
+  });
+
+  const services = usePaginatedSelect({
+    enabled: open,
+    data: servicesData,
+    status: servicesStatus,
+    fetchPage: ({ page, search }) => {
+      dispatch(
+        getServices({
+          IsActive: true,
+          Page: page,
+          ...(search ? { Search: search } : {}),
+        }),
+      );
+    },
+  });
+
   const patientItems = useMemo(
     () =>
-      (patientsData?.items ?? []).map((item) => ({
+      patients.items.map((item) => ({
         value: item.idPatient,
         name: patientFullName(
           item.firstName,
@@ -55,12 +106,12 @@ export const useClinicalRecordFormOptions = ({
           item.secondSurname,
         ),
       })),
-    [patientsData],
+    [patients.items],
   );
 
   const appointmentItems = useMemo(
     () =>
-      (appointmentsData?.items ?? [])
+      appointments.items
         .filter(
           (item) =>
             item.idAppointmentStatus !== APPOINTMENT_STATUS.CANCELLED &&
@@ -70,12 +121,12 @@ export const useClinicalRecordFormOptions = ({
           value: item.idAppointment,
           name: `${item.serviceName} · ${formatDate(item.startAt, "d MMM yyyy · HH:mm", { hour12: true })}`,
         })),
-    [appointmentsData],
+    [appointments.items],
   );
 
   const treatmentItems = useMemo(
     () =>
-      (treatmentsData?.items ?? [])
+      treatments.items
         .filter(
           (item) =>
             item.idPatientTreatmentStatus !==
@@ -85,46 +136,17 @@ export const useClinicalRecordFormOptions = ({
           value: item.idPatientTreatment,
           name: item.treatmentName,
         })),
-    [treatmentsData],
+    [treatments.items],
   );
 
   const serviceItems = useMemo(
     () =>
-      (servicesData?.items ?? []).map((item) => ({
+      services.items.map((item) => ({
         value: item.idService,
         name: item.name,
       })),
-    [servicesData],
+    [services.items],
   );
-
-  const searchPatients = useCallback(
-    (Search: string) => {
-      dispatch(
-        getPatients({
-          IsActive: true,
-          ...(Search ? { Search } : {}),
-        }),
-      );
-    },
-    [dispatch],
-  );
-
-  useEffect(() => {
-    if (!open) return;
-    dispatch(getServices({ IsActive: true, Size: 50 }));
-  }, [open, dispatch]);
-
-  useEffect(() => {
-    if (!open || !needsPatientSelect) return;
-    dispatch(getPatients({ IsActive: true }));
-  }, [open, needsPatientSelect, dispatch]);
-
-  useEffect(() => {
-    if (!open || !patientKey) return;
-
-    dispatch(getAppointmentsList({ IdPatient: patientKey, Size: 50 }));
-    dispatch(getPatientTreatments({ IdPatient: patientKey, Size: 50 }));
-  }, [open, patientKey, dispatch]);
 
   return {
     patientItems,
@@ -135,6 +157,15 @@ export const useClinicalRecordFormOptions = ({
     treatmentsStatus,
     serviceItems,
     servicesStatus,
-    searchPatients,
+    searchPatients: patients.onSearch,
+    searchServices: services.onSearch,
+    patientsPagination: patients.paginationProps,
+    patientsSearching: patients.isSearching,
+    appointmentsPagination: appointments.paginationProps,
+    appointmentsSearching: appointments.isSearching,
+    treatmentsPagination: treatments.paginationProps,
+    treatmentsSearching: treatments.isSearching,
+    servicesPagination: services.paginationProps,
+    servicesSearching: services.isSearching,
   };
 };

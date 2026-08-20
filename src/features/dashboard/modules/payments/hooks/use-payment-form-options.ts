@@ -1,19 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useMemo } from "react";
+import { usePaginatedSelect } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  getPatients,
-  selectGetPatients,
-} from "@/store/patients/patiens-slice";
-import {
-  getAppointmentsList,
-  selectGetAppointmentsList,
-} from "@/store/appointments/appointments-slice";
-import {
-  getPatientTreatments,
-  selectGetPatientTreatments,
-} from "@/store/patient-treatments/patient-treatments-slice";
+import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice";
+import { getAppointmentsList, selectGetAppointmentsList } from "@/store/appointments/appointments-slice";
+import { getPatientTreatments, selectGetPatientTreatments } from "@/store/patient-treatments/patient-treatments-slice";
 import { currencyFormat, formatDate } from "@/utils";
 import { APPOINTMENT_STATUS } from "@/features/dashboard/modules/appointments/consts";
 import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
@@ -43,9 +35,67 @@ export const usePaymentFormOptions = ({
   const { data: treatmentsData, status: treatmentsStatus } =
     useAppSelector(selectGetPatientTreatments);
 
+  const showAppointments =
+    open &&
+    needsContextSelect &&
+    Boolean(patientKey) &&
+    paymentContext === PAYMENT_CONTEXT.APPOINTMENT;
+  const showTreatments =
+    open &&
+    needsContextSelect &&
+    Boolean(patientKey) &&
+    paymentContext === PAYMENT_CONTEXT.PATIENT_TREATMENT;
+
+  const patients = usePaginatedSelect({
+    enabled: open && needsPatientSelect,
+    data: patientsData,
+    status: patientsStatus,
+    fetchPage: ({ page, search }) => {
+      dispatch(
+        getPatients({
+          IsActive: true,
+          Page: page,
+          ...(search ? { Search: search } : {}),
+        }),
+      );
+    },
+  });
+
+  const appointments = usePaginatedSelect({
+    enabled: showAppointments,
+    data: appointmentsData,
+    status: appointmentsStatus,
+    resetKey: patientKey,
+    fetchPage: ({ page }) => {
+      if (!patientKey) return;
+      dispatch(
+        getAppointmentsList({
+          IdPatient: patientKey,
+          Page: page,
+        }),
+      );
+    },
+  });
+
+  const treatments = usePaginatedSelect({
+    enabled: showTreatments,
+    data: treatmentsData,
+    status: treatmentsStatus,
+    resetKey: patientKey,
+    fetchPage: ({ page }) => {
+      if (!patientKey) return;
+      dispatch(
+        getPatientTreatments({
+          IdPatient: patientKey,
+          Page: page,
+        }),
+      );
+    },
+  });
+
   const patientItems = useMemo(
     () =>
-      (patientsData?.items ?? []).map((item) => ({
+      patients.items.map((item) => ({
         value: item.idPatient,
         name: fullName(
           item.firstName,
@@ -54,12 +104,12 @@ export const usePaymentFormOptions = ({
           item.secondSurname,
         ),
       })),
-    [patientsData],
+    [patients.items],
   );
 
   const appointmentItems = useMemo(
     () =>
-      (appointmentsData?.items ?? [])
+      appointments.items
         .filter(
           (item) =>
             item.idAppointmentStatus !== APPOINTMENT_STATUS.CANCELLED &&
@@ -69,14 +119,15 @@ export const usePaymentFormOptions = ({
           value: item.idAppointment,
           name: `${item.serviceName} · ${formatDate(item.startAt, "d MMM yyyy · HH:mm", { hour12: true })}`,
         })),
-    [appointmentsData],
+    [appointments.items],
   );
 
   const treatmentItems = useMemo(
     () =>
-      (treatmentsData?.items ?? [])
+      treatments.items
         .filter(
-          (item) => item.idPatientTreatmentStatus !== PATIENT_TREATMENT_STATUS.CANCELLED,
+          (item) =>
+            item.idPatientTreatmentStatus !== PATIENT_TREATMENT_STATUS.CANCELLED,
         )
         .map((item) => ({
           value: item.idPatientTreatment,
@@ -84,38 +135,8 @@ export const usePaymentFormOptions = ({
             ? `${item.treatmentName} · ${currencyFormat(item.agreedPrice)}`
             : item.treatmentName,
         })),
-    [treatmentsData],
+    [treatments.items],
   );
-
-  const searchPatients = useCallback(
-    (Search: string) => {
-      dispatch(
-        getPatients({
-          IsActive: true,
-          ...(Search ? { Search } : {}),
-        }),
-      );
-    },
-    [dispatch],
-  );
-
-  useEffect(() => {
-    if (!open || !needsPatientSelect) return;
-    dispatch(getPatients({ IsActive: true }));
-  }, [open, needsPatientSelect, dispatch]);
-
-  useEffect(() => {
-    if (!open || !needsContextSelect || !patientKey) return;
-
-    if (paymentContext === PAYMENT_CONTEXT.APPOINTMENT) {
-      dispatch(getAppointmentsList({ IdPatient: patientKey, Size: 50 }));
-      return;
-    }
-
-    if (paymentContext === PAYMENT_CONTEXT.PATIENT_TREATMENT) {
-      dispatch(getPatientTreatments({ IdPatient: patientKey, Size: 50 }));
-    }
-  }, [open, needsContextSelect, patientKey, paymentContext, dispatch]);
 
   const resolveIdPatient = (
     idPatient: number | undefined,
@@ -123,19 +144,15 @@ export const usePaymentFormOptions = ({
     formIdPatientTreatment: number | null,
   ) => {
     if (idPatient) return idPatient;
+    if (patientKey) return patientKey;
 
-    const selectedPatient = (patientsData?.items ?? []).find(
-      (item) => item.idPatient === patientKey,
-    );
-    if (selectedPatient) return selectedPatient.idPatient;
-
-    const appointmentPatient = (appointmentsData?.items ?? []).find(
+    const appointmentPatient = appointments.items.find(
       (item) => item.idAppointment === formIdAppointment,
     )?.idPatient;
     if (appointmentPatient) return appointmentPatient;
 
     return (
-      (treatmentsData?.items ?? []).find(
+      treatments.items.find(
         (item) => item.idPatientTreatment === formIdPatientTreatment,
       )?.idPatient ?? null
     );
@@ -149,7 +166,13 @@ export const usePaymentFormOptions = ({
     treatmentItems,
     treatmentsStatus,
     treatmentsData,
-    searchPatients,
+    searchPatients: patients.onSearch,
+    patientsPagination: patients.paginationProps,
+    patientsSearching: patients.isSearching,
+    appointmentsPagination: appointments.paginationProps,
+    appointmentsSearching: appointments.isSearching,
+    treatmentsPagination: treatments.paginationProps,
+    treatmentsSearching: treatments.isSearching,
     resolveIdPatient,
   };
 };

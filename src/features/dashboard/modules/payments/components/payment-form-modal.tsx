@@ -43,12 +43,18 @@ export const PaymentFormModal = ({
         showTreatmentSelect,
         selectedTreatment,
         patientItems,
-        patientsStatus,
         appointmentItems,
         appointmentsStatus,
         treatmentItems,
         treatmentsStatus,
         searchPatients,
+        patientsPagination,
+        patientsSearching,
+        appointmentsPagination,
+        appointmentsSearching,
+        treatmentsPagination,
+        treatmentsSearching,
+        patientKey,
         handleDialogOpenChange,
         onSubmit,
         clearContextSelection,
@@ -91,19 +97,19 @@ export const PaymentFormModal = ({
                                     name="idPatient"
                                     label="Paciente"
                                     placeholder={
-                                        patientsStatus === "loading"
+                                        patientsSearching
                                             ? "Cargando pacientes..."
                                             : "Selecciona un paciente"
                                     }
                                     items={patientItems}
                                     disabled={
-                                        patientsStatus === "loading" &&
-                                        patientItems.length === 0
+                                        patientsSearching && patientItems.length === 0
                                     }
                                     searchable
                                     searchPlaceholder="Buscar paciente..."
                                     onSearch={searchPatients}
-                                    isSearching={patientsStatus === "loading"}
+                                    isSearching={patientsSearching}
+                                    {...patientsPagination}
                                     onChange={clearPatientDependentFields}
                                 />
                             )}
@@ -123,22 +129,25 @@ export const PaymentFormModal = ({
                                     name="idAppointment"
                                     label="Cita"
                                     placeholder={
-                                        appointmentsStatus === "loading"
+                                        appointmentsSearching
                                             ? "Cargando citas..."
                                             : "Selecciona una cita"
                                     }
                                     items={appointmentItems}
                                     disabled={
-                                        appointmentsStatus === "loading" &&
+                                        appointmentsSearching &&
                                         appointmentItems.length === 0
                                     }
                                     searchable
                                     searchPlaceholder="Buscar cita..."
+                                    {...appointmentsPagination}
+                                    resetKey={patientKey}
                                 />
                             )}
 
                             {showAppointmentSelect &&
                                 appointmentsStatus === "success" &&
+                                !appointmentsPagination.hasMore &&
                                 appointmentItems.length === 0 && (
                                     <p className="text-xs text-ink-400">
                                         Este paciente no tiene citas disponibles para registrar
@@ -151,22 +160,25 @@ export const PaymentFormModal = ({
                                     name="idPatientTreatment"
                                     label="Plan de tratamiento"
                                     placeholder={
-                                        treatmentsStatus === "loading"
+                                        treatmentsSearching
                                             ? "Cargando planes..."
                                             : "Selecciona un plan"
                                     }
                                     items={treatmentItems}
                                     disabled={
-                                        treatmentsStatus === "loading" &&
+                                        treatmentsSearching &&
                                         treatmentItems.length === 0
                                     }
                                     searchable
                                     searchPlaceholder="Buscar plan..."
+                                    {...treatmentsPagination}
+                                    resetKey={patientKey}
                                 />
                             )}
 
                             {showTreatmentSelect &&
                                 treatmentsStatus === "success" &&
+                                !treatmentsPagination.hasMore &&
                                 treatmentItems.length === 0 && (
                                     <p className="text-xs text-ink-400">
                                         Este paciente no tiene planes de tratamiento activos

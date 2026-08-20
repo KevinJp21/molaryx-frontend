@@ -1,23 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useMemo } from "react";
+import { usePaginatedSelect } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  getPatients,
-  selectGetPatients,
-} from "@/store/patients/patiens-slice";
-import {
-  getServices,
-  selectGetServices,
-} from "@/store/services/services-slice";
-import {
-  getProfessionals,
-  selectGetProfessionals,
-} from "@/store/professionals/professionals-slice";
-import {
-  getPatientTreatments,
-  selectGetPatientTreatments,
-} from "@/store/patient-treatments/patient-treatments-slice";
+import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice";
+import { getServices, selectGetServices } from "@/store/services/services-slice";
+import { getProfessionals, selectGetProfessionals } from "@/store/professionals/professionals-slice";
+import { getPatientTreatments, selectGetPatientTreatments } from "@/store/patient-treatments/patient-treatments-slice";
 import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
 import { APPOINTMENT_STATUS_OPTIONS } from "../consts/appointment-status";
 import { USER_STATUS } from "../consts/user-status";
@@ -46,33 +35,104 @@ export const useAppointmentFormOptions = ({
   const { data: treatmentsData, status: treatmentsStatus } =
     useAppSelector(selectGetPatientTreatments);
 
-  const patientItems =
-    patientsData?.items.map((patient) => ({
-      value: patient.idPatient,
-      name: fullName(
-        patient.firstName,
-        patient.secondName,
-        patient.firstSurname,
-        patient.secondSurname,
-      ),
-    })) ?? [];
+  const patients = usePaginatedSelect({
+    enabled: open,
+    data: patientsData,
+    status: patientsStatus,
+    fetchPage: ({ page, search }) => {
+      dispatch(
+        getPatients({
+          IsActive: true,
+          Page: page,
+          ...(search ? { Search: search } : {}),
+        }),
+      );
+    },
+  });
 
-  const serviceItems =
-    servicesData?.items.map((service) => ({
-      value: service.idService,
-      name: service.name,
-    })) ?? [];
+  const professionals = usePaginatedSelect({
+    enabled: open,
+    data: professionalsData,
+    status: professionalsStatus,
+    fetchPage: ({ page, search }) => {
+      dispatch(
+        getProfessionals({
+          IdUserStatus: USER_STATUS.ACTIVE,
+          Page: page,
+          ...(search ? { Search: search } : {}),
+        }),
+      );
+    },
+  });
 
-  const professionalItems =
-    professionalsData?.items.map((professional) => ({
-      value: professional.idUser,
-      name: fullName(
-        professional.firstName,
-        professional.secondName,
-        professional.firstSurname,
-        professional.secondSurname,
-      ),
-    })) ?? [];
+  const services = usePaginatedSelect({
+    enabled: open,
+    data: servicesData,
+    status: servicesStatus,
+    fetchPage: ({ page, search }) => {
+      dispatch(
+        getServices({
+          IsActive: true,
+          Page: page,
+          ...(search ? { Search: search } : {}),
+        }),
+      );
+    },
+  });
+
+  const treatments = usePaginatedSelect({
+    enabled: open && Boolean(idPatient),
+    data: treatmentsData,
+    status: treatmentsStatus,
+    resetKey: idPatient,
+    fetchPage: ({ page }) => {
+      if (!idPatient) return;
+      dispatch(
+        getPatientTreatments({
+          IdPatient: idPatient,
+          IdPatientTreatmentStatus: PATIENT_TREATMENT_STATUS.ACTIVE,
+          Page: page,
+        }),
+      );
+    },
+  });
+
+  const patientItems = useMemo(
+    () =>
+      patients.items.map((patient) => ({
+        value: patient.idPatient,
+        name: fullName(
+          patient.firstName,
+          patient.secondName,
+          patient.firstSurname,
+          patient.secondSurname,
+        ),
+      })),
+    [patients.items],
+  );
+
+  const serviceItems = useMemo(
+    () =>
+      services.items.map((service) => ({
+        value: service.idService,
+        name: service.name,
+      })),
+    [services.items],
+  );
+
+  const professionalItems = useMemo(
+    () =>
+      professionals.items.map((professional) => ({
+        value: professional.idUser,
+        name: fullName(
+          professional.firstName,
+          professional.secondName,
+          professional.firstSurname,
+          professional.secondSurname,
+        ),
+      })),
+    [professionals.items],
+  );
 
   const statusItems = APPOINTMENT_STATUS_OPTIONS.map((option) => ({
     value: option.id,
@@ -80,7 +140,7 @@ export const useAppointmentFormOptions = ({
   }));
 
   const treatmentItems = useMemo(() => {
-    const items = (treatmentsData?.items ?? [])
+    const items = treatments.items
       .filter(
         (item) => !idPatient || Number(item.idPatient) === Number(idPatient),
       )
@@ -101,65 +161,11 @@ export const useAppointmentFormOptions = ({
 
     return items;
   }, [
-    treatmentsData,
+    treatments.items,
     idPatient,
     currentIdPatientTreatment,
     currentPatientTreatmentName,
   ]);
-
-  const searchPatients = useCallback(
-    (Search: string) => {
-      dispatch(
-        getPatients({
-          IsActive: true,
-          ...(Search ? { Search } : {}),
-        }),
-      );
-    },
-    [dispatch],
-  );
-
-  const searchProfessionals = useCallback(
-    (Search: string) => {
-      dispatch(
-        getProfessionals({
-          IdUserStatus: USER_STATUS.ACTIVE,
-          ...(Search ? { Search } : {}),
-        }),
-      );
-    },
-    [dispatch],
-  );
-
-  const searchServices = useCallback(
-    (Search: string) => {
-      dispatch(
-        getServices({
-          IsActive: true,
-          ...(Search ? { Search } : {}),
-        }),
-      );
-    },
-    [dispatch],
-  );
-
-  const loadOptions = useCallback(() => {
-    dispatch(getPatients({ IsActive: true }));
-    dispatch(getServices({ IsActive: true }));
-    dispatch(getProfessionals({ IdUserStatus: USER_STATUS.ACTIVE }));
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!open || !idPatient) return;
-
-    dispatch(
-      getPatientTreatments({
-        IdPatient: idPatient,
-        idPatientTreatmentStatus: PATIENT_TREATMENT_STATUS.ACTIVE,
-        Size: 50,
-      }),
-    );
-  }, [open, idPatient, dispatch]);
 
   return {
     patientItems,
@@ -171,9 +177,16 @@ export const useAppointmentFormOptions = ({
     treatmentItems,
     treatmentsStatus,
     statusItems,
-    searchPatients,
-    searchProfessionals,
-    searchServices,
-    loadOptions,
+    searchPatients: patients.onSearch,
+    searchProfessionals: professionals.onSearch,
+    searchServices: services.onSearch,
+    patientsPagination: patients.paginationProps,
+    patientsSearching: patients.isSearching,
+    professionalsPagination: professionals.paginationProps,
+    professionalsSearching: professionals.isSearching,
+    servicesPagination: services.paginationProps,
+    servicesSearching: services.isSearching,
+    treatmentsPagination: treatments.paginationProps,
+    treatmentsSearching: treatments.isSearching,
   };
 };

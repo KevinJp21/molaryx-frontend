@@ -1,35 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FileDownIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import {
-  BaseModal,
-  Button,
-  CustomFormField,
-  CustomFormSelect,
-  InputErrorMessage,
-  Spinner,
-} from "@/components";
+import { BaseModal, Button, CustomFormField, CustomFormSelect, InputErrorMessage, Spinner } from "@/components";
+import { usePaginatedSelect } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  getPatients,
-  selectGetPatients,
-} from "@/store/patients/patiens-slice";
+import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice";
 import { patientFullName } from "@/features/dashboard/modules/patients/utils";
 import { downloadReport } from "@/utils";
-import {
-  apiGetClinicalHistoryAction,
-  TGetClinicalHistoryParams,
-} from "../actions";
-import {
-  EXPORT_CLINICAL_HISTORY_DEFAULT_VALUES,
-  ExportClinicalHistorySchema,
-  TExportClinicalHistoryForm,
-  TExportClinicalHistoryValues,
-} from "../schemas";
+import { apiGetClinicalHistoryAction, TGetClinicalHistoryParams } from "../actions";
+import { EXPORT_CLINICAL_HISTORY_DEFAULT_VALUES, ExportClinicalHistorySchema, TExportClinicalHistoryForm, TExportClinicalHistoryValues } from "../schemas";
 
 type TProps = {
   open: boolean;
@@ -61,7 +44,22 @@ export const ExportClinicalHistoryModal = ({
     formState: { errors, touchedFields },
   } = methods;
 
-  const patientItems = (patientsData?.items ?? []).map((patient) => ({
+  const patients = usePaginatedSelect({
+    enabled: open,
+    data: patientsData,
+    status: patientsStatus,
+    fetchPage: ({ page, search }) => {
+      dispatch(
+        getPatients({
+          IsActive: true,
+          Page: page,
+          ...(search ? { Search: search } : {}),
+        }),
+      );
+    },
+  });
+
+  const patientItems = patients.items.map((patient) => ({
     value: patient.idPatient,
     name: patientFullName(
       patient.firstName,
@@ -71,23 +69,10 @@ export const ExportClinicalHistoryModal = ({
     ),
   }));
 
-  const searchPatients = useCallback(
-    (Search: string) => {
-      dispatch(
-        getPatients({
-          IsActive: true,
-          ...(Search ? { Search } : {}),
-        }),
-      );
-    },
-    [dispatch],
-  );
-
   useEffect(() => {
     if (!open) return;
     reset(EXPORT_CLINICAL_HISTORY_DEFAULT_VALUES);
-    dispatch(getPatients({ IsActive: true }));
-  }, [open, dispatch, reset]);
+  }, [open, reset]);
 
   const handleDialogOpenChange = (next: boolean) => {
     if (!next) {
@@ -145,19 +130,20 @@ export const ExportClinicalHistoryModal = ({
                   name="idPatient"
                   label="Paciente"
                   placeholder={
-                    patientsStatus === "loading"
+                    patients.isSearching
                       ? "Cargando pacientes..."
                       : "Selecciona un paciente"
                   }
                   items={patientItems}
                   disabled={
-                    patientsStatus === "loading" && patientItems.length === 0
+                    patients.isSearching && patientItems.length === 0
                   }
                   searchable
                   searchPlaceholder="Buscar paciente..."
                   searchDebounceMs={300}
-                  onSearch={searchPatients}
-                  isSearching={patientsStatus === "loading"}
+                  onSearch={patients.onSearch}
+                  isSearching={patients.isSearching}
+                  {...patients.paginationProps}
                 />
                 {errors.idPatient && !touchedFields.idPatient && (
                   <InputErrorMessage message={errors.idPatient.message} />

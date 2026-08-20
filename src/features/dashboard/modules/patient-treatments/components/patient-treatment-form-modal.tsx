@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { ClipboardPlus, SquarePen } from "lucide-react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +13,7 @@ import {
     CustomFormTextarea,
     Spinner,
 } from "@/components";
+import { usePaginatedSelect } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
     getPatients,
@@ -124,12 +125,41 @@ export const PatientTreatmentFormModal = ({
         Number(idPaymentFrequency) !== PAYMENT_FREQUENCY.NONE &&
         Number(idPaymentFrequency) !== PAYMENT_FREQUENCY.ONE_TIME;
 
-    const treatmentItems = (treatmentsData?.items ?? []).map((item) => ({
+    const patients = usePaginatedSelect({
+        enabled: open && needsPatientSelect,
+        data: patientsData,
+        status: patientsStatus,
+        fetchPage: ({ page, search }) => {
+            dispatch(
+                getPatients({
+                    IsActive: true,
+                    Page: page,
+                    ...(search ? { Search: search } : {}),
+                }),
+            );
+        },
+    });
+
+    const treatments = usePaginatedSelect({
+        enabled: open && !isEdit,
+        data: treatmentsData,
+        status: treatmentsStatus,
+        fetchPage: ({ page }) => {
+            dispatch(
+                getTreatments({
+                    IsActive: true,
+                    Page: page,
+                }),
+            );
+        },
+    });
+
+    const treatmentItems = treatments.items.map((item) => ({
         value: item.idTreatment,
         name: item.name,
     }));
 
-    const patientItems = (patientsData?.items ?? []).map((item) => ({
+    const patientItems = patients.items.map((item) => ({
         value: item.idPatient,
         name: patientFullName(
             item.firstName,
@@ -139,30 +169,12 @@ export const PatientTreatmentFormModal = ({
         ),
     }));
 
-    const searchPatients = useCallback(
-        (Search: string) => {
-            dispatch(
-                getPatients({
-                    IsActive: true,
-                    ...(Search ? { Search } : {}),
-                }),
-            );
-        },
-        [dispatch],
-    );
-
     const statusOptions = isEdit ? PATIENT_TREATMENT_STATUS_FILTER_OPTIONS : [];
 
     useEffect(() => {
         if (!open) return;
-        if (!isEdit) {
-            dispatch(getTreatments({ IsActive: true, Size: 10 }));
-            if (needsPatientSelect) {
-                dispatch(getPatients({ IsActive: true }));
-            }
-        }
         reset(toFormValues(patientTreatment));
-    }, [open, isEdit, patientTreatment, needsPatientSelect, dispatch, reset]);
+    }, [open, patientTreatment, reset]);
 
     const handleDialogOpenChange = (next: boolean) => {
         if (!next) {
@@ -275,19 +287,20 @@ export const PatientTreatmentFormModal = ({
                                     name="idPatient"
                                     label="Paciente"
                                     placeholder={
-                                        patientsStatus === "loading"
+                                        patients.isSearching
                                             ? "Cargando pacientes..."
                                             : "Selecciona un paciente"
                                     }
                                     items={patientItems}
                                     disabled={
-                                        patientsStatus === "loading" &&
+                                        patients.isSearching &&
                                         patientItems.length === 0
                                     }
                                     searchable
                                     searchPlaceholder="Buscar paciente..."
-                                    onSearch={searchPatients}
-                                    isSearching={patientsStatus === "loading"}
+                                    onSearch={patients.onSearch}
+                                    isSearching={patients.isSearching}
+                                    {...patients.paginationProps}
                                 />
                             )}
 
@@ -303,17 +316,18 @@ export const PatientTreatmentFormModal = ({
                                     name="idTreatment"
                                     label="Tratamiento"
                                     placeholder={
-                                        treatmentsStatus === "loading"
+                                        treatments.isSearching
                                             ? "Cargando tratamientos..."
                                             : "Selecciona un tratamiento"
                                     }
                                     items={treatmentItems}
                                     disabled={
-                                        treatmentsStatus === "loading" &&
+                                        treatments.isSearching &&
                                         treatmentItems.length === 0
                                     }
                                     searchable
                                     searchPlaceholder="Buscar tratamiento..."
+                                    {...treatments.paginationProps}
                                 />
                             )}
 

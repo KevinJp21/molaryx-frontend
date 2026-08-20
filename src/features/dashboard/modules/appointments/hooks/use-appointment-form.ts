@@ -89,7 +89,14 @@ export const useAppointmentForm = ({
     searchPatients,
     searchProfessionals,
     searchServices,
-    loadOptions,
+    patientsPagination,
+    patientsSearching,
+    professionalsPagination,
+    professionalsSearching,
+    servicesPagination,
+    servicesSearching,
+    treatmentsPagination,
+    treatmentsSearching,
   } = useAppointmentFormOptions({
     open,
     idPatient,
@@ -118,8 +125,7 @@ export const useAppointmentForm = ({
   useEffect(() => {
     if (!open) return;
     reset(toAppointmentFormValues(event, initialDate));
-    loadOptions();
-  }, [open, event, initialDate, reset, loadOptions]);
+  }, [open, event, initialDate, reset]);
 
   useEffect(() => {
     if (!isCreate) return;
@@ -241,6 +247,14 @@ export const useAppointmentForm = ({
     searchPatients,
     searchProfessionals,
     searchServices,
+    patientsPagination,
+    patientsSearching,
+    professionalsPagination,
+    professionalsSearching,
+    servicesPagination,
+    servicesSearching,
+    treatmentsPagination,
+    treatmentsSearching,
     treatmentItems,
     treatmentsStatus,
     hasTreatment,

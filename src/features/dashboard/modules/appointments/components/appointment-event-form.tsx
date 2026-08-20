@@ -35,6 +35,30 @@ type Props = {
   searchPatients: (query: string) => void;
   searchProfessionals: (query: string) => void;
   searchServices: (query: string) => void;
+  patientsPagination: {
+    onLoadMore: () => void;
+    hasMore: boolean;
+    isLoadingMore: boolean;
+  };
+  patientsSearching: boolean;
+  professionalsPagination: {
+    onLoadMore: () => void;
+    hasMore: boolean;
+    isLoadingMore: boolean;
+  };
+  professionalsSearching: boolean;
+  servicesPagination: {
+    onLoadMore: () => void;
+    hasMore: boolean;
+    isLoadingMore: boolean;
+  };
+  servicesSearching: boolean;
+  treatmentsPagination: {
+    onLoadMore: () => void;
+    hasMore: boolean;
+    isLoadingMore: boolean;
+  };
+  treatmentsSearching: boolean;
   treatmentItems: SelectItem[];
   treatmentsStatus: string;
   hasTreatment: boolean;
@@ -52,15 +76,20 @@ export const AppointmentEventForm = ({
   onClose,
   onDelete,
   patientItems,
-  patientsStatus,
   professionalItems,
-  professionalsStatus,
   serviceItems,
-  servicesStatus,
   statusItems,
   searchPatients,
   searchProfessionals,
   searchServices,
+  patientsPagination,
+  patientsSearching,
+  professionalsPagination,
+  professionalsSearching,
+  servicesPagination,
+  servicesSearching,
+  treatmentsPagination,
+  treatmentsSearching,
   treatmentItems,
   treatmentsStatus,
   hasTreatment,
@@ -106,16 +135,17 @@ export const AppointmentEventForm = ({
             name="idPatient"
             label="Paciente"
             placeholder={
-              patientsStatus === "loading" && patientItems.length === 0
+              patientsSearching && patientItems.length === 0
                 ? "Cargando pacientes..."
                 : "Selecciona un paciente"
             }
             items={patientItems}
-            disabled={patientsStatus === "loading" && patientItems.length === 0}
+            disabled={patientsSearching && patientItems.length === 0}
             searchable
             searchPlaceholder="Buscar paciente..."
-            isSearching={patientsStatus === "loading"}
+            isSearching={patientsSearching}
             onSearch={searchPatients}
+            {...patientsPagination}
             onChange={() =>
               setValue("idPatientTreatment", null, {
                 shouldDirty: true,
@@ -130,16 +160,20 @@ export const AppointmentEventForm = ({
             placeholder={
               !hasPatient
                 ? "Selecciona un paciente primero"
-                : treatmentsStatus === "loading"
+                : treatmentsSearching
                   ? "Cargando planes..."
                   : "Selecciona un plan (opcional)"
             }
             items={treatmentItems}
             disabled={
               !hasPatient ||
-              (treatmentsStatus === "loading" && treatmentItems.length === 0)
+              (treatmentsSearching && treatmentItems.length === 0)
             }
             emptyLabel={hasPatient ? "Sin plan de tratamiento" : undefined}
+            searchable
+            searchPlaceholder="Buscar plan..."
+            {...treatmentsPagination}
+            resetKey={idPatient}
             onChange={(value) => {
               if (typeof value === "number" && value > 0) {
                 setValue("price", null, {
@@ -152,6 +186,7 @@ export const AppointmentEventForm = ({
 
           {hasPatient &&
             treatmentsStatus === "success" &&
+            !treatmentsPagination.hasMore &&
             !hasActiveTreatments && (
               <p className="text-xs text-ink-400">
                 Este paciente no tiene planes de tratamiento activos.
@@ -171,34 +206,36 @@ export const AppointmentEventForm = ({
             name="idUser"
             label="Profesional"
             placeholder={
-              professionalsStatus === "loading" && professionalItems.length === 0
+              professionalsSearching && professionalItems.length === 0
                 ? "Cargando profesionales..."
                 : "Selecciona un profesional"
             }
             items={professionalItems}
             disabled={
-              professionalsStatus === "loading" && professionalItems.length === 0
+              professionalsSearching && professionalItems.length === 0
             }
             searchable
             searchPlaceholder="Buscar profesional..."
-            isSearching={professionalsStatus === "loading"}
+            isSearching={professionalsSearching}
             onSearch={searchProfessionals}
+            {...professionalsPagination}
           />
 
           <CustomFormSelect
             name="idService"
             label="Servicio"
             placeholder={
-              servicesStatus === "loading" && serviceItems.length === 0
+              servicesSearching && serviceItems.length === 0
                 ? "Cargando servicios..."
                 : "Selecciona un servicio"
             }
             items={serviceItems}
-            disabled={servicesStatus === "loading" && serviceItems.length === 0}
+            disabled={servicesSearching && serviceItems.length === 0}
             searchable
             searchPlaceholder="Buscar servicio..."
-            isSearching={servicesStatus === "loading"}
+            isSearching={servicesSearching}
             onSearch={searchServices}
+            {...servicesPagination}
           />
 
           {isEdit && (
