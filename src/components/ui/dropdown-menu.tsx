@@ -83,8 +83,8 @@ function DropdownMenuItem({
         "data-inset:pl-7",
         "data-[variant=destructive]:text-coral-500 data-[variant=destructive]:focus:bg-coral-500/10 data-[variant=destructive]:focus:text-coral-500",
         "data-disabled:pointer-events-none data-disabled:opacity-50",
-        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-ink-400",
-        "data-[variant=destructive]:[&_svg:not([class*='text-'])]:text-coral-500",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-current",
+        "data-[variant=destructive]:[&_svg:not([class*='text-'])]:text-current",
         className
       )}
       {...props}

@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { PlusIcon } from "lucide-react";
-import { Button } from "@/components";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
 import { hasPermissionCode } from "@/features/dashboard/utils";
@@ -56,28 +54,22 @@ export const PatientTreatmentsTemplate = () => {
 
   return (
     <>
-      <section className="mb-4 flex items-center justify-between">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-xl font-medium text-ink-50">
-            Planes de tratamiento
-          </h1>
-          <p className="text-sm text-ink-300">
-            Planes asignados a los pacientes
-          </p>
-        </div>
-        {canCreate && (
-          <Button onClick={openCreate}>
-            <PlusIcon className="h-4 w-4" />
-            Asignar tratamiento
-          </Button>
-        )}
+      <section className="mb-4 flex flex-col gap-1">
+        <h1 className="text-xl font-medium text-ink-50">Planes de tratamiento</h1>
+        <p className="text-sm text-ink-300">
+          Planes asignados a los pacientes: busca, filtra y da seguimiento
+        </p>
       </section>
+
       <PatientTreatmentsTable
         onEdit={openEdit}
         onViewDetails={openDetails}
+        onCreate={canCreate ? openCreate : undefined}
+        canCreate={canCreate}
         canUpdate={canUpdate}
         refreshKey={listRefreshKey}
       />
+
       <PatientTreatmentFormModal
         open={modalOpen}
         onOpenChange={handleModalOpenChange}

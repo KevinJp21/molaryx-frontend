@@ -30,7 +30,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
         "[&_th]:sticky [&_th]:top-0 [&_th]:z-20",
         "[&_th]:border-b",
         "[&_th]:border-ink-800",
-        "[&_th]:bg-white",
+        "[&_th]:bg-ink-950",
 
         className,
       )}

@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { PlusIcon } from "lucide-react";
-import { Button } from "@/components";
 import { PatientFormModal, PatientsTable, DeletePatientModal } from "../components";
 import { IPatientsItems } from "../interfaces";
 
@@ -45,25 +43,20 @@ export const PatientsTemplate = () => {
 
     return (
         <>
-            <section className="mb-4 flex items-center justify-between">
-                <div className="flex flex-col gap-1">
-                    <h1 className="text-xl font-medium text-ink-50">
-                        Pacientes
-                    </h1>
-                    <p className="text-sm text-ink-300">
-                        Gestión de pacientes
-                    </p>
-                </div>
-                <Button onClick={openCreateModal}>
-                    <PlusIcon className="h-4 w-4" />
-                    Agregar Paciente
-                </Button>
+            <section className="mb-4 flex flex-col gap-1">
+                <h1 className="text-xl font-medium text-ink-50">Pacientes</h1>
+                <p className="text-sm text-ink-300">
+                    Directorio de la clínica: busca, filtra y gestiona fichas
+                </p>
             </section>
+
             <PatientsTable
                 onEdit={openEditModal}
                 onDelete={openDeleteModal}
+                onCreate={openCreateModal}
                 refreshKey={listRefreshKey}
             />
+
             <PatientFormModal
                 open={patientModalOpen}
                 onOpenChange={handleModalOpenChange}

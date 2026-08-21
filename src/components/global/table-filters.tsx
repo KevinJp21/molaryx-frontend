@@ -128,7 +128,7 @@ export const TableFilters = <TForm extends FieldValues, TParams>({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <FormProvider {...form}>
-        <div className="flex flex-wrap items-end justify-between gap-3 border-b border-ink-800 px-4 py-3">
+        <div className="flex flex-wrap items-end justify-between gap-3">
           {searchField && (
             <div className="w-full max-w-75">
               <CustomFormField
