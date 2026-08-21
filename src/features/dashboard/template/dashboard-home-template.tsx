@@ -4,41 +4,73 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAppointmentsSummary, getPaymentsSummary, selectGetAppointmentsSummary, selectGetPaymentsSummary } from "@/store/dashboard/dashboard-slice";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
-import { CustomCard, CustomCardSkeleton } from "@/components/global";
+import { CustomCard, CustomCardSkeleton, ErrorMessage } from "@/components/global";
 import { CalendarIcon, CreditCardIcon, WalletIcon } from "lucide-react";
 import { currencyFormat } from "@/utils";
 import { cn } from "@/lib/utils";
 import { hasPermissionCode } from "../utils";
-import { RevenueOverTimeChartArea, PaymentsMethodsChartPie, AppointmentsByStatusChartBar, AppointmentsTopServicesChartPie, UpcomingAppointmentsList } from "../components";
+import { RevenueOverTimeChartArea, PaymentsMethodsChartPie, AppointmentsByStatusChartBar, AppointmentsTopServicesChartPie, UpcomingAppointmentsList, DashboardHomeSkeleton } from "../components";
 
 export const DashboardHomeTemplate = () => {
     const dispatch = useAppDispatch();
     const payments = useAppSelector(selectGetPaymentsSummary);
     const appointments = useAppSelector(selectGetAppointmentsSummary);
     const { data: userData } = useAppSelector(selectGetUserData);
-    const isLoading = payments.status === "loading" || appointments.status === "loading";
 
     const canViewPayments = hasPermissionCode(
         userData?.permissions,
         "PAYMENTS",
         "GET_PAYMENTS");
 
+    const isLoading =
+        appointments.status === "loading" ||
+        (canViewPayments && payments.status === "loading");
+
+    const paymentsFailed = canViewPayments && payments.status === "error";
+    const appointmentsFailed = appointments.status === "error";
+    const hasError = paymentsFailed || appointmentsFailed;
+
+    const errorDetail = [
+        paymentsFailed ? payments.message : null,
+        appointmentsFailed ? appointments.message : null,
+    ]
+        .filter(Boolean)
+        .join(" · ");
+
     useEffect(() => {
-        dispatch(getPaymentsSummary());
+        if (canViewPayments) {
+            dispatch(getPaymentsSummary());
+        }
         dispatch(getAppointmentsSummary());
-    }, [dispatch]);
+    }, [canViewPayments, dispatch]);
+
     return (
         <>
-            <section
-                className={cn(
-                    "grid grid-cols-1 gap-4",
-                    canViewPayments ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-1",
-                )}
-            >
-                {isLoading ? (
-                    <CustomCardSkeleton count={canViewPayments ? 3 : 1} />
-                ) :
-                    <>
+            {isLoading ? (
+                <>
+                    <section
+                        className={cn(
+                            "grid grid-cols-1 gap-4",
+                            canViewPayments ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-1",
+                        )}
+                    >
+                        <CustomCardSkeleton count={canViewPayments ? 3 : 1} />
+                    </section>
+                    <DashboardHomeSkeleton showPaymentsCharts={canViewPayments} />
+                </>
+            ) : hasError ? (
+                <ErrorMessage
+                    message="No se pudo cargar el resumen del dashboard"
+                    error={errorDetail || undefined}
+                />
+            ) : (
+                <>
+                    <section
+                        className={cn(
+                            "grid grid-cols-1 gap-4",
+                            canViewPayments ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-1",
+                        )}
+                    >
                         {canViewPayments && (
                             <>
                                 <CustomCard
@@ -63,26 +95,25 @@ export const DashboardHomeTemplate = () => {
                             color="coral"
                             footerText="Citas hoy"
                         />
-                    </>
-                }
-            </section>
-            {canViewPayments && !isLoading ? (
-                <section className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
-                    <RevenueOverTimeChartArea data={payments.data?.revenueOverTime} />
-                    <PaymentsMethodsChartPie data={payments.data?.paymentMethods} />
-                </section>
-            ) : null}
-            {!isLoading ? (
-                <>
+                    </section>
+
+                    {canViewPayments ? (
+                        <section className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
+                            <RevenueOverTimeChartArea data={payments.data?.revenueOverTime} />
+                            <PaymentsMethodsChartPie data={payments.data?.paymentMethods} />
+                        </section>
+                    ) : null}
+
                     <section className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
                         <AppointmentsByStatusChartBar data={appointments.data?.byStatus} />
                         <AppointmentsTopServicesChartPie data={appointments.data?.topServices} />
                     </section>
+
                     <section className="mt-4">
                         <UpcomingAppointmentsList data={appointments.data?.upcoming} />
                     </section>
                 </>
-            ) : null}
+            )}
         </>
     );
 };
