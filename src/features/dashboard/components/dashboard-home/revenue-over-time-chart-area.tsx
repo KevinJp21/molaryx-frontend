@@ -112,20 +112,11 @@ export const RevenueOverTimeChartArea = ({ data, className }: RevenueOverTimeCha
                                 cursor={{ strokeDasharray: "4 4" }}
                                 content={
                                     <ChartTooltipContent
-                                        indicator="dot"
                                         labelKey="label"
-                                        labelFormatter={(_, payload) => payload?.[0]?.payload?.label ?? ""}
-                                        formatter={(value) => (
-                                            <div className="flex flex-1 items-center justify-between gap-4">
-                                                <span className="flex items-center gap-2 text-ink-400">
-                                                    <span className="size-2 rounded-full bg-accent-500" />
-                                                    Ingresos
-                                                </span>
-                                                <span className="font-semibold text-ink-50 tabular-nums">
-                                                    {currencyFormat(Number(value), 0)}
-                                                </span>
-                                            </div>
-                                        )}
+                                        labelFormatter={(_, payload) =>
+                                            payload?.[0]?.payload?.label ?? ""
+                                        }
+                                        valueFormatter={(value) => currencyFormat(Number(value), 0)}
                                     />
                                 }
                             />

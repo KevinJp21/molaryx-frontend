@@ -4,6 +4,7 @@ export interface IGetPaymentsSummaryResponse extends TBaseResponse<IGetPaymentsS
 
 export interface IGetPaymentsSummaryResponseData {
     currentMonthRevenue: number;
+    outstandingBalance: number;
     revenueOverTime: IRevenueOverTime[];
     paymentMethods: IPaymentsMethods[];
 }

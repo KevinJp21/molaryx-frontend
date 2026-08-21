@@ -3,12 +3,12 @@
 import { useMemo } from "react";
 import { Label, Pie, PieChart } from "recharts";
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui";
-import { amountFormat, currencyFormat } from "@/utils";
+import { amountFormat } from "@/utils";
 import { cn } from "@/lib/utils";
-import type { IPaymentsMethods } from "../../interfaces";
+import type { ITopServices } from "../../interfaces";
 
-interface PaymentsMethodsChartPieProps {
-    data?: IPaymentsMethods[];
+interface AppointmentsTopServicesChartPieProps {
+    data?: ITopServices[];
     className?: string;
 }
 
@@ -20,83 +20,76 @@ const CHART_PALETTE = [
     "var(--color-chart-5)",
 ];
 
-export const PaymentsMethodsChartPie = ({ data, className }: PaymentsMethodsChartPieProps) => {
-    const methods = useMemo(
+export const AppointmentsTopServicesChartPie = ({ data, className }: AppointmentsTopServicesChartPieProps) => {
+    const services = useMemo(
         () =>
             [...(data ?? [])]
-                .sort((first, second) => second.amount - first.amount)
+                .sort((first, second) => second.count - first.count)
                 .map((item, index) => ({
-                    key: `method-${item.idPaymentMethod}`,
-                    label: item.paymentMethod,
-                    amount: item.amount,
-                    paymentCount: item.paymentCount,
+                    key: `service-${item.idService}`,
+                    label: item.serviceName,
+                    count: item.count,
                     color: CHART_PALETTE[index % CHART_PALETTE.length],
                 })),
         [data],
     );
 
-    const total = useMemo(() => methods.reduce((accumulated, item) => accumulated + item.amount, 0), [methods]);
-    const totalPayments = useMemo(
-        () => methods.reduce((accumulated, item) => accumulated + item.paymentCount, 0),
-        [methods],
-    );
+    const total = useMemo(() => services.reduce((accumulated, item) => accumulated + item.count, 0), [services]);
 
     const chartConfig = useMemo<ChartConfig>(() => {
-        const config: ChartConfig = { amount: { label: "Monto" } };
-        methods.forEach((item) => {
+        const config: ChartConfig = { count: { label: "Citas" } };
+        services.forEach((item) => {
             config[item.key] = { label: item.label, color: item.color };
         });
         return config;
-    }, [methods]);
+    }, [services]);
 
     const chartData = useMemo(
         () =>
-            methods.map((item) => ({
+            services.map((item) => ({
                 key: item.key,
                 label: item.label,
-                amount: item.amount,
-                paymentCount: item.paymentCount,
+                count: item.count,
                 fill: `var(--color-${item.key})`,
             })),
-        [methods],
+        [services],
     );
 
     return (
         <Card className={cn("h-full", className)}>
             <CardHeader>
                 <CardTitle className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
-                    Métodos de pago
+                    Servicios más solicitados
                 </CardTitle>
                 <CardDescription className="text-2xl font-semibold tracking-tight text-ink-50 tabular-nums">
-                    {currencyFormat(total, 0)}
+                    {amountFormat(total)}
                 </CardDescription>
 
-                {totalPayments > 0 ? (
+                {services.length > 0 ? (
                     <CardAction>
                         <span className="rounded-full bg-ink-900 px-2.5 py-1 text-xs font-medium text-ink-300 ring-1 ring-inset ring-ink-750">
-                            {`${amountFormat(totalPayments)} ${totalPayments === 1 ? "pago" : "pagos"}`}
+                            {`${services.length} ${services.length === 1 ? "servicio" : "servicios"}`}
                         </span>
                     </CardAction>
                 ) : null}
             </CardHeader>
 
             <CardContent className="flex min-h-0 flex-1 flex-col gap-4 px-5 pb-5">
-                {methods.length ? (
+                {services.length ? (
                     <>
                         <ChartContainer config={chartConfig} className="mx-auto aspect-square h-44 w-full max-w-44 shrink-0">
-                            <PieChart>
+                            <PieChart accessibilityLayer={false}>
                                 <ChartTooltip
                                     cursor={false}
                                     content={
                                         <ChartTooltipContent
-                                            label="Método"
+                                            label="Servicio"
                                             nameKey="key"
-                                            valueFormatter={(value) => currencyFormat(Number(value), 0)}
+                                            valueFormatter={(value) => amountFormat(Number(value))}
                                             secondaryText={(item) => {
-                                                const amount = Number(item.value ?? 0);
-                                                const paymentCount = Number(item.payload?.paymentCount ?? 0);
-                                                const share = total > 0 ? Math.round((amount / total) * 100) : 0;
-                                                return `${share}% · ${amountFormat(paymentCount)} ${paymentCount === 1 ? "pago" : "pagos"}`;
+                                                const count = Number(item.value ?? 0);
+                                                const share = total > 0 ? Math.round((count / total) * 100) : 0;
+                                                return `${share}% del total`;
                                             }}
                                         />
                                     }
@@ -104,7 +97,7 @@ export const PaymentsMethodsChartPie = ({ data, className }: PaymentsMethodsChar
 
                                 <Pie
                                     data={chartData}
-                                    dataKey="amount"
+                                    dataKey="count"
                                     nameKey="key"
                                     innerRadius="62%"
                                     outerRadius="100%"
@@ -123,14 +116,14 @@ export const PaymentsMethodsChartPie = ({ data, className }: PaymentsMethodsChar
                                                         y={viewBox.cy}
                                                         className="fill-ink-50 text-lg font-semibold tabular-nums"
                                                     >
-                                                        {methods.length}
+                                                        {services.length}
                                                     </tspan>
                                                     <tspan
                                                         x={viewBox.cx}
                                                         y={(viewBox.cy ?? 0) + 20}
                                                         className="fill-ink-400 text-[11px]"
                                                     >
-                                                        {methods.length === 1 ? "método" : "métodos"}
+                                                        {services.length === 1 ? "servicio" : "servicios"}
                                                     </tspan>
                                                 </text>
                                             );
@@ -141,7 +134,7 @@ export const PaymentsMethodsChartPie = ({ data, className }: PaymentsMethodsChar
                         </ChartContainer>
 
                         <ul className="mt-auto flex flex-col gap-2.5">
-                            {methods.map((item) => (
+                            {services.map((item) => (
                                 <li key={item.key} className="flex items-center gap-3 text-xs">
                                     <span
                                         className="size-2 shrink-0 rounded-full"
@@ -149,10 +142,10 @@ export const PaymentsMethodsChartPie = ({ data, className }: PaymentsMethodsChar
                                     />
                                     <span className="flex-1 truncate text-ink-300">{item.label}</span>
                                     <span className="text-ink-400 tabular-nums">
-                                        {total > 0 ? `${Math.round((item.amount / total) * 100)}%` : "0%"}
+                                        {total > 0 ? `${Math.round((item.count / total) * 100)}%` : "0%"}
                                     </span>
-                                    <span className="w-24 text-right font-medium text-ink-50 tabular-nums">
-                                        {currencyFormat(item.amount, 0)}
+                                    <span className="w-16 text-right font-medium text-ink-50 tabular-nums">
+                                        {amountFormat(item.count)}
                                     </span>
                                 </li>
                             ))}
@@ -160,13 +153,13 @@ export const PaymentsMethodsChartPie = ({ data, className }: PaymentsMethodsChar
                     </>
                 ) : (
                     <div className="flex flex-1 items-center justify-center text-center text-xs text-ink-400">
-                        Aún no hay pagos registrados para distribuir por método.
+                        Aún no hay servicios con citas para mostrar.
                     </div>
                 )}
             </CardContent>
 
             <CardFooter className="mt-auto">
-                <p className="text-xs text-ink-400">Distribución de ingresos del mes actual por método de pago</p>
+                <p className="text-xs text-ink-400">Servicios más solicitados del mes actual</p>
             </CardFooter>
         </Card>
     );

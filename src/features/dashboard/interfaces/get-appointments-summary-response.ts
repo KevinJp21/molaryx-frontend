@@ -8,19 +8,19 @@ export interface IGetAppointmentsSummaryResponseData {
     upcoming: IUpcoming[];
 };
 
-interface IByStatus {
+export interface IByStatus {
     idAppointmentStatus: number;
     appointmentStatus: string;
     count: number;
 };
 
-interface ITopServices {
+export interface ITopServices {
     idService: number;
     serviceName: string;
     count: number;
 };
 
-interface IUpcoming {
+export interface IUpcoming {
     idAppointment: number;
     startAt: string;
     endAt: string;

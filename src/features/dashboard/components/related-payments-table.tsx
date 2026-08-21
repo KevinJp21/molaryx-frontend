@@ -109,7 +109,7 @@ export const RelatedPaymentsTable = ({
                             </TableRow>
                         </TableHeader>
                         {(status === "loading" || status === "idle") && (
-                            <TableSkeleton columns={colSpan} rows={5} />
+                            <TableSkeleton columns={colSpan} rows={10} />
                         )}
                         <TableBody>
                             {status === "error" && (

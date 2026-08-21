@@ -1,16 +1,21 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface CustomCardSkeletonProps {
   count?: number;
+  className?: string;
 }
 
-export const CustomCardSkeleton = ({ count = 1 }: CustomCardSkeletonProps) => {
+export const CustomCardSkeleton = ({ count = 1, className }: CustomCardSkeletonProps) => {
   return (
     <>
       {Array.from({ length: count }).map((_, i) => (
         <article
           key={i}
-          className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm border-t-4 border-t-gray-200"
+          className={cn(
+            "overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm border-t-4 border-t-gray-200",
+            className,
+          )}
         >
           <header className="flex items-center justify-between p-4 pb-2">
             <Skeleton className="h-3 w-28" />
