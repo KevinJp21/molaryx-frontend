@@ -1,12 +1,28 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
-import { Bell, LogOut, Menu } from 'lucide-react';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Bell, CreditCard, LogOut, Menu, Settings, User } from 'lucide-react';
 import { toast } from 'sonner';
-import { apiLogoutAction } from '@/features/authentication';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { logout, selectGetUserData } from '@/store/authentication/authentication-slice';
-import { Button } from '@/components';
+import {
+    postLogout,
+    resetPostLogout,
+    selectGetUserData,
+    selectPostLogout,
+} from '@/store/authentication/authentication-slice';
+import {
+    Avatar,
+    AvatarFallback,
+    Button,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components';
 
 type Props = {
     isSidebarCollapsed: boolean;
@@ -27,33 +43,39 @@ export const DashboardHeader = ({
     const router = useRouter();
     const dispatch = useAppDispatch();
     const { data: userData } = useAppSelector(selectGetUserData);
-    const pathname = usePathname();
+    const { status: logoutStatus, message: logoutMessage, error: logoutError } =
+        useAppSelector(selectPostLogout);
     const firstName = userData?.names?.split(' ')[0];
+    const fullName = userData ? `${userData.names} ${userData.surnames}`.trim() : undefined;
     const initials = `${userData?.names?.charAt(0) ?? ''}${userData?.surnames?.charAt(0) ?? ''}`;
 
     const greeting = getGreeting();
 
-    /*
-    Obtener sección actual
-    const getCurrentSection = () => {
-        const sections: Array<{ matcher: string; label: string }> = [
-            { matcher: '/dashboard', label: 'Inicio' },
-            { matcher: '/dashboard/patients', label: 'Pacientes' },
-        ];
+    useEffect(() => {
+        if (logoutStatus === 'loading') {
+            toast.loading('Cerrando sesión...');
+            return;
+        }
 
-        const match = sections.find((section) => pathname === section.matcher);
-        return match?.label ?? 'Inicio';
-    };
-    */
-    const handleLogout = async () => {
-        try {
-            await apiLogoutAction();
-            dispatch(logout());
+        if (logoutStatus === 'error') {
+            toast.dismiss();
+            toast.error('No fue posible cerrar sesión, intente nuevamente.', {
+                description: logoutError,
+            });
+        }
+
+        if (logoutStatus === 'success') {
+
+            toast.dismiss();
             toast.success('Sesión cerrada correctamente.');
             router.replace('/sign-in');
-        } catch {
-            toast.error('No fue posible cerrar sesión, intente nuevamente.');
         }
+
+        dispatch(resetPostLogout());
+    }, [logoutStatus, logoutMessage, logoutError, dispatch, router]);
+
+    const handleComingSoon = (section: string) => {
+        toast.info(`${section} estará disponible pronto.`);
     };
 
     return (
@@ -92,23 +114,55 @@ export const DashboardHeader = ({
                     <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-accent-500" />
                 </Button>
 
-                <span
-                    className="flex h-8 w-8 items-center justify-center rounded-full bg-linear-to-br from-accent-400 to-coral-500 text-[11px] font-semibold text-ink-950"
-                    title={userData ? `${userData.names} ${userData.surnames}` : undefined}
-                >
-                    {initials || '—'}
-                </span>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button
+                            type="button"
+                            className="rounded-full outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-accent-500/40"
+                            aria-label="Menú de cuenta"
+                            title={fullName}
+                        >
+                            <Avatar size="lg" className='cursor-pointer'>
+                                <AvatarFallback className="bg-linear-to-br from-accent-400 to-coral-500 text-[11px] font-semibold text-ink-950">
+                                    {initials || '—'}
+                                </AvatarFallback>
+                            </Avatar>
+                        </button>
+                    </DropdownMenuTrigger>
 
-                <Button
-                    type="button"
-                    onClick={handleLogout}
-                    variant="ghost"
-                    className="rounded-lg bg-ink-900 hover:bg-ink-800"
-                    aria-label="Cerrar sesión"
-                >
-                    <LogOut className="h-3.5 w-3.5" strokeWidth={1.75} />
-                    <span className="hidden text-xs sm:inline">Salir</span>
-                </Button>
+                    <DropdownMenuContent align="end" className="w-52">
+                        <DropdownMenuGroup>
+                            <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
+                            <DropdownMenuItem onSelect={() => handleComingSoon('Perfil')}>
+                                <User />
+                                Perfil
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onSelect={() => handleComingSoon('Facturación')}>
+                                <CreditCard />
+                                Facturación
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onSelect={() => handleComingSoon('Configuración')}>
+                                <Settings />
+                                Configuración
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+
+                        <DropdownMenuSeparator />
+
+                        <DropdownMenuGroup>
+                            <DropdownMenuItem
+                                variant="destructive"
+                                disabled={logoutStatus === 'loading'}
+                                onSelect={() => {
+                                    dispatch(postLogout());
+                                }}
+                            >
+                                <LogOut />
+                                Cerrar sesión
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </header>
     );

@@ -6,6 +6,7 @@ import {
   apiPostSignInAction,
   IPostSignInFormRequest,
   apiGetUserAction,
+  apiLogoutAction,
   IGetUserResponseData,
 } from "@/features/authentication";
 
@@ -16,6 +17,11 @@ type TAuthenticationState = {
     error?: string;
   };
   postSignIn: {
+    status: TStatus;
+    message?: string;
+    error?: string;
+  };
+  postLogout: {
     status: TStatus;
     message?: string;
     error?: string;
@@ -39,12 +45,27 @@ const initialState: TAuthenticationState = {
     message: undefined,
     error: undefined,
   },
+  postLogout: {
+    status: "idle",
+    message: undefined,
+    error: undefined,
+  },
   getUserData: {
     status: "idle",
     message: undefined,
     data: undefined,
     userState: "unauthenticated",
   },
+};
+
+const clearAuthenticatedSession = (state: TAuthenticationState) => {
+  state.postSignUp = initialState.postSignUp;
+  state.postSignIn = initialState.postSignIn;
+  state.getUserData = {
+    ...initialState.getUserData,
+    status: "success",
+    userState: "unauthenticated",
+  };
 };
 
 const authenticationSlice = createAppSlice({
@@ -133,6 +154,38 @@ const authenticationSlice = createAppSlice({
         state.getUserData.userState = "unauthenticated";
       },
     }),
+    postLogout: create.asyncThunk(async () => apiLogoutAction(), {
+      pending: (state) => {
+        state.postLogout.status = "loading";
+        state.postLogout.message = undefined;
+        state.postLogout.error = undefined;
+      },
+      fulfilled: (state, action) => {
+        // Las cookies se limpian en el finally del action aunque falle la API.
+        clearAuthenticatedSession(state);
+
+        if (!action.payload.success) {
+          state.postLogout.status = "error";
+          state.postLogout.message = action.payload.message;
+          state.postLogout.error = action.payload.error ?? undefined;
+          return;
+        }
+
+        state.postLogout.status = "success";
+        state.postLogout.message = action.payload.message;
+        state.postLogout.error = undefined;
+      },
+      rejected: (state, action) => {
+        clearAuthenticatedSession(state);
+        state.postLogout.status = "error";
+        state.postLogout.message = action.error.message;
+        state.postLogout.error = undefined;
+      },
+    }),
+    resetPostLogout: create.reducer((state) => {
+      state.postLogout = initialState.postLogout;
+    }),
+    /** Limpia solo el estado local (p. ej. sesión expirada). Para cerrar con API usa `postLogout`. */
     logout: create.reducer(() => ({
       ...initialState,
       getUserData: {
@@ -145,12 +198,24 @@ const authenticationSlice = createAppSlice({
   selectors: {
     selectPostSignUp: (state) => state.postSignUp,
     selectPostSignIn: (state) => state.postSignIn,
+    selectPostLogout: (state) => state.postLogout,
     selectGetUserData: (state) => state.getUserData,
   },
 });
 
-export const { postSignUp, resetPostSignUp, postSignIn, getUserData, logout } =
-  authenticationSlice.actions;
-export const { selectPostSignUp, selectPostSignIn, selectGetUserData } =
-  authenticationSlice.selectors;
+export const {
+  postSignUp,
+  resetPostSignUp,
+  postSignIn,
+  postLogout,
+  resetPostLogout,
+  getUserData,
+  logout,
+} = authenticationSlice.actions;
+export const {
+  selectPostSignUp,
+  selectPostSignIn,
+  selectPostLogout,
+  selectGetUserData,
+} = authenticationSlice.selectors;
 export default authenticationSlice.reducer;
