@@ -1,0 +1,74 @@
+"use client";
+
+import { useState } from "react";
+import { PatientFormModal, PatientsTable, DeletePatientModal } from "../components";
+import { IPatientsItems } from "../interfaces";
+
+export const PatientsTemplate = () => {
+    const [patientModalOpen, setPatientModalOpen] = useState(false);
+    const [selectedPatient, setSelectedPatient] = useState<IPatientsItems | null>(null);
+
+    const [listRefreshKey, setListRefreshKey] = useState(0);
+    const [deletePatientModalOpen, setDeletePatientModalOpen] = useState(false);
+    const [patientToDelete, setPatientToDelete] = useState<IPatientsItems | null>(null);
+
+    const refreshPatientsList = () => {
+        setListRefreshKey((key) => key + 1);
+    };
+
+    const openCreateModal = () => {
+        setSelectedPatient(null);
+        setPatientModalOpen(true);
+    };
+
+    const openEditModal = (patient: IPatientsItems) => {
+        setSelectedPatient(patient);
+        setPatientModalOpen(true);
+    };
+
+    const handleModalOpenChange = (next: boolean) => {
+        setPatientModalOpen(next);
+        if (!next) setSelectedPatient(null);
+    };
+
+    const openDeleteModal = (patient: IPatientsItems) => {
+        setPatientToDelete(patient);
+        setDeletePatientModalOpen(true);
+    };
+
+    const handleDeleteModalOpenChange = (next: boolean) => {
+        setDeletePatientModalOpen(next);
+        if (!next) setPatientToDelete(null);
+    };
+
+    return (
+        <>
+            <section className="mb-4 flex flex-col gap-1">
+                <h1 className="text-xl font-medium text-ink-50">Pacientes</h1>
+                <p className="text-sm text-ink-300">
+                    Directorio de la clínica: busca, filtra y gestiona fichas
+                </p>
+            </section>
+
+            <PatientsTable
+                onEdit={openEditModal}
+                onDelete={openDeleteModal}
+                onCreate={openCreateModal}
+                refreshKey={listRefreshKey}
+            />
+
+            <PatientFormModal
+                open={patientModalOpen}
+                onOpenChange={handleModalOpenChange}
+                patient={selectedPatient}
+                onSuccess={refreshPatientsList}
+            />
+            <DeletePatientModal
+                open={deletePatientModalOpen}
+                onOpenChange={handleDeleteModalOpenChange}
+                patient={patientToDelete}
+                onSuccess={refreshPatientsList}
+            />
+        </>
+    );
+};

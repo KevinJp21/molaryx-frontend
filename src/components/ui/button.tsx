@@ -5,14 +5,14 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-all duration-300 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent-400/50 cursor-pointer",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-all duration-300 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent-400/50 cursor-pointer",
   {
     variants: {
       variant: {
         default:
-          "bg-accent-500 text-[#ffffff] hover:bg-accent-400 hover:shadow-[0_0_40px_-8px_color-mix(in_srgb,var(--color-accent-500)_60%,transparent)]",
+          "bg-accent-500 text-[#ffffff] hover:bg-accent-400 hover:shadow-[0_0_30px_-8px_color-mix(in_srgb,var(--color-accent-500)_60%,transparent)]",
         destructive:
-          "bg-accent-700 text-[#ffffff] hover:bg-accent-800",
+          "border-transparent bg-coral-500/12 text-coral-600 hover:bg-coral-500/18 text-coral-600! hover:text-coral-700! hover:shadow-[0_0_20px_-5px_color-mix(in_srgb,var(--color-coral-500)_35%,transparent)]",
         outline:
           "text-ink-100 border border-ink-700 bg-ink-850/50 hover:bg-ink-800 hover:border-ink-600 backdrop-blur-sm",
         secondary:

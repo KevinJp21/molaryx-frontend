@@ -1,5 +1,5 @@
+import { SignInTemplate } from "@/features/authentication/sign-in";
+
 export default function SigInPage(){
-    return(
-        <h1>Hola Login</h1>
-    );
+    return <SignInTemplate />;
 }

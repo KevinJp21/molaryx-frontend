@@ -1,0 +1,1 @@
+export type TUserState = 'checking' | 'authenticated' | 'unauthenticated';
