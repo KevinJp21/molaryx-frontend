@@ -13,6 +13,7 @@ jobs:
   deploy:
     name: Deploy to Vercel Production
     runs-on: ubuntu-latest
+    environment: molaryx-frontend-vercel
     steps:
       - name: Checkout
         uses: actions/checkout@v4
