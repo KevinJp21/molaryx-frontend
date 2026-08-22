@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Bell, CreditCard, LogOut, Menu, Settings, User } from 'lucide-react';
 import { toast } from 'sonner';
@@ -29,6 +28,8 @@ type Props = {
     onToggleSidebar: () => void;
 };
 
+const LOGOUT_TOAST_ID = 'logout';
+
 const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Buenos días';
@@ -43,8 +44,7 @@ export const DashboardHeader = ({
     const router = useRouter();
     const dispatch = useAppDispatch();
     const { data: userData } = useAppSelector(selectGetUserData);
-    const { status: logoutStatus, message: logoutMessage, error: logoutError } =
-        useAppSelector(selectPostLogout);
+    const { status: logoutStatus } = useAppSelector(selectPostLogout);
     const firstName = userData?.names?.split(' ')[0];
     const fullName = userData ? `${userData.names} ${userData.surnames}`.trim() : undefined;
     const initials = `${userData?.names?.charAt(0) ?? ''}${userData?.surnames?.charAt(0) ?? ''}`;
@@ -54,27 +54,27 @@ export const DashboardHeader = ({
 
     const greeting = getGreeting();
 
-    useEffect(() => {
-        if (logoutStatus === 'loading') {
-            toast.loading('Cerrando sesión...');
+    const handleLogout = async () => {
+        toast.loading('Cerrando sesión...', { id: LOGOUT_TOAST_ID });
+
+        const result = await dispatch(postLogout());
+
+        if (postLogout.fulfilled.match(result) && result.payload.success) {
+            toast.success('Sesión cerrada correctamente.', { id: LOGOUT_TOAST_ID });
+            router.replace('/sign-in');
             return;
         }
 
-        if (logoutStatus === 'error') {
-            toast.dismiss();
-            toast.error('No fue posible cerrar sesión, intente nuevamente.', {
-                description: logoutError,
-            });
-        }
+        const description = postLogout.fulfilled.match(result)
+            ? result.payload.error ?? result.payload.message
+            : result.error?.message;
 
-        if (logoutStatus === 'success') {
-            toast.dismiss();
-            toast.success('Sesión cerrada correctamente.');
-            router.replace('/sign-in');
-        }
-
+        toast.error('No fue posible cerrar sesión, intente nuevamente.', {
+            id: LOGOUT_TOAST_ID,
+            description,
+        });
         dispatch(resetPostLogout());
-    }, [logoutStatus, logoutMessage, logoutError, dispatch, router]);
+    };
 
     return (
         <header className="flex h-15 shrink-0 items-center justify-between gap-3 px-4 py-3 md:px-5">
@@ -178,7 +178,7 @@ export const DashboardHeader = ({
                                 className="gap-2.5 text-[13px]"
                                 disabled={logoutStatus === 'loading'}
                                 onSelect={() => {
-                                    dispatch(postLogout());
+                                    void handleLogout();
                                 }}
                             >
                                 <LogOut className="h-4 w-4" />
