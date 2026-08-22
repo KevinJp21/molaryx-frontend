@@ -4,7 +4,12 @@ import { Suspense, useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { getUserData, logout, selectGetUserData } from "@/store/authentication/authentication-slice";
+import {
+  getUserData,
+  logout,
+  selectGetUserData,
+  selectPostLogout,
+} from "@/store/authentication/authentication-slice";
 import { PUBLIC_AUTH_ROUTES, PROTECTED_ROUTE_PREFIXES } from "@/consts";
 import Image from "next/image";
 
@@ -35,8 +40,11 @@ const SessionExpiredHandler = () => {
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
   const { status, userState } = useAppSelector(selectGetUserData);
+  const { status: logoutStatus } = useAppSelector(selectPostLogout);
   const pathname = usePathname();
   const router = useRouter();
+  const isIntentionalLogout =
+    logoutStatus === "loading" || logoutStatus === "success";
 
   const isPublicAuthRoute = PUBLIC_AUTH_ROUTES.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`),
@@ -54,14 +62,23 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     if (status === "loading" || status === "idle") return;
 
     if (isProtectedRoute && userState === "unauthenticated") {
-      router.replace("/sign-in?session=unauthenticated");
+      // Logout deliberado: no marcar sesión como "unauthenticated" en la URL.
+      router.replace(isIntentionalLogout ? "/sign-in" : "/sign-in?session=unauthenticated");
       return;
     }
 
     if (userState === "authenticated" && isPublicAuthRoute) {
       router.replace("/dashboard");
     }
-  }, [pathname, router, status, userState, isProtectedRoute, isPublicAuthRoute]);
+  }, [
+    pathname,
+    router,
+    status,
+    userState,
+    isProtectedRoute,
+    isPublicAuthRoute,
+    isIntentionalLogout,
+  ]);
 
   // En dashboard no pintes la app hasta haber sesión. Si getUser falla por
   // carrera del refresh, RouteGuard se quedaba en el logo con status error.

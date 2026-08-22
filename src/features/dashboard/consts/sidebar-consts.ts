@@ -72,22 +72,5 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         permission: { module: "PAYMENTS" },
       },
     ],
-  },
-  {
-    title: "Equipo",
-    items: [
-      {
-        label: "Profesionales",
-        href: "/dashboard/professionals",
-        icon: Users,
-        permission: { module: "USERS" },
-      },
-      {
-        label: "Asistentes",
-        href: "/dashboard/assistants",
-        icon: User,
-        permission: { module: "USERS" },
-      },
-    ],
-  },
+  }
 ];
