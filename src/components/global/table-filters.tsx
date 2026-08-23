@@ -72,15 +72,36 @@ export const TableFilters = <TForm extends FieldValues, TParams>({
   const values = form.watch();
   const onFiltersChangeRef = useRef(onFiltersChange);
   const toQueryParamsRef = useRef(toQueryParams);
+  const lastEmittedKeyRef = useRef<string>("");
+  const defaultValuesKey = JSON.stringify(defaultValues);
 
   onFiltersChangeRef.current = onFiltersChange;
   toQueryParamsRef.current = toQueryParams;
 
   const [debouncedSearch, setDebouncedSearch] = useState(() => {
     if (!searchField) return "";
-    const current = values[searchField.name];
+    const current = defaultValues[searchField.name];
     return typeof current === "string" ? current : "";
   });
+
+  // Sincroniza el sheet con el sidebar (PC) cuando el padre cambia los filtros.
+  useEffect(() => {
+    const nextSearch =
+      searchField && typeof defaultValues[searchField.name] === "string"
+        ? (defaultValues[searchField.name] as string)
+        : "";
+
+    form.reset(defaultValues as DefaultValues<TForm>);
+    if (searchField) setDebouncedSearch(nextSearch);
+
+    lastEmittedKeyRef.current = JSON.stringify(
+      toQueryParamsRef.current(
+        defaultValues,
+        searchField ? nextSearch : undefined,
+      ),
+    );
+    // defaultValues se lee cuando cambia defaultValuesKey (contenido), no por referencia.
+  }, [defaultValuesKey, form, searchField]);
 
   const activeCount = useMemo(() => {
     return drawerFields.reduce((count, field) => {
@@ -115,15 +136,47 @@ export const TableFilters = <TForm extends FieldValues, TParams>({
   const drawerValuesKey = JSON.stringify(drawerFieldValues);
 
   useEffect(() => {
-    onFiltersChangeRef.current(
-      toQueryParamsRef.current(
-        form.getValues(),
-        searchField ? debouncedSearch : undefined,
-      ),
+    const params = toQueryParamsRef.current(
+      form.getValues(),
+      searchField ? debouncedSearch : undefined,
     );
-  }, [debouncedSearch, drawerValuesKey, form]);
+    const nextKey = JSON.stringify(params);
+    if (nextKey === lastEmittedKeyRef.current) return;
 
-  const handleReset = () => form.reset(defaultValues);
+    lastEmittedKeyRef.current = nextKey;
+    onFiltersChangeRef.current(params);
+  }, [debouncedSearch, drawerValuesKey, form, searchField]);
+
+  const getClearedValues = (): TForm => {
+    const cleared = { ...form.getValues() } as TForm;
+
+    if (searchField) {
+      cleared[searchField.name] = "" as TForm[Path<TForm>];
+    }
+
+    for (const field of drawerFields) {
+      if (field.type === "select") {
+        cleared[field.name] = field.allValue as TForm[Path<TForm>];
+      } else {
+        cleared[field.name] = "" as TForm[Path<TForm>];
+      }
+    }
+
+    return cleared;
+  };
+
+  const handleReset = () => {
+    const cleared = getClearedValues();
+    form.reset(cleared);
+    if (searchField) setDebouncedSearch("");
+
+    const params = toQueryParamsRef.current(
+      cleared,
+      searchField ? "" : undefined,
+    );
+    lastEmittedKeyRef.current = JSON.stringify(params);
+    onFiltersChangeRef.current(params);
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>

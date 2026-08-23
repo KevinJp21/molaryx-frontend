@@ -72,5 +72,16 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         permission: { module: "PAYMENTS" },
       },
     ],
+  },
+  {
+    title: "Equipo",
+    items: [
+      {
+        label: "Equipo",
+        href: "/dashboard/team",
+        icon: Users,
+        permission: { module: "USERS" },
+      },
+    ],
   }
 ];

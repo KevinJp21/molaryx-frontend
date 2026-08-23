@@ -10,7 +10,7 @@ import { getPatientTreatments, selectGetPatientTreatments } from "@/store/patien
 import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
 import { ROLES_IDS } from "@/consts";
 import { APPOINTMENT_STATUS_OPTIONS } from "../consts/appointment-status";
-import { USER_STATUS } from "../consts/user-status";
+import { USER_STATUS } from "@/features/dashboard/consts";
 import { fullName } from "../utils/appointment-form-values";
 
 /** Roles que pueden asignarse como profesional de una cita (oculto al usuario final). */

@@ -5,33 +5,43 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Plus, Search } from "lucide-react";
 import { Button, CustomFormSelect, Input } from "@/components";
 import {
-  PATIENT_STATUS_FILTER_OPTIONS,
-  type TPatientStatusFilter,
+  TEAM_ROLE_FILTER_OPTIONS,
+  TEAM_STATUS_FILTER_OPTIONS,
+  type TTeamRoleFilter,
+  type TTeamStatusFilter,
 } from "../consts";
 
+const ALL_VALUE = "all" as const;
+
 type TFilterForm = {
-  isActive: TPatientStatusFilter;
+  idUserStatus: TTeamStatusFilter;
+  idUserRole: TTeamRoleFilter;
 };
 
 type Props = {
   search: string;
-  status: TPatientStatusFilter;
+  status: TTeamStatusFilter;
+  role: TTeamRoleFilter;
   onSearchChange: (value: string) => void;
-  onStatusChange: (value: TPatientStatusFilter) => void;
+  onStatusChange: (value: TTeamStatusFilter) => void;
+  onRoleChange: (value: TTeamRoleFilter) => void;
   onCreateClick: () => void;
 };
 
-export const PatientsSidebar = ({
+export const TeamSidebar = ({
   search,
   status,
+  role,
   onSearchChange,
   onStatusChange,
+  onRoleChange,
   onCreateClick,
 }: Props) => {
   const [searchDraft, setSearchDraft] = useState(search);
   const methods = useForm<TFilterForm>({
     values: {
-      isActive: status,
+      idUserStatus: status,
+      idUserRole: role,
     },
   });
 
@@ -56,7 +66,7 @@ export const PatientsSidebar = ({
             onClick={onCreateClick}
           >
             <Plus className="size-5" />
-            <span className="text-sm">Agregar paciente</span>
+            <span className="text-sm">Agregar miembro</span>
           </Button>
         </div>
 
@@ -69,26 +79,42 @@ export const PatientsSidebar = ({
             <Input
               value={searchDraft}
               onChange={(event) => setSearchDraft(event.target.value)}
-              placeholder="Nombre, cédula, teléfono…"
+              placeholder="Nombre, usuario, correo…"
               className="rounded-xl border-ink-700 bg-ink-900/80 py-2.5 pl-9"
-              aria-label="Buscar pacientes"
+              aria-label="Buscar miembros"
             />
           </div>
         </div>
 
         <FormProvider {...methods}>
-          <div className="px-4">
+          <div className="flex flex-col gap-4 px-4">
             <CustomFormSelect
-              name="isActive"
+              name="idUserStatus"
               label="Estado"
               placeholder="Todos"
-              items={PATIENT_STATUS_FILTER_OPTIONS.map((option) => ({
+              items={TEAM_STATUS_FILTER_OPTIONS.map((option) => ({
                 name: option.label,
                 value: option.value,
               }))}
               onChange={(value) => {
                 if (value == null) return;
-                onStatusChange(value as TPatientStatusFilter);
+                onStatusChange(value as TTeamStatusFilter);
+              }}
+            />
+            <CustomFormSelect
+              name="idUserRole"
+              label="Rol"
+              placeholder="Todos"
+              items={[
+                { name: "Todos", value: ALL_VALUE },
+                ...TEAM_ROLE_FILTER_OPTIONS.map((option) => ({
+                  name: option.label,
+                  value: option.value,
+                })),
+              ]}
+              onChange={(value) => {
+                if (value == null) return;
+                onRoleChange(value as TTeamRoleFilter);
               }}
             />
           </div>
