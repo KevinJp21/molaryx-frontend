@@ -18,13 +18,3 @@ export const ROLES: { id: number, name: string }[] = [
         name: 'Asistente'
     }
 ]
-
-export const PERMISSIONS = {
-    module: 'PATIENTS',
-    permissions: [
-        {
-            code: 'GET_USER_PATIENTS'
-        }
-
-    ]
-}

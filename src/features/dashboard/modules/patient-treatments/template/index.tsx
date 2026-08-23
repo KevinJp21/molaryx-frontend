@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
-import { hasPermissionCode } from "@/features/dashboard/utils";
+import { checkCanCreate, checkCanUpdate } from "@/features/dashboard/utils";
+import { PERMISSION_MODULES } from "@/features/dashboard/consts";
 import { useDetailModalState } from "@/features/dashboard/hooks";
 import {
   PatientTreatmentDetailModal,
@@ -14,15 +15,13 @@ import { IPatientTreatmentItems } from "../interfaces";
 
 export const PatientTreatmentsTemplate = () => {
   const { data: userData } = useAppSelector(selectGetUserData);
-  const canCreate = hasPermissionCode(
+  const canCreate = checkCanCreate(
     userData?.permissions,
-    "PATIENT_TREATMENTS",
-    "CREATE_PATIENT_TREATMENT",
+    PERMISSION_MODULES.PATIENT_TREATMENTS,
   );
-  const canUpdate = hasPermissionCode(
+  const canUpdate = checkCanUpdate(
     userData?.permissions,
-    "PATIENT_TREATMENTS",
-    "UPDATE_PATIENT_TREATMENT",
+    PERMISSION_MODULES.PATIENT_TREATMENTS,
   );
 
   const [modalOpen, setModalOpen] = useState(false);

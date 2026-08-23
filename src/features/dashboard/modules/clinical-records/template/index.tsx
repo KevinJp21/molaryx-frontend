@@ -5,17 +5,16 @@ import { FileDownIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
-import { hasPermissionCode } from "@/features/dashboard/utils";
+import { checkCanCreate } from "@/features/dashboard/utils";
+import { PERMISSION_MODULES } from "@/features/dashboard/consts";
 import { ClinicalRecordFormModal, ClinicalRecordsTable, ExportClinicalHistoryModal } from "../components";
 
 export const ClinicalRecordsTemplate = () => {
   const { data: userData } = useAppSelector(selectGetUserData);
-  const canCreate = hasPermissionCode(
+  const canCreate = checkCanCreate(
     userData?.permissions,
-    "CLINICAL_RECORDS",
-    "CREATE_CLINICAL_RECORD",
+    PERMISSION_MODULES.CLINICAL_RECORDS,
   );
-
   const [modalOpen, setModalOpen] = useState(false);
   const [listRefreshKey, setListRefreshKey] = useState(0);
 

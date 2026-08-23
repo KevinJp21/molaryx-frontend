@@ -5,7 +5,8 @@ import { FileDownIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
-import { hasPermissionCode } from "@/features/dashboard/utils";
+import { checkCanCreate } from "@/features/dashboard/utils";
+import { PERMISSION_MODULES } from "@/features/dashboard/consts";
 import {
   ExportPaymentsModal,
   PaymentFormModal,
@@ -14,12 +15,10 @@ import {
 
 export const PaymentsTemplate = () => {
   const { data: userData } = useAppSelector(selectGetUserData);
-  const canCreate = hasPermissionCode(
+  const canCreate = checkCanCreate(
     userData?.permissions,
-    "PAYMENTS",
-    "CREATE_PAYMENT",
+    PERMISSION_MODULES.PAYMENTS,
   );
-
   const [modalOpen, setModalOpen] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [listRefreshKey, setListRefreshKey] = useState(0);

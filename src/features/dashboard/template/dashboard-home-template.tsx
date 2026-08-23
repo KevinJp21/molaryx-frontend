@@ -8,7 +8,8 @@ import { CustomCard, CustomCardSkeleton, ErrorMessage } from "@/components/globa
 import { CalendarIcon, CreditCardIcon, WalletIcon } from "lucide-react";
 import { currencyFormat } from "@/utils";
 import { cn } from "@/lib/utils";
-import { hasPermissionCode } from "../utils";
+import { checkCanView } from "../utils";
+import { PERMISSION_MODULES } from "../consts";
 import { RevenueOverTimeChartArea, PaymentsMethodsChartPie, AppointmentsByStatusChartBar, AppointmentsTopProceduresChartPie, UpcomingAppointmentsList, DashboardHomeSkeleton } from "../components";
 
 export const DashboardHomeTemplate = () => {
@@ -17,11 +18,10 @@ export const DashboardHomeTemplate = () => {
     const appointments = useAppSelector(selectGetAppointmentsSummary);
     const { data: userData } = useAppSelector(selectGetUserData);
 
-    const canViewPayments = hasPermissionCode(
+    const canViewPayments = checkCanView(
         userData?.permissions,
-        "PAYMENTS",
-        "GET_PAYMENTS");
-
+        PERMISSION_MODULES.PAYMENTS,
+    );
     const isLoading =
         appointments.status === "loading" ||
         (canViewPayments && payments.status === "loading");
@@ -109,7 +109,7 @@ export const DashboardHomeTemplate = () => {
                         <AppointmentsTopProceduresChartPie data={appointments.data?.topProcedures} />
                     </section>
 
-                    <section className="mt-4">
+                    <section className="mt-4 flex-1">
                         <UpcomingAppointmentsList data={appointments.data?.upcoming} />
                     </section>
                 </>

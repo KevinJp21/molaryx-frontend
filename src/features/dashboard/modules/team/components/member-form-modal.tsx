@@ -46,7 +46,7 @@ export const MemberFormModal = ({ open, onOpenChange, onSuccess }: Props) => {
   const isLoadingTypes = status === "loading" || status === "idle";
   const isSubmitting = postCreateMemberStatus === "loading";
   const identificationTypes = (data && status === "success" ? data : []).filter(
-    (item) => ![4].includes(item.idIdentificationType),
+    (item) => ![3,4].includes(item.idIdentificationType),
   );
 
   const methods = useForm<TMemberForm>({
