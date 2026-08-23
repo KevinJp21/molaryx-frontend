@@ -24,6 +24,8 @@ type Props = {
   onClose: () => void;
   onSuccess?: () => void;
   onDelete: (event: TAppointmentCalendarEvent) => void;
+  canCreate?: boolean;
+  canUpdate?: boolean;
 };
 
 export const AppointmentEventModal = ({
@@ -35,6 +37,8 @@ export const AppointmentEventModal = ({
   onClose,
   onSuccess,
   onDelete,
+  canCreate = false,
+  canUpdate = false,
 }: Props) => {
   const form = useAppointmentForm({
     open,
@@ -44,6 +48,13 @@ export const AppointmentEventModal = ({
     onClose,
     onSuccess,
   });
+
+  const effectiveMode =
+    mode === "create" && !canCreate
+      ? "view"
+      : mode === "edit" && !canUpdate
+        ? "view"
+        : mode;
 
   return (
     <DialogRoot
@@ -75,13 +86,13 @@ export const AppointmentEventModal = ({
           }}
         >
           <DialogTitle className="sr-only">
-            {mode === "view"
+            {effectiveMode === "view"
               ? "Detalle de la cita"
-              : mode === "edit"
+              : effectiveMode === "edit"
                 ? "Editar cita"
                 : "Nueva cita"}
           </DialogTitle>
-          {mode === "view" && event ? (
+          {effectiveMode === "view" && event ? (
             <AppointmentEventView
               event={event}
               statusColor={form.statusColor}
@@ -89,6 +100,7 @@ export const AppointmentEventModal = ({
               onEdit={() => onModeChange("edit")}
               onDelete={() => onDelete(event)}
               onClose={form.handleClose}
+              canUpdate={canUpdate}
             />
           ) : (
             <div className="animate-in fade-in-0 zoom-in-95 duration-200">
@@ -103,6 +115,7 @@ export const AppointmentEventModal = ({
                 event={event}
                 onClose={form.handleClose}
                 onDelete={onDelete}
+                canUpdate={canUpdate}
                 patientItems={form.patientItems}
                 patientsStatus={form.patientsStatus}
                 professionalItems={form.professionalItems}

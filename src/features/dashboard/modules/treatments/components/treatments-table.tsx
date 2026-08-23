@@ -24,10 +24,18 @@ import {
 type Props = {
     onEdit: (treatment: ITreatmentsItems) => void;
     onDelete: (treatment: ITreatmentsItems) => void;
+    canUpdate?: boolean;
+    canDelete?: boolean;
     refreshKey?: number;
 };
 
-export const TreatmentsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
+export const TreatmentsTable = ({
+    onEdit,
+    onDelete,
+    canUpdate = false,
+    canDelete = false,
+    refreshKey = 0,
+}: Props) => {
     const dispatch = useAppDispatch();
     const { data, status, message, error } = useAppSelector(selectGetTreatments);
     const [currentPage, setCurrentPage] = useState(1);
@@ -40,7 +48,8 @@ export const TreatmentsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => 
 
     const items = data?.items ?? [];
     const totalPages = data?.totalPages ?? 0;
-    const colSpan = 4;
+    const showActions = canUpdate || canDelete;
+    const colSpan = showActions ? 4 : 3;
 
     useEffect(() => {
         if (status === "success" && items.length === 0 && currentPage > 1) {
@@ -64,7 +73,9 @@ export const TreatmentsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => 
                             <TableHead>tratamiento</TableHead>
                             <TableHead>Descripción</TableHead>
                             <TableHead>Estado</TableHead>
-                            <TableHead className="w-14 text-right">Acciones</TableHead>
+                            {showActions && (
+                                <TableHead className="w-14 text-right">Acciones</TableHead>
+                            )}
                         </TableRow>
                     </TableHeader>
                     {(status === "loading" || status === "idle") && (
@@ -102,43 +113,49 @@ export const TreatmentsTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => 
                                                 <Badge variant="destructive">Inactivo</Badge>
                                             )}
                                         </TableCell>
-                                        <TableCell className="text-right">
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon-sm"
-                                                        aria-label={`Acciones de ${item.name}`}
-                                                    >
-                                                        <Logs className="size-4" strokeWidth={1.75} />
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-72 p-2" align="end">
-                                                    <div className="flex flex-col gap-2">
+                                        {showActions && (
+                                            <TableCell className="text-right">
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
                                                         <Button
                                                             variant="ghost"
-                                                            size="sm"
-                                                            className="text-xs justify-start text-ink-200 font-normal"
-                                                            aria-label={`Editar tratamiento ${item.name}`}
-                                                            onClick={() => onEdit(item)}
+                                                            size="icon-sm"
+                                                            aria-label={`Acciones de ${item.name}`}
                                                         >
-                                                            <SquarePen className="size-4" strokeWidth={1.75} />
-                                                            Editar
+                                                            <Logs className="size-4" strokeWidth={1.75} />
                                                         </Button>
-                                                        <Button
-                                                            variant="destructive"
-                                                            size="sm"
-                                                            className="text-xs justify-start text-ink-200 font-normal"
-                                                            aria-label={`Eliminar tratamiento ${item.name}`}
-                                                            onClick={() => onDelete(item)}
-                                                        >
-                                                            <Trash className="size-4" strokeWidth={1.75} />
-                                                            Eliminar
-                                                        </Button>
-                                                    </div>
-                                                </PopoverContent>
-                                            </Popover>
-                                        </TableCell>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-72 p-2" align="end">
+                                                        <div className="flex flex-col gap-2">
+                                                            {canUpdate && (
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="text-xs justify-start text-ink-200 font-normal"
+                                                                    aria-label={`Editar tratamiento ${item.name}`}
+                                                                    onClick={() => onEdit(item)}
+                                                                >
+                                                                    <SquarePen className="size-4" strokeWidth={1.75} />
+                                                                    Editar
+                                                                </Button>
+                                                            )}
+                                                            {canDelete && (
+                                                                <Button
+                                                                    variant="destructive"
+                                                                    size="sm"
+                                                                    className="text-xs justify-start text-ink-200 font-normal"
+                                                                    aria-label={`Eliminar tratamiento ${item.name}`}
+                                                                    onClick={() => onDelete(item)}
+                                                                >
+                                                                    <Trash className="size-4" strokeWidth={1.75} />
+                                                                    Eliminar
+                                                                </Button>
+                                                            )}
+                                                        </div>
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </TableCell>
+                                        )}
                                     </TableRow>
                                 );
                             })

@@ -3,10 +3,32 @@
 import { useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/components";
+import { useAppSelector } from "@/store";
+import { selectGetUserData } from "@/store/authentication/authentication-slice";
+import {
+  checkCanCreate,
+  checkCanDelete,
+  checkCanUpdate,
+} from "@/features/dashboard/utils";
+import { PERMISSION_MODULES } from "@/features/dashboard/consts";
 import { TreatmentsFormModal, TreatmentsTable, DeleteTreatmentModal } from "../components";
 import { ITreatmentsItems } from "../interfaces";
 
 export const TreatmentsTemplate = () => {
+    const { data: userData } = useAppSelector(selectGetUserData);
+    const canCreate = checkCanCreate(
+        userData?.permissions,
+        PERMISSION_MODULES.TREATMENTS,
+    );
+    const canUpdate = checkCanUpdate(
+        userData?.permissions,
+        PERMISSION_MODULES.TREATMENTS,
+    );
+    const canDelete = checkCanDelete(
+        userData?.permissions,
+        PERMISSION_MODULES.TREATMENTS,
+    );
+
     const [treatmentModalOpen, setTreatmentModalOpen] = useState(false);
     const [selectedTreatment, setSelectedTreatment] = useState<ITreatmentsItems | null>(null);
 
@@ -54,28 +76,36 @@ export const TreatmentsTemplate = () => {
                         Gestión de servicios
                     </p>
                 </div>
-                <Button onClick={openCreateModal}>
-                    <PlusIcon className="h-4 w-4" />
-                    Agregar Servicio
-                </Button>
+                {canCreate && (
+                    <Button onClick={openCreateModal}>
+                        <PlusIcon className="h-4 w-4" />
+                        Agregar Servicio
+                    </Button>
+                )}
             </section>
             <TreatmentsTable
                 onEdit={openEditModal}
                 onDelete={openDeleteModal}
+                canUpdate={canUpdate}
+                canDelete={canDelete}
                 refreshKey={listRefreshKey}
             />
-            <TreatmentsFormModal
-                open={treatmentModalOpen}
-                onOpenChange={handleModalOpenChange}
-                treatment={selectedTreatment}
-                onSuccess={refreshTreatmentsList}
-            />
-            <DeleteTreatmentModal
-                open={deleteTreatmentModalOpen}
-                onOpenChange={handleDeleteModalOpenChange}
-                treatment={treatmentToDelete}
-                onSuccess={refreshTreatmentsList}
-            />
+            {(canCreate || canUpdate) && (
+                <TreatmentsFormModal
+                    open={treatmentModalOpen}
+                    onOpenChange={handleModalOpenChange}
+                    treatment={selectedTreatment}
+                    onSuccess={refreshTreatmentsList}
+                />
+            )}
+            {canDelete && (
+                <DeleteTreatmentModal
+                    open={deleteTreatmentModalOpen}
+                    onOpenChange={handleDeleteModalOpenChange}
+                    treatment={treatmentToDelete}
+                    onSuccess={refreshTreatmentsList}
+                />
+            )}
         </>
     );
 };

@@ -14,8 +14,8 @@ type Props = {
   events: TAppointmentCalendarEvent[];
   readonly?: boolean;
   onEventClick: (event: TAppointmentCalendarEvent) => void;
-  onEventContextMenu: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
-  onTimeSlotClick: (date: Date) => void;
+  onEventContextMenu?: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
+  onTimeSlotClick?: (date: Date) => void;
   onEventResize?: (event: TAppointmentCalendarEvent, newEnd: Date) => void;
   onEventResizePreview?: (event: TAppointmentCalendarEvent, newEnd: Date) => void;
 };
@@ -121,7 +121,7 @@ export const DayView = ({
                         tabIndex={-1}
                         aria-label={`Nueva cita a las ${formatEventTime(cellDate)}`}
                         className="size-full cursor-pointer bg-transparent"
-                        onClick={() => onTimeSlotClick(cellDate)}
+                        onClick={() => onTimeSlotClick?.(cellDate)}
                       />
                     </DroppableCell>
                   );

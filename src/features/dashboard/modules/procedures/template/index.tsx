@@ -3,10 +3,32 @@
 import { useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/components";
+import { useAppSelector } from "@/store";
+import { selectGetUserData } from "@/store/authentication/authentication-slice";
+import {
+  checkCanCreate,
+  checkCanDelete,
+  checkCanUpdate,
+} from "@/features/dashboard/utils";
+import { PERMISSION_MODULES } from "@/features/dashboard/consts";
 import { ProcedureFormModal, ProceduresTable, DeleteProcedureModal } from "../components";
 import { IProceduresItems } from "../interfaces";
 
 export const ProceduresTemplate = () => {
+    const { data: userData } = useAppSelector(selectGetUserData);
+    const canCreate = checkCanCreate(
+        userData?.permissions,
+        PERMISSION_MODULES.PROCEDURES,
+    );
+    const canUpdate = checkCanUpdate(
+        userData?.permissions,
+        PERMISSION_MODULES.PROCEDURES,
+    );
+    const canDelete = checkCanDelete(
+        userData?.permissions,
+        PERMISSION_MODULES.PROCEDURES,
+    );
+
     const [procedureModalOpen, setProcedureModalOpen] = useState(false);
     const [selectedProcedure, setSelectedProcedure] = useState<IProceduresItems | null>(null);
 
@@ -54,28 +76,36 @@ export const ProceduresTemplate = () => {
                         Gestión de procedimientos
                     </p>
                 </div>
-                <Button onClick={openCreateModal}>
-                    <PlusIcon className="h-4 w-4" />
-                    Agregar procedimiento
-                </Button>
+                {canCreate && (
+                    <Button onClick={openCreateModal}>
+                        <PlusIcon className="h-4 w-4" />
+                        Agregar procedimiento
+                    </Button>
+                )}
             </section>
             <ProceduresTable
                 onEdit={openEditModal}
                 onDelete={openDeleteModal}
+                canUpdate={canUpdate}
+                canDelete={canDelete}
                 refreshKey={listRefreshKey}
             />
-            <ProcedureFormModal
-                open={procedureModalOpen}
-                onOpenChange={handleModalOpenChange}
-                procedure={selectedProcedure}
-                onSuccess={refreshProceduresList}
-            />
-            <DeleteProcedureModal
-                open={deleteProcedureModalOpen}
-                onOpenChange={handleDeleteModalOpenChange}
-                procedure={procedureToDelete}
-                onSuccess={refreshProceduresList}
-            />
+            {(canCreate || canUpdate) && (
+                <ProcedureFormModal
+                    open={procedureModalOpen}
+                    onOpenChange={handleModalOpenChange}
+                    procedure={selectedProcedure}
+                    onSuccess={refreshProceduresList}
+                />
+            )}
+            {canDelete && (
+                <DeleteProcedureModal
+                    open={deleteProcedureModalOpen}
+                    onOpenChange={handleDeleteModalOpenChange}
+                    procedure={procedureToDelete}
+                    onSuccess={refreshProceduresList}
+                />
+            )}
         </>
     );
 };

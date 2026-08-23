@@ -22,12 +22,16 @@ export const DashboardHomeTemplate = () => {
         userData?.permissions,
         PERMISSION_MODULES.PAYMENTS,
     );
+    const canViewAppointments = checkCanView(
+        userData?.permissions,
+        PERMISSION_MODULES.APPOINTMENTS,
+    );
     const isLoading =
-        appointments.status === "loading" ||
+        (canViewAppointments && appointments.status === "loading") ||
         (canViewPayments && payments.status === "loading");
 
     const paymentsFailed = canViewPayments && payments.status === "error";
-    const appointmentsFailed = appointments.status === "error";
+    const appointmentsFailed = canViewAppointments && appointments.status === "error";
     const hasError = paymentsFailed || appointmentsFailed;
 
     const errorDetail = [
@@ -41,8 +45,10 @@ export const DashboardHomeTemplate = () => {
         if (canViewPayments) {
             dispatch(getPaymentsSummary());
         }
-        dispatch(getAppointmentsSummary());
-    }, [canViewPayments, dispatch]);
+        if (canViewAppointments) {
+            dispatch(getAppointmentsSummary());
+        }
+    }, [canViewPayments, canViewAppointments, dispatch]);
 
     return (
         <>
@@ -51,12 +57,23 @@ export const DashboardHomeTemplate = () => {
                     <section
                         className={cn(
                             "grid grid-cols-1 gap-4",
-                            canViewPayments ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-1",
+                            canViewPayments && canViewAppointments
+                                ? "md:grid-cols-2 lg:grid-cols-3"
+                                : canViewPayments || canViewAppointments
+                                  ? "md:grid-cols-2"
+                                  : "md:grid-cols-1",
                         )}
                     >
-                        <CustomCardSkeleton count={canViewPayments ? 3 : 1} />
+                        <CustomCardSkeleton
+                            count={
+                                (canViewPayments ? 2 : 0) + (canViewAppointments ? 1 : 0) || 1
+                            }
+                        />
                     </section>
-                    <DashboardHomeSkeleton showPaymentsCharts={canViewPayments} />
+                    <DashboardHomeSkeleton
+                        showPaymentsCharts={canViewPayments}
+                        showAppointmentsCharts={canViewAppointments}
+                    />
                 </>
             ) : hasError ? (
                 <ErrorMessage
@@ -68,7 +85,11 @@ export const DashboardHomeTemplate = () => {
                     <section
                         className={cn(
                             "grid grid-cols-1 gap-4",
-                            canViewPayments ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-1",
+                            canViewPayments && canViewAppointments
+                                ? "md:grid-cols-2 lg:grid-cols-3"
+                                : canViewPayments || canViewAppointments
+                                  ? "md:grid-cols-2"
+                                  : "md:grid-cols-1",
                         )}
                     >
                         {canViewPayments && (
@@ -88,13 +109,15 @@ export const DashboardHomeTemplate = () => {
                                 />
                             </>
                         )}
-                        <CustomCard
-                            title="Citas"
-                            icon={<CalendarIcon className="h-4 w-4" />}
-                            mainValue={appointments.data?.todayCount ?? 0}
-                            color="coral"
-                            footerText="Citas hoy"
-                        />
+                        {canViewAppointments && (
+                            <CustomCard
+                                title="Citas"
+                                icon={<CalendarIcon className="h-4 w-4" />}
+                                mainValue={appointments.data?.todayCount ?? 0}
+                                color="coral"
+                                footerText="Citas hoy"
+                            />
+                        )}
                     </section>
 
                     {canViewPayments ? (
@@ -104,14 +127,18 @@ export const DashboardHomeTemplate = () => {
                         </section>
                     ) : null}
 
-                    <section className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
-                        <AppointmentsByStatusChartBar data={appointments.data?.byStatus} />
-                        <AppointmentsTopProceduresChartPie data={appointments.data?.topProcedures} />
-                    </section>
+                    {canViewAppointments ? (
+                        <>
+                            <section className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
+                                <AppointmentsByStatusChartBar data={appointments.data?.byStatus} />
+                                <AppointmentsTopProceduresChartPie data={appointments.data?.topProcedures} />
+                            </section>
 
-                    <section className="mt-4 flex-1">
-                        <UpcomingAppointmentsList data={appointments.data?.upcoming} />
-                    </section>
+                            <section className="mt-4 flex-1">
+                                <UpcomingAppointmentsList data={appointments.data?.upcoming} />
+                            </section>
+                        </>
+                    ) : null}
                 </>
             )}
         </>

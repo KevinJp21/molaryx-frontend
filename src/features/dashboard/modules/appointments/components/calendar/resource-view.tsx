@@ -14,9 +14,9 @@ type Props = {
   resources: TCalendarResource[];
   readonly?: boolean;
   onEventClick: (event: TAppointmentCalendarEvent) => void;
-  onEventContextMenu: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
-  onTimeSlotClick: (date: Date, resourceId: string) => void;
-  onCreateClick: () => void;
+  onEventContextMenu?: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
+  onTimeSlotClick?: (date: Date, resourceId: string) => void;
+  onCreateClick?: () => void;
 };
 
 const HOURS = Array.from({ length: 24 }, (_, index) => index);
@@ -125,7 +125,7 @@ export const ResourceView = ({
                             date={slotDate}
                             resourceId={resource.id}
                             className="h-full flex-1 border-r border-ink-800/40 transition-colors last:border-ink-800"
-                            onClick={() => onTimeSlotClick(slotDate, resource.id)}
+                            onClick={() => onTimeSlotClick?.(slotDate, resource.id)}
                           />
                         );
                       })}
@@ -160,7 +160,7 @@ export const ResourceView = ({
                             onEventClick(event);
                           }
                         }}
-                        onContextMenu={(mouseEvent) => onEventContextMenu(event, mouseEvent)}
+                        onContextMenu={(mouseEvent) => onEventContextMenu?.(event, mouseEvent)}
                       >
                         {event.patientName || event.title}
                       </div>

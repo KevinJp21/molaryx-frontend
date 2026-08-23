@@ -18,7 +18,8 @@ type Props = {
   status: TPatientStatusFilter;
   onSearchChange: (value: string) => void;
   onStatusChange: (value: TPatientStatusFilter) => void;
-  onCreateClick: () => void;
+  onCreateClick?: () => void;
+  canCreate?: boolean;
 };
 
 export const PatientsSidebar = ({
@@ -27,6 +28,7 @@ export const PatientsSidebar = ({
   onSearchChange,
   onStatusChange,
   onCreateClick,
+  canCreate = false,
 }: Props) => {
   const [searchDraft, setSearchDraft] = useState(search);
   const methods = useForm<TFilterForm>({
@@ -49,16 +51,18 @@ export const PatientsSidebar = ({
   return (
     <aside className="hidden h-full w-64 shrink-0 flex-col overflow-hidden border-r border-ink-800 lg:flex">
       <div className="scrollbar-hide flex h-full flex-col overflow-y-auto bg-linear-to-b from-ink-950 via-ink-950 to-ink-900/40 py-4">
-        <div className="mb-5 px-4">
-          <Button
-            type="button"
-            className="h-12 w-full justify-center gap-3 rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-accent-500/20 active:scale-[0.98]"
-            onClick={onCreateClick}
-          >
-            <Plus className="size-5" />
-            <span className="text-sm">Agregar paciente</span>
-          </Button>
-        </div>
+        {canCreate && onCreateClick && (
+          <div className="mb-5 px-4">
+            <Button
+              type="button"
+              className="h-12 w-full justify-center gap-3 rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-accent-500/20 active:scale-[0.98]"
+              onClick={onCreateClick}
+            >
+              <Plus className="size-5" />
+              <span className="text-sm">Agregar paciente</span>
+            </Button>
+          </div>
+        )}
 
         <div className="mb-5 px-4">
           <label className="mb-2 block text-[10px] font-semibold uppercase tracking-wider text-ink-400">

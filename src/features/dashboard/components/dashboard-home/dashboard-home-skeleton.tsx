@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface DashboardHomeSkeletonProps {
     showPaymentsCharts?: boolean;
+    showAppointmentsCharts?: boolean;
     className?: string;
 }
 
@@ -116,6 +117,7 @@ const UpcomingListSkeleton = () => (
 
 export const DashboardHomeSkeleton = ({
     showPaymentsCharts = true,
+    showAppointmentsCharts = true,
     className,
 }: DashboardHomeSkeletonProps) => {
     return (
@@ -127,14 +129,18 @@ export const DashboardHomeSkeleton = ({
                 </section>
             ) : null}
 
-            <section className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
-                <ChartCardSkeleton variant="bar" />
-                <ChartCardSkeleton variant="pie" />
-            </section>
+            {showAppointmentsCharts ? (
+                <>
+                    <section className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
+                        <ChartCardSkeleton variant="bar" />
+                        <ChartCardSkeleton variant="pie" />
+                    </section>
 
-            <section>
-                <UpcomingListSkeleton />
-            </section>
+                    <section>
+                        <UpcomingListSkeleton />
+                    </section>
+                </>
+            ) : null}
         </div>
     );
 };

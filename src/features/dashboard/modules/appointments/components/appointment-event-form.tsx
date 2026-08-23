@@ -34,6 +34,7 @@ type Props = {
   event: TAppointmentCalendarEvent | null;
   onClose: () => void;
   onDelete: (event: TAppointmentCalendarEvent) => void;
+  canUpdate?: boolean;
   patientItems: SelectItem[];
   patientsStatus: string;
   professionalItems: SelectItem[];
@@ -220,6 +221,7 @@ export const AppointmentEventForm = ({
   event,
   onClose,
   onDelete,
+  canUpdate = false,
   patientItems,
   professionalItems,
   procedureItems,
@@ -432,7 +434,7 @@ export const AppointmentEventForm = ({
         </div>
 
         <div className="flex shrink-0 items-center justify-between border-t border-ink-800 bg-ink-900/40 px-5 py-4">
-          {!isCreate && event ? (
+          {!isCreate && event && canUpdate ? (
             <Button
               type="button"
               variant="destructive"

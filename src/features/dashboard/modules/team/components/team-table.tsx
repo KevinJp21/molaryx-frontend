@@ -32,10 +32,11 @@ import { TeamTableFilter } from "./team-table-filter";
 
 type Props = {
   onCreate: () => void;
+  canCreate?: boolean;
   refreshKey?: number;
 };
 
-export const TeamTable = ({ onCreate, refreshKey = 0 }: Props) => {
+export const TeamTable = ({ onCreate, canCreate = false, refreshKey = 0 }: Props) => {
   const dispatch = useAppDispatch();
   const { data, status, message, error } = useAppSelector(selectGetTeam);
   const [currentPage, setCurrentPage] = useState(1);
@@ -107,18 +108,21 @@ export const TeamTable = ({ onCreate, refreshKey = 0 }: Props) => {
             setCurrentPage(1);
           }}
           onCreateClick={onCreate}
+          canCreate={canCreate}
         />
 
         <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
           <div className="border-b border-ink-800 px-3 py-3 lg:hidden">
-            <Button
-              type="button"
-              className="mb-3 h-11 w-full justify-center gap-2 rounded-2xl"
-              onClick={onCreate}
-            >
-              <PlusIcon className="size-4" />
-              Agregar miembro
-            </Button>
+            {canCreate && (
+              <Button
+                type="button"
+                className="mb-3 h-11 w-full justify-center gap-2 rounded-2xl"
+                onClick={onCreate}
+              >
+                <PlusIcon className="size-4" />
+                Agregar miembro
+              </Button>
+            )}
             <TeamTableFilter
               params={filterParamsForForm}
               onFiltersChange={handleMobileFiltersChange}
@@ -181,7 +185,7 @@ export const TeamTable = ({ onCreate, refreshKey = 0 }: Props) => {
                             ? "No hay miembros con los filtros seleccionados. Ajusta la búsqueda, el estado o el rol."
                             : "Invita al primer profesional o asistente para gestionar el equipo de la clínica."}
                         </p>
-                        {!hasActiveFilters && (
+                        {!hasActiveFilters && canCreate && (
                           <Button
                             type="button"
                             size="sm"

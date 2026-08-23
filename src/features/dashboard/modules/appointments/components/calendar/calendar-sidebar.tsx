@@ -18,6 +18,7 @@ type Props = {
   onCalendarToggle: (id: string, active: boolean) => void;
   onResourceChange: (id: string | null) => void;
   onCreateClick: () => void;
+  canCreate?: boolean;
 };
 
 export const CalendarSidebar = ({
@@ -31,6 +32,7 @@ export const CalendarSidebar = ({
   onCalendarToggle,
   onResourceChange,
   onCreateClick,
+  canCreate = false,
 }: Props) => {
   const [statusesOpen, setStatusesOpen] = useState(true);
   const [resourcesOpen, setResourcesOpen] = useState(false);
@@ -47,16 +49,18 @@ export const CalendarSidebar = ({
       )}
     >
       <div className="scrollbar-hide flex h-full w-64 flex-col overflow-y-auto bg-linear-to-b from-ink-950 via-ink-950 to-ink-900/40 py-4">
-        <div className="mb-6 px-4">
-          <Button
-            type="button"
-            className="h-12 w-full justify-center gap-3 rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-accent-500/20 active:scale-[0.98]"
-            onClick={onCreateClick}
-          >
-            <Plus className="size-5" />
-            <span className="text-sm">Nueva cita</span>
-          </Button>
-        </div>
+        {canCreate && (
+          <div className="mb-6 px-4">
+            <Button
+              type="button"
+              className="h-12 w-full justify-center gap-3 rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-accent-500/20 active:scale-[0.98]"
+              onClick={onCreateClick}
+            >
+              <Plus className="size-5" />
+              <span className="text-sm">Nueva cita</span>
+            </Button>
+          </div>
+        )}
 
         <MiniCalendar
           currentDate={currentDate}
