@@ -29,30 +29,49 @@ const recordedAt = z
     { message: "La fecha de registro no puede ser futura." },
   );
 
-export const ClinicalRecordFormSchema = z.object({
-  idPatient: z.number().min(1, "Selecciona un paciente"),
-  idAppointment: optionalNullableId,
-  idPatientTreatment: optionalNullableId,
-  idProcedure: optionalNullableId,
-  recordedAt,
-  reason: z
-    .string()
-    .trim()
-    .min(1, "El motivo es obligatorio")
-    .max(255, "El motivo no puede tener más de 255 caracteres."),
-  diagnosis: optionalText(1000, "El diagnóstico"),
-  evolution: optionalText(2000, "La evolución"),
-  notes: optionalText(1000, "Las notas"),
+const clinicalRecordProcedureSchema = z.object({
+  idProcedure: z.number().min(1, "Selecciona un procedimiento"),
 });
+
+export const ClinicalRecordFormSchema = z
+  .object({
+    idPatient: z.number().min(1, "Selecciona un paciente"),
+    idAppointment: optionalNullableId,
+    idPatientTreatment: optionalNullableId,
+    procedures: z.array(clinicalRecordProcedureSchema),
+    recordedAt,
+    reason: z
+      .string()
+      .trim()
+      .min(1, "El motivo es obligatorio")
+      .max(255, "El motivo no puede tener más de 255 caracteres."),
+    diagnosis: optionalText(1000, "El diagnóstico"),
+    evolution: optionalText(2000, "La evolución"),
+    notes: optionalText(1000, "Las notas"),
+  })
+  .superRefine((data, ctx) => {
+    const ids = data.procedures.map((p) => p.idProcedure);
+    if (new Set(ids).size !== ids.length) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["procedures"],
+        message: "No se puede repetir el mismo procedimiento.",
+      });
+    }
+  });
 
 export type TClinicalRecordForm = z.input<typeof ClinicalRecordFormSchema>;
 export type TClinicalRecordFormValues = z.output<typeof ClinicalRecordFormSchema>;
+
+export const emptyClinicalRecordProcedure = () => ({
+  idProcedure: 0,
+});
 
 export const CLINICAL_RECORD_FORM_DEFAULT_VALUES: TClinicalRecordForm = {
   idPatient: 0,
   idAppointment: null,
   idPatientTreatment: null,
-  idProcedure: null,
+  procedures: [],
   recordedAt: "",
   reason: "",
   diagnosis: null,

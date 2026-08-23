@@ -4,12 +4,22 @@ import { useMemo } from "react";
 import { usePaginatedSelect } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice";
-import { getAppointmentsList, selectGetAppointmentsList } from "@/store/appointments/appointments-slice";
-import { getPatientTreatments, selectGetPatientTreatments } from "@/store/patient-treatments/patient-treatments-slice";
-import { getProcedures, selectGetProcedures } from "@/store/procedures/procedures-slice";
+import {
+  getAppointmentsList,
+  selectGetAppointmentsList,
+} from "@/store/appointments/appointments-slice";
+import {
+  getPatientTreatments,
+  selectGetPatientTreatments,
+} from "@/store/patient-treatments/patient-treatments-slice";
+import {
+  getProcedures,
+  selectGetProcedures,
+} from "@/store/procedures/procedures-slice";
 import { formatDate } from "@/utils";
 import { APPOINTMENT_STATUS } from "@/features/dashboard/modules/appointments/consts";
 import { formatProcedureNames } from "@/features/dashboard/modules/appointments/utils/format-procedure-names";
+import type { IAppointmentListItems } from "@/features/dashboard/modules/appointments/interfaces";
 import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
 import { patientFullName } from "@/features/dashboard/modules/patients/utils";
 
@@ -17,12 +27,16 @@ type Params = {
   open: boolean;
   needsPatientSelect: boolean;
   patientKey?: number;
+  watchedIdAppointment?: number | null;
+  watchedIdPatientTreatment?: number | null;
 };
 
 export const useClinicalRecordFormOptions = ({
   open,
   needsPatientSelect,
   patientKey,
+  watchedIdAppointment,
+  watchedIdPatientTreatment,
 }: Params) => {
   const dispatch = useAppDispatch();
   const { data: patientsData, status: patientsStatus } =
@@ -96,6 +110,19 @@ export const useClinicalRecordFormOptions = ({
     },
   });
 
+  const appointmentsById = useMemo(() => {
+    const map = new Map<number, IAppointmentListItems>();
+    for (const item of appointments.items) {
+      map.set(item.idAppointment, item);
+    }
+    return map;
+  }, [appointments.items]);
+
+  const selectedAppointment = useMemo(() => {
+    if (!watchedIdAppointment) return null;
+    return appointmentsById.get(watchedIdAppointment) ?? null;
+  }, [appointmentsById, watchedIdAppointment]);
+
   const patientItems = useMemo(
     () =>
       patients.items.map((item) => ({
@@ -125,35 +152,66 @@ export const useClinicalRecordFormOptions = ({
     [appointments.items],
   );
 
-  const treatmentItems = useMemo(
-    () =>
-      treatments.items
-        .filter(
-          (item) =>
-            item.idPatientTreatmentStatus !==
-            PATIENT_TREATMENT_STATUS.CANCELLED,
-        )
-        .map((item) => ({
-          value: item.idPatientTreatment,
-          name: item.treatmentName,
-        })),
-    [treatments.items],
-  );
+  const treatmentItems = useMemo(() => {
+    const items = treatments.items
+      .filter(
+        (item) =>
+          item.idPatientTreatmentStatus !==
+          PATIENT_TREATMENT_STATUS.CANCELLED,
+      )
+      .map((item) => ({
+        value: item.idPatientTreatment,
+        name: item.treatmentName,
+      }));
 
-  const procedureItems = useMemo(
-    () =>
-      procedures.items.map((item) => ({
-        value: item.idProcedure,
-        name: item.name,
-      })),
-    [procedures.items],
-  );
+    if (
+      selectedAppointment?.idPatientTreatment &&
+      !items.some(
+        (item) => item.value === selectedAppointment.idPatientTreatment,
+      )
+    ) {
+      items.unshift({
+        value: selectedAppointment.idPatientTreatment,
+        name:
+          selectedAppointment.patientTreatmentName?.trim() || "Plan asignado",
+      });
+    } else if (
+      watchedIdPatientTreatment &&
+      !items.some((item) => item.value === watchedIdPatientTreatment)
+    ) {
+      items.unshift({
+        value: watchedIdPatientTreatment,
+        name: "Plan asignado",
+      });
+    }
+
+    return items;
+  }, [treatments.items, selectedAppointment, watchedIdPatientTreatment]);
+
+  const procedureItems = useMemo(() => {
+    const items = procedures.items.map((item) => ({
+      value: item.idProcedure,
+      name: item.name,
+    }));
+
+    for (const procedure of selectedAppointment?.procedures ?? []) {
+      if (!items.some((item) => item.value === procedure.idProcedure)) {
+        items.unshift({
+          value: procedure.idProcedure,
+          name: procedure.name,
+        });
+      }
+    }
+
+    return items;
+  }, [procedures.items, selectedAppointment]);
 
   return {
     patientItems,
     patientsStatus,
     appointmentItems,
     appointmentsStatus,
+    appointmentsById,
     treatmentItems,
     treatmentsStatus,
     procedureItems,

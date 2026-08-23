@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { colombiaToUtcIso, formatDate } from "@/utils";
@@ -53,15 +53,22 @@ export const useClinicalRecordForm = ({
     },
   );
 
-  const { reset, handleSubmit, watch, setValue } = methods;
-  const formIdPatient = watch("idPatient");
-  const patientKey = idPatient ?? (formIdPatient > 0 ? formIdPatient : undefined);
+  const { reset, handleSubmit, setValue, control } = methods;
+  const formIdPatient = useWatch({ control, name: "idPatient" });
+  const watchedIdAppointment = useWatch({ control, name: "idAppointment" });
+  const watchedIdPatientTreatment = useWatch({
+    control,
+    name: "idPatientTreatment",
+  });
+  const patientKey =
+    idPatient ?? (formIdPatient > 0 ? formIdPatient : undefined);
 
   const {
     patientItems,
     patientsStatus,
     appointmentItems,
     appointmentsStatus,
+    appointmentsById,
     treatmentItems,
     treatmentsStatus,
     procedureItems,
@@ -80,6 +87,8 @@ export const useClinicalRecordForm = ({
     open,
     needsPatientSelect,
     patientKey,
+    watchedIdAppointment,
+    watchedIdPatientTreatment,
   });
 
   useEffect(() => {
@@ -90,7 +99,9 @@ export const useClinicalRecordForm = ({
       idPatient: idPatient ?? 0,
       idAppointment: idAppointment ?? null,
       idPatientTreatment: idPatientTreatment ?? null,
-      idProcedure: idProcedure ?? null,
+      procedures: idProcedure
+        ? [{ idProcedure }]
+        : CLINICAL_RECORD_FORM_DEFAULT_VALUES.procedures,
       recordedAt: formatDate(new Date(), "yyyy-MM-dd'T'HH:mm"),
     });
   }, [
@@ -101,6 +112,55 @@ export const useClinicalRecordForm = ({
     idPatientTreatment,
     idProcedure,
   ]);
+
+  useEffect(() => {
+    if (!open || !idAppointment) return;
+    const appointment = appointmentsById.get(idAppointment);
+    if (!appointment) return;
+
+    setValue(
+      "idPatientTreatment",
+      appointment.idPatientTreatment ?? null,
+      { shouldDirty: false, shouldValidate: true },
+    );
+    setValue(
+      "procedures",
+      appointment.procedures.map((procedure) => ({
+        idProcedure: procedure.idProcedure,
+      })),
+      { shouldDirty: false, shouldValidate: true },
+    );
+  }, [open, idAppointment, appointmentsById, setValue]);
+
+  const applyAppointmentAssociations = (appointmentId: number | null) => {
+    if (!appointmentId) {
+      setValue("idPatientTreatment", null, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      setValue("procedures", [], {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      return;
+    }
+
+    const appointment = appointmentsById.get(appointmentId);
+    if (!appointment) return;
+
+    setValue(
+      "idPatientTreatment",
+      appointment.idPatientTreatment ?? null,
+      { shouldDirty: true, shouldValidate: true },
+    );
+    setValue(
+      "procedures",
+      appointment.procedures.map((procedure) => ({
+        idProcedure: procedure.idProcedure,
+      })),
+      { shouldDirty: true, shouldValidate: true },
+    );
+  };
 
   const handleDialogOpenChange = (next: boolean) => {
     if (!next) {
@@ -116,7 +176,11 @@ export const useClinicalRecordForm = ({
         idPatient: data.idPatient,
         idAppointment: data.idAppointment,
         idPatientTreatment: data.idPatientTreatment,
-        idProcedure: data.idProcedure,
+        // Con cita, los procedimientos viven en la cita. Sin cita, la API
+        // aún acepta un solo IdProcedure (se envía el primero).
+        idProcedure: data.idAppointment
+          ? null
+          : (data.procedures[0]?.idProcedure ?? null),
         recordedAt: colombiaToUtcIso(data.recordedAt),
         reason: data.reason,
         diagnosis: data.diagnosis,
@@ -142,15 +206,19 @@ export const useClinicalRecordForm = ({
   const clearPatientDependentFields = () => {
     setValue("idAppointment", null);
     setValue("idPatientTreatment", null);
+    setValue("procedures", []);
   };
 
   const showPatientAssociations = Boolean(patientKey);
+  const hasLinkedAppointment =
+    typeof watchedIdAppointment === "number" && watchedIdAppointment > 0;
 
   return {
     methods,
     isSubmitting,
     needsPatientSelect,
     showPatientAssociations,
+    hasLinkedAppointment,
     patientItems,
     patientsStatus,
     appointmentItems,
@@ -173,5 +241,6 @@ export const useClinicalRecordForm = ({
     handleDialogOpenChange,
     onSubmit: handleSubmit(onSubmit),
     clearPatientDependentFields,
+    applyAppointmentAssociations,
   };
 };
