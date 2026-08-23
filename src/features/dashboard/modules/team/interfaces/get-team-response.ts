@@ -12,10 +12,11 @@ export interface IGetTeamResponseData {
   statusName: string;
   username: string;
   firstName: string;
-  secondName: string;
+  secondName: string | null;
   firstSurname: string;
-  secondSurname: string;
+  secondSurname: string | null;
   identificationType: string;
+  idIdentificationType: number;
   identificationNumber: string;
   birthDate: string;
   phoneNumber: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { UserPlus } from "lucide-react";
+import { SquarePen, UserPlus } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -19,10 +19,14 @@ import {
 } from "@/store/masters/masters-slice";
 import {
   postCreateMember,
+  putUpdateMember,
   resetPostCreateMember,
+  resetPutUpdateMember,
   selectPostCreateMember,
+  selectPutUpdateMember,
 } from "@/store/team/team-slice";
 import { TEAM_ROLE_FILTER_OPTIONS } from "../consts";
+import { IGetTeamResponseData } from "../interfaces";
 import {
   MEMBER_FORM_DEFAULT_VALUES,
   MemberFormSchema,
@@ -32,21 +36,58 @@ import {
 type Props = {
   open: boolean;
   onOpenChange: (next: boolean) => void;
+  member?: IGetTeamResponseData | null;
   onSuccess?: () => void;
 };
 
-export const MemberFormModal = ({ open, onOpenChange, onSuccess }: Props) => {
+const toOptionalName = (value?: string | null) => {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : null;
+};
+
+const toFormValues = (member?: IGetTeamResponseData | null): TMemberForm => {
+  if (!member) return MEMBER_FORM_DEFAULT_VALUES;
+
+  return {
+    idUserRole: member.idUserRole,
+    username: member.username,
+    idIdentificationType: member.idIdentificationType,
+    identificationNumber: member.identificationNumber,
+    firstName: member.firstName,
+    secondName: toOptionalName(member.secondName),
+    firstSurname: member.firstSurname,
+    secondSurname: toOptionalName(member.secondSurname),
+    birthDate: member.birthDate.slice(0, 10),
+    phoneNumber: member.phoneNumber,
+    email: member.email,
+  };
+};
+
+export const MemberFormModal = ({
+  open,
+  onOpenChange,
+  member = null,
+  onSuccess,
+}: Props) => {
   const dispatch = useAppDispatch();
+  const isEdit = Boolean(member);
   const { data, status } = useAppSelector(selectGetIdentificationTypes);
   const {
     status: postCreateMemberStatus,
     message: postCreateMemberMessage,
     error: postCreateMemberError,
   } = useAppSelector(selectPostCreateMember);
+  const {
+    status: putUpdateMemberStatus,
+    message: putUpdateMemberMessage,
+    error: putUpdateMemberError,
+  } = useAppSelector(selectPutUpdateMember);
   const isLoadingTypes = status === "loading" || status === "idle";
-  const isSubmitting = postCreateMemberStatus === "loading";
+  const isSubmitting = isEdit
+    ? putUpdateMemberStatus === "loading"
+    : postCreateMemberStatus === "loading";
   const identificationTypes = (data && status === "success" ? data : []).filter(
-    (item) => ![3,4].includes(item.idIdentificationType),
+    (item) => ![3, 4].includes(item.idIdentificationType),
   );
 
   const methods = useForm<TMemberForm>({
@@ -65,14 +106,18 @@ export const MemberFormModal = ({ open, onOpenChange, onSuccess }: Props) => {
 
   useEffect(() => {
     if (open) {
-      reset(MEMBER_FORM_DEFAULT_VALUES);
+      reset(toFormValues(member));
     }
-  }, [open, reset]);
+  }, [open, member, reset]);
 
   const handleDialogOpenChange = (next: boolean) => {
     if (!next) {
       reset(MEMBER_FORM_DEFAULT_VALUES);
-      if (postCreateMemberStatus !== "idle") {
+      if (isEdit) {
+        if (putUpdateMemberStatus !== "idle") {
+          dispatch(resetPutUpdateMember());
+        }
+      } else if (postCreateMemberStatus !== "idle") {
         dispatch(resetPostCreateMember());
       }
     }
@@ -80,18 +125,31 @@ export const MemberFormModal = ({ open, onOpenChange, onSuccess }: Props) => {
   };
 
   const onSubmit = (data: TMemberForm) => {
-    dispatch(
-      postCreateMember({
-        ...data,
-        secondName: data.secondName?.trim() ? data.secondName.trim() : null,
-        secondSurname: data.secondSurname?.trim()
-          ? data.secondSurname.trim()
-          : null,
-      }),
-    );
+    const payload = {
+      ...data,
+      secondName: data.secondName?.trim() ? data.secondName.trim() : null,
+      secondSurname: data.secondSurname?.trim()
+        ? data.secondSurname.trim()
+        : null,
+    };
+
+    if (isEdit && member) {
+      const { idUserRole: _idUserRole, ...updateData } = payload;
+      dispatch(
+        putUpdateMember({
+          ...updateData,
+          idUser: member.idUser,
+        }),
+      );
+      return;
+    }
+
+    dispatch(postCreateMember(payload));
   };
 
   useEffect(() => {
+    if (isEdit) return;
+
     if (postCreateMemberStatus === "error") {
       toast.error(postCreateMemberMessage, {
         description: postCreateMemberError,
@@ -104,15 +162,42 @@ export const MemberFormModal = ({ open, onOpenChange, onSuccess }: Props) => {
       dispatch(resetPostCreateMember());
       onSuccess?.();
     }
-  }, [postCreateMemberStatus, dispatch]);
+  }, [postCreateMemberStatus, isEdit, dispatch]);
+
+  useEffect(() => {
+    if (!isEdit) return;
+
+    if (putUpdateMemberStatus === "error") {
+      toast.error(putUpdateMemberMessage, {
+        description: putUpdateMemberError,
+      });
+      dispatch(resetPutUpdateMember());
+    }
+    if (putUpdateMemberStatus === "success") {
+      toast.success(putUpdateMemberMessage);
+      handleDialogOpenChange(false);
+      dispatch(resetPutUpdateMember());
+      onSuccess?.();
+    }
+  }, [putUpdateMemberStatus, isEdit, dispatch]);
 
   return (
     <BaseModal
       open={open}
       onOpenChange={handleDialogOpenChange}
-      icon={<UserPlus className="size-3.5" strokeWidth={2} />}
-      title="Nuevo miembro"
-      description="Datos de cuenta, identificación y contacto."
+      icon={
+        isEdit ? (
+          <SquarePen className="size-3.5" strokeWidth={2} />
+        ) : (
+          <UserPlus className="size-3.5" strokeWidth={2} />
+        )
+      }
+      title={isEdit ? "Editar miembro" : "Nuevo miembro"}
+      description={
+        isEdit
+          ? "Actualiza los datos del miembro. El rol no se puede cambiar."
+          : "Datos de cuenta, identificación y contacto."
+      }
     >
       <FormProvider {...methods}>
         <form
@@ -126,6 +211,7 @@ export const MemberFormModal = ({ open, onOpenChange, onSuccess }: Props) => {
                   name="idUserRole"
                   label="Rol"
                   placeholder="Selecciona un rol"
+                  disabled={isEdit}
                   items={TEAM_ROLE_FILTER_OPTIONS.map((role) => ({
                     name: role.label,
                     value: role.value,
@@ -169,7 +255,9 @@ export const MemberFormModal = ({ open, onOpenChange, onSuccess }: Props) => {
                   }))}
                   name="idIdentificationType"
                   label="Tipo de identificación"
-                  placeholder={isLoadingTypes ? "Cargando..." : "Selecciona un tipo"}
+                  placeholder={
+                    isLoadingTypes ? "Cargando..." : "Selecciona un tipo"
+                  }
                   disabled={isLoadingTypes}
                 />
                 <CustomFormField
@@ -217,8 +305,10 @@ export const MemberFormModal = ({ open, onOpenChange, onSuccess }: Props) => {
               {isSubmitting ? (
                 <>
                   <Spinner className="size-4" />
-                  Guardando miembro...
+                  {isEdit ? "Guardando cambios..." : "Guardando miembro..."}
                 </>
+              ) : isEdit ? (
+                "Guardar cambios"
               ) : (
                 "Guardar miembro"
               )}

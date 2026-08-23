@@ -5,7 +5,9 @@ import {
   TGetTeamParams,
   apiGetTeamAction,
   IPostCreateMemberFormRequest,
-  apiPostCreateMemberAction
+  apiPostCreateMemberAction,
+  IPutUpdateMemberFormRequest,
+  apiPutUpdateMemberAction,
 } from "@/features/dashboard/modules/team";
 
 type TTeamState = {
@@ -21,6 +23,12 @@ type TTeamState = {
     message?: string;
     error?: string;
   };
+  putUpdateMember: {
+    status: TStatus;
+    data?: boolean;
+    message?: string;
+    error?: string;
+  };
 };
 
 const initialState: TTeamState = {
@@ -31,6 +39,12 @@ const initialState: TTeamState = {
     error: undefined,
   },
   postCreateMember: {
+    status: "idle",
+    data: undefined,
+    message: undefined,
+    error: undefined,
+  },
+  putUpdateMember: {
     status: "idle",
     data: undefined,
     message: undefined,
@@ -70,7 +84,8 @@ const teamSlice = createAppSlice({
       },
     ),
     postCreateMember: create.asyncThunk(
-      async (data: IPostCreateMemberFormRequest) => await apiPostCreateMemberAction(data),
+      async (data: IPostCreateMemberFormRequest) =>
+        await apiPostCreateMemberAction(data),
       {
         pending: (state) => {
           state.postCreateMember.status = "loading";
@@ -96,16 +111,58 @@ const teamSlice = createAppSlice({
         },
       },
     ),
+    putUpdateMember: create.asyncThunk(
+      async (data: IPutUpdateMemberFormRequest) =>
+        await apiPutUpdateMemberAction(data),
+      {
+        pending: (state) => {
+          state.putUpdateMember.status = "loading";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.putUpdateMember.status = "error";
+            state.putUpdateMember.message = action.payload.message;
+            state.putUpdateMember.error = action.payload.error ?? undefined;
+            state.putUpdateMember.data = undefined;
+            return;
+          }
+          state.putUpdateMember.status = "success";
+          state.putUpdateMember.message = action.payload.message;
+          state.putUpdateMember.error = undefined;
+          state.putUpdateMember.data = action.payload.data;
+        },
+        rejected: (state, action) => {
+          state.putUpdateMember.status = "error";
+          state.putUpdateMember.message = action.error.message;
+          state.putUpdateMember.error = undefined;
+          state.putUpdateMember.data = undefined;
+        },
+      },
+    ),
     resetPostCreateMember: create.reducer((state) => {
       state.postCreateMember = initialState.postCreateMember;
+    }),
+    resetPutUpdateMember: create.reducer((state) => {
+      state.putUpdateMember = initialState.putUpdateMember;
     }),
   }),
   selectors: {
     selectGetTeam: (state) => state.getTeam,
     selectPostCreateMember: (state) => state.postCreateMember,
+    selectPutUpdateMember: (state) => state.putUpdateMember,
   },
 });
 
-export const { getTeam, postCreateMember, resetPostCreateMember } = teamSlice.actions;
-export const { selectGetTeam, selectPostCreateMember } = teamSlice.selectors;
+export const {
+  getTeam,
+  postCreateMember,
+  putUpdateMember,
+  resetPostCreateMember,
+  resetPutUpdateMember,
+} = teamSlice.actions;
+export const {
+  selectGetTeam,
+  selectPostCreateMember,
+  selectPutUpdateMember,
+} = teamSlice.selectors;
 export default teamSlice.reducer;

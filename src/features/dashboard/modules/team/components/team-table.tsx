@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PlusIcon, Users } from "lucide-react";
+import { Logs, PlusIcon, SquarePen, Users } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getTeam, selectGetTeam } from "@/store/team/team-slice";
 import {
   Badge,
   BaseTable,
   Button,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Table,
   TableBody,
   TableCell,
@@ -17,6 +20,7 @@ import {
   TableSkeleton,
 } from "@/components";
 import { TGetTeamParams } from "../actions";
+import { IGetTeamResponseData } from "../interfaces";
 import {
   getTeamRoleName,
   getTeamStatusBadgeVariant,
@@ -32,11 +36,19 @@ import { TeamTableFilter } from "./team-table-filter";
 
 type Props = {
   onCreate: () => void;
+  onEdit: (member: IGetTeamResponseData) => void;
   canCreate?: boolean;
+  canUpdate?: boolean;
   refreshKey?: number;
 };
 
-export const TeamTable = ({ onCreate, canCreate = false, refreshKey = 0 }: Props) => {
+export const TeamTable = ({
+  onCreate,
+  onEdit,
+  canCreate = false,
+  canUpdate = false,
+  refreshKey = 0,
+}: Props) => {
   const dispatch = useAppDispatch();
   const { data, status, message, error } = useAppSelector(selectGetTeam);
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,7 +56,10 @@ export const TeamTable = ({ onCreate, canCreate = false, refreshKey = 0 }: Props
   const [statusFilter, setStatusFilter] = useState<TTeamStatusFilter>("all");
   const [roleFilter, setRoleFilter] = useState<TTeamRoleFilter>("all");
 
-  const listFilters: Pick<TGetTeamParams, "Search" | "IdUserStatus" | "IdUserRoles"> = {
+  const listFilters: Pick<
+    TGetTeamParams,
+    "Search" | "IdUserStatus" | "IdUserRoles"
+  > = {
     ...(search.trim() ? { Search: search.trim() } : {}),
     ...(statusFilter !== "all" ? { IdUserStatus: statusFilter } : {}),
     IdUserRoles: resolveTeamRoleFilterIds(roleFilter),
@@ -72,7 +87,8 @@ export const TeamTable = ({ onCreate, canCreate = false, refreshKey = 0 }: Props
 
   const items = data?.items ?? [];
   const totalPages = data?.totalPages ?? 0;
-  const colSpan = 5;
+  const showActions = canUpdate;
+  const colSpan = showActions ? 6 : 5;
   const hasActiveFilters = Boolean(
     search.trim() || statusFilter !== "all" || roleFilter !== "all",
   );
@@ -146,6 +162,9 @@ export const TeamTable = ({ onCreate, canCreate = false, refreshKey = 0 }: Props
                   <TableHead>Identificación</TableHead>
                   <TableHead>Contacto</TableHead>
                   <TableHead>Estado</TableHead>
+                  {showActions && (
+                    <TableHead className="text-right">Acciones</TableHead>
+                  )}
                 </TableRow>
               </TableHeader>
               {(status === "loading" || status === "idle") && (
@@ -172,7 +191,10 @@ export const TeamTable = ({ onCreate, canCreate = false, refreshKey = 0 }: Props
                         <div className="relative mb-6">
                           <div className="absolute inset-0 scale-150 rounded-full bg-linear-to-br from-accent-500/5 via-transparent to-accent-500/5 blur-3xl" />
                           <div className="relative rounded-3xl border border-ink-800 bg-linear-to-br from-ink-900/60 to-ink-900/20 p-5">
-                            <Users className="size-12 text-ink-500/40" strokeWidth={1.5} />
+                            <Users
+                              className="size-12 text-ink-500/40"
+                              strokeWidth={1.5}
+                            />
                           </div>
                         </div>
                         <p className="text-base font-medium text-ink-50">
@@ -215,11 +237,17 @@ export const TeamTable = ({ onCreate, canCreate = false, refreshKey = 0 }: Props
                           <div
                             className="relative flex min-w-48 flex-col gap-0.5 border-l-2 pl-3"
                             style={{
-                              borderLeftColor: getTeamStatusColor(item.idUserStatus as TTeamStatusFilter),
+                              borderLeftColor: getTeamStatusColor(
+                                item.idUserStatus as TTeamStatusFilter,
+                              ),
                             }}
                           >
-                            <span className="font-medium text-ink-50">{fullName}</span>
-                            <span className="text-xs text-ink-400">@{item.username}</span>
+                            <span className="font-medium text-ink-50">
+                              {fullName}
+                            </span>
+                            <span className="text-xs text-ink-400">
+                              @{item.username}
+                            </span>
                           </div>
                         </TableCell>
                         <TableCell className="text-ink-200">
@@ -227,7 +255,9 @@ export const TeamTable = ({ onCreate, canCreate = false, refreshKey = 0 }: Props
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col gap-0.5">
-                            <span className="text-ink-100">{item.identificationType}</span>
+                            <span className="text-ink-100">
+                              {item.identificationType}
+                            </span>
                             <span className="font-mono text-xs tabular-nums text-ink-400">
                               {item.identificationNumber}
                             </span>
@@ -242,10 +272,48 @@ export const TeamTable = ({ onCreate, canCreate = false, refreshKey = 0 }: Props
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={getTeamStatusBadgeVariant(item.idUserStatus)}>
+                          <Badge
+                            variant={getTeamStatusBadgeVariant(
+                              item.idUserStatus,
+                            )}
+                          >
                             {item.statusName}
                           </Badge>
                         </TableCell>
+                        {showActions && (
+                          <TableCell className="text-right">
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon-sm"
+                                  aria-label={`Ver ${fullName}`}
+                                >
+                                  <Logs className="size-4" strokeWidth={1.75} />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-72 p-2" align="end">
+                                <div className="flex flex-col gap-2">
+                                  {canUpdate && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="justify-start text-xs font-normal text-ink-200"
+                                      aria-label={`Editar miembro ${fullName}`}
+                                      onClick={() => onEdit(item)}
+                                    >
+                                      <SquarePen
+                                        className="size-4"
+                                        strokeWidth={1.75}
+                                      />
+                                      Editar
+                                    </Button>
+                                  )}
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                          </TableCell>
+                        )}
                       </TableRow>
                     );
                   })}
