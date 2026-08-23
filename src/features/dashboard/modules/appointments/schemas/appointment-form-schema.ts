@@ -4,39 +4,79 @@ import { APPOINTMENT_STATUS } from "../consts/appointment-status";
 
 const requiredId = (message: string) => z.number().min(1, message);
 
-const optionalPrice = z
+const procedurePrice = z
   .union([z.number(), z.string(), z.null()])
   .transform((value) => {
-    if (value === "" || value == null) return null;
+    if (value === "" || value == null) return 0;
     const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : null;
+    return Number.isFinite(parsed) ? parsed : 0;
   })
-  .refine((value) => value == null || value > 0, {
-    message: "El precio debe ser mayor a 0.",
+  .refine((value) => value >= 0, {
+    message: "El precio no puede ser negativo.",
   })
-  .refine((value) => value == null || value === Number(value.toFixed(2)), {
+  .refine((value) => value === Number(value.toFixed(2)), {
     message: "El precio solo admite hasta 2 decimales.",
   });
+
+const appointmentProcedureSchema = z.object({
+  idProcedure: requiredId("Selecciona un procedimiento"),
+  price: procedurePrice,
+  notes: z
+    .string()
+    .optional()
+    .transform((value) => {
+      const trimmed = value?.trim() ?? "";
+      return trimmed === "" ? undefined : trimmed;
+    })
+    .refine((value) => value == null || value.length <= 500, {
+      message: "Las notas del procedimiento son demasiado largas.",
+    }),
+});
 
 export const AppointmentFormSchema = z
   .object({
     idPatient: requiredId("Selecciona un paciente"),
     idUser: requiredId("Selecciona un profesional"),
-    idService: requiredId("Selecciona un servicio"),
+    procedures: z
+      .array(appointmentProcedureSchema)
+      .min(1, "Debe incluir al menos un procedimiento."),
     idPatientTreatment: z.number().nullable(),
-    price: optionalPrice,
     idAppointmentStatus: requiredId("Selecciona un estado"),
     startAt: z.string().min(1, "La fecha de inicio es obligatoria"),
     endAt: z.string().min(1, "La fecha de fin es obligatoria"),
     notes: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if ((data.idPatientTreatment ?? 0) > 0 && data.price != null) {
+    const ids = data.procedures.map((p) => p.idProcedure);
+    if (new Set(ids).size !== ids.length) {
       ctx.addIssue({
         code: "custom",
-        path: ["price"],
-        message: "La cita no puede tener plan de tratamiento y precio a la vez.",
+        path: ["procedures"],
+        message: "No se puede repetir el mismo procedimiento en la cita.",
       });
+    }
+
+    const hasTreatment = (data.idPatientTreatment ?? 0) > 0;
+
+    if (hasTreatment && data.procedures.some((p) => p.price !== 0)) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["procedures"],
+        message:
+          "Los procedimientos de una cita con plan de tratamiento deben tener precio 0.",
+      });
+    }
+
+    if (!hasTreatment) {
+      const total = data.procedures.reduce((sum, p) => sum + p.price, 0);
+      if (total <= 0) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["procedures"],
+          message:
+            "La cita debe tener al menos un procedimiento con precio mayor a 0.",
+        });
+      }
     }
 
     const start = new Date(data.startAt);
@@ -70,6 +110,13 @@ export const AppointmentFormSchema = z
   });
 
 export type TAppointmentForm = z.input<typeof AppointmentFormSchema>;
+export type TAppointmentFormValues = z.output<typeof AppointmentFormSchema>;
+
+export const emptyAppointmentProcedure = () => ({
+  idProcedure: 0,
+  price: 0 as number | string | null,
+  notes: "",
+});
 
 export const buildAppointmentFormDefaults = (
   initialDate?: Date,
@@ -81,9 +128,8 @@ export const buildAppointmentFormDefaults = (
   return {
     idPatient: 0,
     idUser: 0,
-    idService: 0,
+    procedures: [emptyAppointmentProcedure()],
     idPatientTreatment: null,
-    price: null,
     idAppointmentStatus: APPOINTMENT_STATUS.PENDING,
     startAt: format(start, "yyyy-MM-dd'T'HH:mm"),
     endAt: format(end, "yyyy-MM-dd'T'HH:mm"),

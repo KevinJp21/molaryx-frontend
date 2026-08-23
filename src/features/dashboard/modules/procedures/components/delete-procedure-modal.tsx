@@ -5,48 +5,48 @@ import { Trash } from 'lucide-react';
 import { BaseModal, Button, Spinner } from '@/components';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
-    deleteService,
-    resetDeleteService,
-    selectDeleteService,
-} from '@/store/services/services-slice';
+    deleteProcedure,
+    resetDeleteProcedure,
+    selectDeleteProcedure,
+} from '@/store/procedures/procedures-slice';
 import { toast } from 'sonner';
-import { IServicesItems } from '../interfaces';
+import { IProceduresItems } from '../interfaces';
 
 type Props = {
     open: boolean;
     onOpenChange: (next: boolean) => void;
-    service: IServicesItems | null;
+    procedure: IProceduresItems | null;
     onSuccess?: () => void;
 };
 
-export const DeleteServiceModal = ({ open, onOpenChange, service, onSuccess }: Props) => {
+export const DeleteProcedureModal = ({ open, onOpenChange, procedure, onSuccess }: Props) => {
     const dispatch = useAppDispatch();
-    const { status, message } = useAppSelector(selectDeleteService);
+    const { status, message } = useAppSelector(selectDeleteProcedure);
     const isSubmitting = status === 'loading';
 
     const handleDialogOpenChange = (next: boolean) => {
         if (!next) {
             if (status !== 'idle') {
-                dispatch(resetDeleteService());
+                dispatch(resetDeleteProcedure());
             }
         }
         onOpenChange(next);
     };
 
     const onDelete = () => {
-        if (!service) return;
-        dispatch(deleteService(service.idService));
+        if (!procedure) return;
+        dispatch(deleteProcedure(procedure.idProcedure));
     };
 
     useEffect(() => {
         if (status === 'error') {
             toast.error(message);
-            dispatch(resetDeleteService());
+            dispatch(resetDeleteProcedure());
         }
         if (status === 'success') {
             toast.success(message);
             handleDialogOpenChange(false);
-            dispatch(resetDeleteService());
+            dispatch(resetDeleteProcedure());
             onSuccess?.();
         }
     }, [status, dispatch]);
@@ -58,22 +58,22 @@ export const DeleteServiceModal = ({ open, onOpenChange, service, onSuccess }: P
             className="max-w-md"
             icon={<Trash className="size-3.5" strokeWidth={2} />}
             iconClassName="bg-coral-500/10 text-coral-600 ring-coral-500/20"
-            title="Eliminar servicio"
+            title="Eliminar procedimiento"
             description="Esta acción no se puede deshacer."
         >
             <div className="px-5 py-4">
-                {service && (
+                {procedure && (
                     <div className="rounded-xl border border-ink-800 bg-ink-900/60 px-4 py-3">
                         <p className="text-sm font-medium tracking-tight text-ink-50">
-                            {service.name}
+                            {procedure.name}
                         </p>
                         <p className="mt-1 font-mono text-xs tabular-nums text-ink-400">
-                            {service.description ?? "Sin descripción"}
+                            {procedure.description ?? "Sin descripción"}
                         </p>
                     </div>
                 )}
                 <p className="mt-3 text-sm leading-relaxed text-ink-300">
-                    Se quitará del directorio de servicios de forma permanente y no podrá recuperarse.
+                    Se quitará del directorio de procedimientos de forma permanente y no podrá recuperarse.
                 </p>
             </div>
 
@@ -94,7 +94,7 @@ export const DeleteServiceModal = ({ open, onOpenChange, service, onSuccess }: P
                     size="sm"
                     className='flex-1 font-medium'
                     onClick={onDelete}
-                    disabled={isSubmitting || !service}
+                    disabled={isSubmitting || !procedure}
                 >
                     {isSubmitting ? (
                         <>

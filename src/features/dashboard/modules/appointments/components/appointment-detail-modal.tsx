@@ -91,7 +91,10 @@ export const AppointmentDetailModal = ({
       open={open}
       onOpenChange={onOpenChange}
       icon={<CalendarDays className="size-3.5" strokeWidth={2} />}
-      title={appointment.serviceName}
+      title={
+        appointment.procedures?.map((p) => p.name).filter(Boolean).join(", ") ||
+        "Cita"
+      }
       description="Detalle de la cita"
       className="max-w-4xl"
     >
@@ -100,13 +103,22 @@ export const AppointmentDetailModal = ({
           <div className="grid grid-cols-1 gap-4 rounded-lg border border-ink-800 bg-ink-900/30 p-4 md:grid-cols-2">
             <Field label="Paciente" value={patientName} />
             <Field label="Profesional" value={professionalName} />
-            <Field label="Servicio" value={appointment.serviceName} />
+            <Field
+              label="Procedimientos"
+              value={
+                appointment.procedures?.map((p) => p.name).filter(Boolean).join(", ") ||
+                "Sin procedimientos"
+              }
+            />
             <Field
               label="Plan de tratamiento"
               value={appointment.patientTreatmentName || "Sin plan"}
             />
-            {appointment.price != null && (
-              <Field label="Precio" value={currencyFormat(appointment.price)} />
+            {appointment.totalPrice > 0 && (
+              <Field
+                label="Precio total"
+                value={currencyFormat(appointment.totalPrice)}
+              />
             )}
             <div className="flex flex-col gap-1">
               <span className="text-xs text-ink-400">Estado</span>
@@ -169,7 +181,7 @@ export const AppointmentDetailModal = ({
         onOpenChange={setPaymentModalOpen}
         idPatient={appointment.idPatient}
         idAppointment={appointment.idAppointment}
-        contextLabel={`Pago de la cita de ${appointment.serviceName}`}
+        contextLabel={`Pago de la cita de ${appointment.procedures?.map((p) => p.name).filter(Boolean).join(", ") || "cita"}`}
         onSuccess={() => setPaymentsRefreshKey((key) => key + 1)}
       />
     </BaseModal>

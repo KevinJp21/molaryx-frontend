@@ -3,17 +3,17 @@
 import { serverApi } from "@/lib/api/server";
 import { handleApiError } from "@/lib/api/error-handler";
 import { TBaseResponse } from "@/types";
-import { IPutUpdateServiceFormRequest } from "../interfaces";
+import { IPostCreateProcedureFormRequest } from "../interfaces";
 
-export const apiPutUpdateServiceAction = async (
-  data: IPutUpdateServiceFormRequest,
+export const apiPostCreateProcedureAction = async (
+  data: IPostCreateProcedureFormRequest,
 ): Promise<TBaseResponse<boolean>> => {
-  const SERVICE = process.env.SERVICE;
-  const PUT_UPDATE_SERVICE = process.env.PUT_UPDATE_SERVICE;
+  const PROCEDURE = process.env.PROCEDURE;
+  const POST_CREATE_PROCEDURE = process.env.POST_CREATE_PROCEDURE;
 
   try {
-    const response = await serverApi.put<TBaseResponse<boolean>>(
-      `${SERVICE}${PUT_UPDATE_SERVICE}`,
+    const response = await serverApi.post<TBaseResponse<boolean>>(
+      `${PROCEDURE}${POST_CREATE_PROCEDURE}`,
       data,
     );
 

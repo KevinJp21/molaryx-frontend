@@ -25,7 +25,7 @@ type Params = {
   idPatient?: number;
   idAppointment?: number;
   idPatientTreatment?: number;
-  idService?: number;
+  idProcedure?: number;
   onSuccess?: () => void;
 };
 
@@ -35,7 +35,7 @@ export const useClinicalRecordForm = ({
   idPatient,
   idAppointment,
   idPatientTreatment,
-  idService,
+  idProcedure,
   onSuccess,
 }: Params) => {
   const dispatch = useAppDispatch();
@@ -64,18 +64,18 @@ export const useClinicalRecordForm = ({
     appointmentsStatus,
     treatmentItems,
     treatmentsStatus,
-    serviceItems,
-    servicesStatus,
+    procedureItems,
+    proceduresStatus,
     searchPatients,
-    searchServices,
+    searchProcedures,
     patientsPagination,
     patientsSearching,
     appointmentsPagination,
     appointmentsSearching,
     treatmentsPagination,
     treatmentsSearching,
-    servicesPagination,
-    servicesSearching,
+    proceduresPagination,
+    proceduresSearching,
   } = useClinicalRecordFormOptions({
     open,
     needsPatientSelect,
@@ -90,7 +90,7 @@ export const useClinicalRecordForm = ({
       idPatient: idPatient ?? 0,
       idAppointment: idAppointment ?? null,
       idPatientTreatment: idPatientTreatment ?? null,
-      idService: idService ?? null,
+      idProcedure: idProcedure ?? null,
       recordedAt: formatDate(new Date(), "yyyy-MM-dd'T'HH:mm"),
     });
   }, [
@@ -99,7 +99,7 @@ export const useClinicalRecordForm = ({
     idPatient,
     idAppointment,
     idPatientTreatment,
-    idService,
+    idProcedure,
   ]);
 
   const handleDialogOpenChange = (next: boolean) => {
@@ -116,7 +116,7 @@ export const useClinicalRecordForm = ({
         idPatient: data.idPatient,
         idAppointment: data.idAppointment,
         idPatientTreatment: data.idPatientTreatment,
-        idService: data.idService,
+        idProcedure: data.idProcedure,
         recordedAt: colombiaToUtcIso(data.recordedAt),
         reason: data.reason,
         diagnosis: data.diagnosis,
@@ -157,18 +157,18 @@ export const useClinicalRecordForm = ({
     appointmentsStatus,
     treatmentItems,
     treatmentsStatus,
-    serviceItems,
-    servicesStatus,
+    procedureItems,
+    proceduresStatus,
     searchPatients,
-    searchServices,
+    searchProcedures,
     patientsPagination,
     patientsSearching,
     appointmentsPagination,
     appointmentsSearching,
     treatmentsPagination,
     treatmentsSearching,
-    servicesPagination,
-    servicesSearching,
+    proceduresPagination,
+    proceduresSearching,
     patientKey,
     handleDialogOpenChange,
     onSubmit: handleSubmit(onSubmit),

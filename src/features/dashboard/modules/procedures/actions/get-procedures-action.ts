@@ -2,19 +2,19 @@
 
 import { serverApi } from "@/lib/api/server";
 import { handleApiError } from "@/lib/api/error-handler";
-import { IGetServicesResponse } from "../interfaces";
+import { IGetProceduresResponse } from "../interfaces";
 import { TPaginationParams } from "@/types";
 
-export type TGetServicesParams = TPaginationParams & {
+export type TGetProceduresParams = TPaginationParams & {
   IsActive?: boolean;
   Search?: string;
 };
 
-export const apiGetServicesAction = async (
-  params?: TGetServicesParams,
-): Promise<IGetServicesResponse> => {
-  const SERVICE = process.env.SERVICE;
-  const GET_SERVICES = process.env.GET_SERVICES;
+export const apiGetProceduresAction = async (
+  params?: TGetProceduresParams,
+): Promise<IGetProceduresResponse> => {
+  const PROCEDURE = process.env.PROCEDURE;
+  const GET_PROCEDURES = process.env.GET_PROCEDURES;
 
   const { Page, Size, IsActive, Search } = params ?? {};
 
@@ -25,10 +25,10 @@ export const apiGetServicesAction = async (
   if (IsActive !== undefined) query.append("IsActive", IsActive.toString());
   if (Search) query.append("Search", Search);
 
-  const url = `${SERVICE}${GET_SERVICES}?${query.toString()}`;
+  const url = `${PROCEDURE}${GET_PROCEDURES}?${query.toString()}`;
 
   try {
-    const response = await serverApi.get<IGetServicesResponse>(url);
+    const response = await serverApi.get<IGetProceduresResponse>(url);
     return {
       success: true,
       message: response.data.message,

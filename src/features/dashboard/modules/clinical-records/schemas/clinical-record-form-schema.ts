@@ -33,7 +33,7 @@ export const ClinicalRecordFormSchema = z.object({
   idPatient: z.number().min(1, "Selecciona un paciente"),
   idAppointment: optionalNullableId,
   idPatientTreatment: optionalNullableId,
-  idService: optionalNullableId,
+  idProcedure: optionalNullableId,
   recordedAt,
   reason: z
     .string()
@@ -52,7 +52,7 @@ export const CLINICAL_RECORD_FORM_DEFAULT_VALUES: TClinicalRecordForm = {
   idPatient: 0,
   idAppointment: null,
   idPatientTreatment: null,
-  idService: null,
+  idProcedure: null,
   recordedAt: "",
   reason: "",
   diagnosis: null,

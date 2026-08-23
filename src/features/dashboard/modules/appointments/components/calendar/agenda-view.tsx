@@ -154,7 +154,7 @@ export const AgendaView = ({
                         </span>
                         <span className="flex items-center gap-1.5 text-xs text-ink-400">
                           <Stethoscope className="size-3.5" />
-                          {event.serviceName}
+                          {event.procedureNames}
                         </span>
                         {event.professionalName && (
                           <span className="flex items-center gap-1.5 text-xs text-ink-400">

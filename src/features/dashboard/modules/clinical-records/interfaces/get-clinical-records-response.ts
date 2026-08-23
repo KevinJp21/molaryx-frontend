@@ -10,8 +10,8 @@ export interface IClinicalRecordItems {
   idClinicalRecord: number;
   idAppointment: number | null;
   idPatientTreatment: number | null;
-  idService: number | null;
-  serviceName: string | null;
+  idProcedure: number | null;
+  procedureName: string | null;
   recordedAt: string;
   reason: string;
   diagnosis: string | null;
@@ -41,8 +41,7 @@ export interface IClinicalRecordCreatedBy {
 
 export interface IClinicalRecordAppointment {
   idAppointment: number;
-  idService: number;
-  serviceName: string;
+  procedureNames: string;
   idAppointmentStatus: number;
   appointmentStatus: string;
   startAt: string;

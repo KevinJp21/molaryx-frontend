@@ -24,13 +24,13 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
     ],
   },
   {
-    title: "Servicios",
+    title: "Procedimientos",
     items: [
       {
-        label: "Servicios",
-        href: "/dashboard/services",
+        label: "Procedimientos",
+        href: "/dashboard/procedures",
         icon: Layers,
-        permission: { module: "SERVICES" },
+        permission: { module: "PROCEDURES" },
       },
     ],
   },

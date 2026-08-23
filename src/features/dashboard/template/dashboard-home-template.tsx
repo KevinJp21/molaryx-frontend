@@ -9,7 +9,7 @@ import { CalendarIcon, CreditCardIcon, WalletIcon } from "lucide-react";
 import { currencyFormat } from "@/utils";
 import { cn } from "@/lib/utils";
 import { hasPermissionCode } from "../utils";
-import { RevenueOverTimeChartArea, PaymentsMethodsChartPie, AppointmentsByStatusChartBar, AppointmentsTopServicesChartPie, UpcomingAppointmentsList, DashboardHomeSkeleton } from "../components";
+import { RevenueOverTimeChartArea, PaymentsMethodsChartPie, AppointmentsByStatusChartBar, AppointmentsTopProceduresChartPie, UpcomingAppointmentsList, DashboardHomeSkeleton } from "../components";
 
 export const DashboardHomeTemplate = () => {
     const dispatch = useAppDispatch();
@@ -106,7 +106,7 @@ export const DashboardHomeTemplate = () => {
 
                     <section className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
                         <AppointmentsByStatusChartBar data={appointments.data?.byStatus} />
-                        <AppointmentsTopServicesChartPie data={appointments.data?.topServices} />
+                        <AppointmentsTopProceduresChartPie data={appointments.data?.topProcedures} />
                     </section>
 
                     <section className="mt-4">

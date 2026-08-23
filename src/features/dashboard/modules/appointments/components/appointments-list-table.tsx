@@ -84,7 +84,7 @@ export const AppointmentsListTable = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Paciente</TableHead>
-                <TableHead>Servicio</TableHead>
+                <TableHead>Procedimientos</TableHead>
                 <TableHead>Profesional</TableHead>
                 <TableHead>Fecha y hora</TableHead>
                 <TableHead>Estado</TableHead>
@@ -131,7 +131,10 @@ export const AppointmentsListTable = () => {
                       <TableCell>
                         <span className="min-w-40">{patientName}</span>
                       </TableCell>
-                      <TableCell>{item.serviceName}</TableCell>
+                      <TableCell>
+                        {item.procedures?.map((p) => p.name).filter(Boolean).join(", ") ||
+                          "Sin procedimientos"}
+                      </TableCell>
                       <TableCell>{professionalName}</TableCell>
                       <TableCell>
                         <div className="flex min-w-44 flex-col gap-0.5">
@@ -159,7 +162,7 @@ export const AppointmentsListTable = () => {
                             <Button
                               variant="ghost"
                               size="icon-sm"
-                              aria-label={`Acciones de cita ${item.serviceName}`}
+                              aria-label={`Acciones de cita ${item.procedures?.map((p) => p.name).filter(Boolean).join(", ") || item.idAppointment}`}
                             >
                               <Logs className="size-4" strokeWidth={1.75} />
                             </Button>

@@ -6,9 +6,10 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice";
 import { getAppointmentsList, selectGetAppointmentsList } from "@/store/appointments/appointments-slice";
 import { getPatientTreatments, selectGetPatientTreatments } from "@/store/patient-treatments/patient-treatments-slice";
-import { getServices, selectGetServices } from "@/store/services/services-slice";
+import { getProcedures, selectGetProcedures } from "@/store/procedures/procedures-slice";
 import { formatDate } from "@/utils";
 import { APPOINTMENT_STATUS } from "@/features/dashboard/modules/appointments/consts";
+import { formatProcedureNames } from "@/features/dashboard/modules/appointments/utils/format-procedure-names";
 import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
 import { patientFullName } from "@/features/dashboard/modules/patients/utils";
 
@@ -30,8 +31,8 @@ export const useClinicalRecordFormOptions = ({
     useAppSelector(selectGetAppointmentsList);
   const { data: treatmentsData, status: treatmentsStatus } =
     useAppSelector(selectGetPatientTreatments);
-  const { data: servicesData, status: servicesStatus } =
-    useAppSelector(selectGetServices);
+  const { data: proceduresData, status: proceduresStatus } =
+    useAppSelector(selectGetProcedures);
 
   const patients = usePaginatedSelect({
     enabled: open && needsPatientSelect,
@@ -80,13 +81,13 @@ export const useClinicalRecordFormOptions = ({
     },
   });
 
-  const services = usePaginatedSelect({
+  const procedures = usePaginatedSelect({
     enabled: open,
-    data: servicesData,
-    status: servicesStatus,
+    data: proceduresData,
+    status: proceduresStatus,
     fetchPage: ({ page, search }) => {
       dispatch(
-        getServices({
+        getProcedures({
           IsActive: true,
           Page: page,
           ...(search ? { Search: search } : {}),
@@ -119,7 +120,7 @@ export const useClinicalRecordFormOptions = ({
         )
         .map((item) => ({
           value: item.idAppointment,
-          name: `${item.serviceName} · ${formatDate(item.startAt, "d MMM yyyy · HH:mm", { hour12: true })}`,
+          name: `${formatProcedureNames(item.procedures, "Cita")} · ${formatDate(item.startAt, "d MMM yyyy · HH:mm", { hour12: true })}`,
         })),
     [appointments.items],
   );
@@ -139,13 +140,13 @@ export const useClinicalRecordFormOptions = ({
     [treatments.items],
   );
 
-  const serviceItems = useMemo(
+  const procedureItems = useMemo(
     () =>
-      services.items.map((item) => ({
-        value: item.idService,
+      procedures.items.map((item) => ({
+        value: item.idProcedure,
         name: item.name,
       })),
-    [services.items],
+    [procedures.items],
   );
 
   return {
@@ -155,17 +156,17 @@ export const useClinicalRecordFormOptions = ({
     appointmentsStatus,
     treatmentItems,
     treatmentsStatus,
-    serviceItems,
-    servicesStatus,
+    procedureItems,
+    proceduresStatus,
     searchPatients: patients.onSearch,
-    searchServices: services.onSearch,
+    searchProcedures: procedures.onSearch,
     patientsPagination: patients.paginationProps,
     patientsSearching: patients.isSearching,
     appointmentsPagination: appointments.paginationProps,
     appointmentsSearching: appointments.isSearching,
     treatmentsPagination: treatments.paginationProps,
     treatmentsSearching: treatments.isSearching,
-    servicesPagination: services.paginationProps,
-    servicesSearching: services.isSearching,
+    proceduresPagination: procedures.paginationProps,
+    proceduresSearching: procedures.isSearching,
   };
 };

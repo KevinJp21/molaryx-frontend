@@ -7,137 +7,138 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { BaseModal, Button, CustomFormField, CustomFormSelect, CustomFormTextarea, Spinner } from '@/components';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
-    postCreateService,
-    putUpdateService,
-    resetPostCreateService,
-    resetPutUpdateService,
-    selectPostCreateService,
-    selectPutUpdateService,
-} from '@/store/services/services-slice';
-import { IServicesItems } from '../interfaces';
+    postCreateProcedure,
+    putUpdateProcedure,
+    resetPostCreateProcedure,
+    resetPutUpdateProcedure,
+    selectPostCreateProcedure,
+    selectPutUpdateProcedure,
+} from '@/store/procedures/procedures-slice';
+import { IProceduresItems } from '../interfaces';
 import {
-    SERVICE_FORM_DEFAULT_VALUES,
-    ServiceFormSchema,
-    TServiceForm,
-    TServiceFormValues,
+    PROCEDURE_FORM_DEFAULT_VALUES,
+    ProcedureFormSchema,
+    TProcedureForm,
+    TProcedureFormValues,
 } from '../schemas';
 import { toast } from 'sonner';
 
 type Props = {
     open: boolean;
     onOpenChange: (next: boolean) => void;
-    service?: IServicesItems | null;
+    procedure?: IProceduresItems | null;
     onSuccess?: () => void;
 };
 
-const toFormValues = (service?: IServicesItems | null): TServiceForm => {
-    if (!service) return SERVICE_FORM_DEFAULT_VALUES;
+const toFormValues = (procedure?: IProceduresItems | null): TProcedureForm => {
+    if (!procedure) return PROCEDURE_FORM_DEFAULT_VALUES;
 
     return {
-        name: service.name,
-        description: service.description ?? "",
-        isActive: service.isActive,
+        name: procedure.name,
+        description: procedure.description ?? "",
+        referencePrice: procedure.referencePrice,
+        isActive: procedure.isActive,
     };
 };
 
-export const ServiceFormModal = ({
+export const ProcedureFormModal = ({
     open,
     onOpenChange,
-    service = null,
+    procedure = null,
     onSuccess,
 }: Props) => {
     const dispatch = useAppDispatch();
-    const isEdit = Boolean(service);
+    const isEdit = Boolean(procedure);
     const {
-        status: postCreateServiceStatus,
-        message: postCreateServiceMessage,
-        error: postCreateServiceError,
-    } = useAppSelector(selectPostCreateService);
+        status: postCreateProcedureStatus,
+        message: postCreateProcedureMessage,
+        error: postCreateProcedureError,
+    } = useAppSelector(selectPostCreateProcedure);
     const {
-        status: putUpdateServiceStatus,
-        message: putUpdateServiceMessage,
-        error: putUpdateServiceError,
-    } = useAppSelector(selectPutUpdateService);
+        status: putUpdateProcedureStatus,
+        message: putUpdateProcedureMessage,
+        error: putUpdateProcedureError,
+    } = useAppSelector(selectPutUpdateProcedure);
     const isSubmitting = isEdit
-        ? putUpdateServiceStatus === 'loading'
-        : postCreateServiceStatus === 'loading';
+        ? putUpdateProcedureStatus === 'loading'
+        : postCreateProcedureStatus === 'loading';
 
-    const methods = useForm<TServiceForm, unknown, TServiceFormValues>({
+    const methods = useForm<TProcedureForm, unknown, TProcedureFormValues>({
         mode: 'onTouched',
-        resolver: zodResolver(ServiceFormSchema),
-        defaultValues: SERVICE_FORM_DEFAULT_VALUES,
+        resolver: zodResolver(ProcedureFormSchema),
+        defaultValues: PROCEDURE_FORM_DEFAULT_VALUES,
     });
 
     const { reset, handleSubmit } = methods;
 
     useEffect(() => {
         if (open) {
-            reset(toFormValues(service));
+            reset(toFormValues(procedure));
         }
-    }, [open, service, reset]);
+    }, [open, procedure, reset]);
 
     const handleDialogOpenChange = (next: boolean) => {
         if (!next) {
-            reset(SERVICE_FORM_DEFAULT_VALUES);
+            reset(PROCEDURE_FORM_DEFAULT_VALUES);
             if (isEdit) {
-                if (putUpdateServiceStatus !== 'idle') {
-                    dispatch(resetPutUpdateService());
+                if (putUpdateProcedureStatus !== 'idle') {
+                    dispatch(resetPutUpdateProcedure());
                 }
             } else {
-                if (postCreateServiceStatus !== 'idle') {
-                    dispatch(resetPostCreateService());
+                if (postCreateProcedureStatus !== 'idle') {
+                    dispatch(resetPostCreateProcedure());
                 }
             }
         }
         onOpenChange(next);
     };
 
-    const onSubmit = (data: TServiceFormValues) => {
-        if (isEdit && service) {
-            dispatch(putUpdateService({
+    const onSubmit = (data: TProcedureFormValues) => {
+        if (isEdit && procedure) {
+            dispatch(putUpdateProcedure({
                 ...data,
-                idService: service.idService,
+                idProcedure: procedure.idProcedure,
             }));
             return;
         }
 
         const { isActive: _isActive, ...createData } = data;
-        dispatch(postCreateService(createData));
+        dispatch(postCreateProcedure(createData));
     };
 
     useEffect(() => {
         if (isEdit) return;
 
-        if (postCreateServiceStatus === 'error') {
-            toast.error(postCreateServiceMessage, {
-                description: postCreateServiceError,
+        if (postCreateProcedureStatus === 'error') {
+            toast.error(postCreateProcedureMessage, {
+                description: postCreateProcedureError,
             });
-            dispatch(resetPostCreateService());
+            dispatch(resetPostCreateProcedure());
         }
-        if (postCreateServiceStatus === 'success') {
-            toast.success(postCreateServiceMessage);
+        if (postCreateProcedureStatus === 'success') {
+            toast.success(postCreateProcedureMessage);
             handleDialogOpenChange(false);
-            dispatch(resetPostCreateService());
+            dispatch(resetPostCreateProcedure());
             onSuccess?.();
         }
-    }, [postCreateServiceStatus, isEdit, dispatch]);
+    }, [postCreateProcedureStatus, isEdit, dispatch]);
 
     useEffect(() => {
         if (!isEdit) return;
 
-        if (putUpdateServiceStatus === 'error') {
-            toast.error(putUpdateServiceMessage, {
-                description: putUpdateServiceError,
+        if (putUpdateProcedureStatus === 'error') {
+            toast.error(putUpdateProcedureMessage, {
+                description: putUpdateProcedureError,
             });
-            dispatch(resetPutUpdateService());
+            dispatch(resetPutUpdateProcedure());
         }
-        if (putUpdateServiceStatus === 'success') {
-            toast.success(putUpdateServiceMessage);
+        if (putUpdateProcedureStatus === 'success') {
+            toast.success(putUpdateProcedureMessage);
             handleDialogOpenChange(false);
-            dispatch(resetPutUpdateService());
+            dispatch(resetPutUpdateProcedure());
             onSuccess?.();
         }
-    }, [putUpdateServiceStatus, isEdit, dispatch]);
+    }, [putUpdateProcedureStatus, isEdit, dispatch]);
 
     return (
         <BaseModal
@@ -150,11 +151,11 @@ export const ServiceFormModal = ({
                     <Layers className="size-3.5" strokeWidth={2} />
                 )
             }
-            title={isEdit ? 'Editar servicio' : 'Nuevo servicio'}
+            title={isEdit ? 'Editar procedimiento' : 'Nuevo procedimiento'}
             description={
                 isEdit
-                    ? 'Actualiza los datos del servicio.'
-                    : 'Agrega un servicio al catálogo del consultorio.'
+                    ? 'Actualiza los datos del procedimiento.'
+                    : 'Agrega un procedimiento al catálogo del consultorio.'
             }
         >
             <FormProvider {...methods}>
@@ -173,6 +174,12 @@ export const ServiceFormModal = ({
                                 name="description"
                                 label="Descripción"
                                 placeholder="Ingresa la descripción"
+                            />
+                            <CustomFormField
+                                name="referencePrice"
+                                label="Precio de referencia (opcional)"
+                                placeholder="0"
+                                mode="currency"
                             />
                             {isEdit && (
                                 <CustomFormSelect
@@ -205,12 +212,12 @@ export const ServiceFormModal = ({
                             {isSubmitting ? (
                                 <>
                                     <Spinner className="size-4" />
-                                    {isEdit ? 'Guardando cambios...' : 'Guardando servicio...'}
+                                    {isEdit ? 'Guardando cambios...' : 'Guardando procedimiento...'}
                                 </>
                             ) : isEdit ? (
                                 'Guardar cambios'
                             ) : (
-                                'Guardar servicio'
+                                'Guardar procedimiento'
                             )}
                         </Button>
                     </div>

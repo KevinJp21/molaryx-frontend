@@ -5,10 +5,10 @@ import { Label, Pie, PieChart } from "recharts";
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui";
 import { amountFormat } from "@/utils";
 import { cn } from "@/lib/utils";
-import type { ITopServices } from "../../interfaces";
+import type { ITopProcedures } from "../../interfaces";
 
-interface AppointmentsTopServicesChartPieProps {
-    data?: ITopServices[];
+interface AppointmentsTopProceduresChartPieProps {
+    data?: ITopProcedures[];
     className?: string;
 }
 
@@ -20,62 +20,62 @@ const CHART_PALETTE = [
     "var(--color-chart-5)",
 ];
 
-export const AppointmentsTopServicesChartPie = ({ data, className }: AppointmentsTopServicesChartPieProps) => {
-    const services = useMemo(
+export const AppointmentsTopProceduresChartPie = ({ data, className }: AppointmentsTopProceduresChartPieProps) => {
+    const procedures = useMemo(
         () =>
             [...(data ?? [])]
                 .sort((first, second) => second.count - first.count)
                 .map((item, index) => ({
-                    key: `service-${item.idService}`,
-                    label: item.serviceName,
+                    key: `procedure-${item.idProcedure}`,
+                    label: item.procedureName,
                     count: item.count,
                     color: CHART_PALETTE[index % CHART_PALETTE.length],
                 })),
         [data],
     );
 
-    const total = useMemo(() => services.reduce((accumulated, item) => accumulated + item.count, 0), [services]);
+    const total = useMemo(() => procedures.reduce((accumulated, item) => accumulated + item.count, 0), [procedures]);
 
     const chartConfig = useMemo<ChartConfig>(() => {
         const config: ChartConfig = { count: { label: "Citas" } };
-        services.forEach((item) => {
+        procedures.forEach((item) => {
             config[item.key] = { label: item.label, color: item.color };
         });
         return config;
-    }, [services]);
+    }, [procedures]);
 
     const chartData = useMemo(
         () =>
-            services.map((item) => ({
+            procedures.map((item) => ({
                 key: item.key,
                 label: item.label,
                 count: item.count,
                 fill: `var(--color-${item.key})`,
             })),
-        [services],
+        [procedures],
     );
 
     return (
         <Card className={cn("h-full", className)}>
             <CardHeader>
                 <CardTitle className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
-                    Servicios más solicitados
+                    Procedimientos más solicitados
                 </CardTitle>
                 <CardDescription className="text-2xl font-semibold tracking-tight text-ink-50 tabular-nums">
                     {amountFormat(total)}
                 </CardDescription>
 
-                {services.length > 0 ? (
+                {procedures.length > 0 ? (
                     <CardAction>
                         <span className="rounded-full bg-ink-900 px-2.5 py-1 text-xs font-medium text-ink-300 ring-1 ring-inset ring-ink-750">
-                            {`${services.length} ${services.length === 1 ? "servicio" : "servicios"}`}
+                            {`${procedures.length} ${procedures.length === 1 ? "procedimiento" : "procedimientos"}`}
                         </span>
                     </CardAction>
                 ) : null}
             </CardHeader>
 
             <CardContent className="flex min-h-0 flex-1 flex-col gap-4 px-5 pb-5">
-                {services.length ? (
+                {procedures.length ? (
                     <>
                         <ChartContainer config={chartConfig} className="mx-auto aspect-square h-44 w-full max-w-44 shrink-0">
                             <PieChart accessibilityLayer={false}>
@@ -83,7 +83,7 @@ export const AppointmentsTopServicesChartPie = ({ data, className }: Appointment
                                     cursor={false}
                                     content={
                                         <ChartTooltipContent
-                                            label="Servicio"
+                                            label="Procedimiento"
                                             nameKey="key"
                                             valueFormatter={(value) => amountFormat(Number(value))}
                                             secondaryText={(item) => {
@@ -116,14 +116,14 @@ export const AppointmentsTopServicesChartPie = ({ data, className }: Appointment
                                                         y={viewBox.cy}
                                                         className="fill-ink-50 text-lg font-semibold tabular-nums"
                                                     >
-                                                        {services.length}
+                                                        {procedures.length}
                                                     </tspan>
                                                     <tspan
                                                         x={viewBox.cx}
                                                         y={(viewBox.cy ?? 0) + 20}
                                                         className="fill-ink-400 text-[11px]"
                                                     >
-                                                        {services.length === 1 ? "servicio" : "servicios"}
+                                                        {procedures.length === 1 ? "procedimiento" : "procedimientos"}
                                                     </tspan>
                                                 </text>
                                             );
@@ -134,7 +134,7 @@ export const AppointmentsTopServicesChartPie = ({ data, className }: Appointment
                         </ChartContainer>
 
                         <ul className="mt-auto flex flex-col gap-2.5">
-                            {services.map((item) => (
+                            {procedures.map((item) => (
                                 <li key={item.key} className="flex items-center gap-3 text-xs">
                                     <span
                                         className="size-2 shrink-0 rounded-full"
@@ -153,13 +153,13 @@ export const AppointmentsTopServicesChartPie = ({ data, className }: Appointment
                     </>
                 ) : (
                     <div className="flex flex-1 items-center justify-center text-center text-xs text-ink-400">
-                        Aún no hay servicios con citas para mostrar.
+                        Aún no hay procedimientos con citas para mostrar.
                     </div>
                 )}
             </CardContent>
 
             <CardFooter className="mt-auto">
-                <p className="text-xs text-ink-400">Servicios más solicitados del mes actual</p>
+                <p className="text-xs text-ink-400">Procedimientos más solicitados del mes actual</p>
             </CardFooter>
         </Card>
     );

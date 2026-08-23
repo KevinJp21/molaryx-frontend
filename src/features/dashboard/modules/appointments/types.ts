@@ -1,3 +1,5 @@
+import type { IAppointmentProcedure } from "./interfaces";
+
 export type TCalendarView = "month" | "week" | "day" | "agenda" | "resource";
 
 export type TAppointmentModalMode = "view" | "edit" | "create";
@@ -16,13 +18,13 @@ export type TAppointmentCalendarEvent = {
   statusLabel: string;
   idPatient: number;
   idUser: number;
-  idService: number;
+  procedures: IAppointmentProcedure[];
+  totalPrice: number;
   idPatientTreatment: number | null;
   patientTreatmentName: string | null;
-  price: number | null;
   patientName: string;
   professionalName: string;
-  serviceName: string;
+  procedureNames: string;
 };
 
 export type TCalendarFilter = {

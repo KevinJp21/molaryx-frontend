@@ -4,16 +4,16 @@ import { serverApi } from "@/lib/api/server";
 import { handleApiError } from "@/lib/api/error-handler";
 import { TBaseResponse } from "@/types";
 
-export const apiDeleteServiceAction = async (
-  idService: number,
+export const apiDeleteProcedureAction = async (
+  idProcedure: number,
 ): Promise<TBaseResponse<boolean>> => {
-  const SERVICE = process.env.SERVICE;
-  const DELETE_SERVICE = process.env.DELETE_SERVICE;
+  const PROCEDURE = process.env.PROCEDURE;
+  const DELETE_PROCEDURE = process.env.DELETE_PROCEDURE;
 
   const query = new URLSearchParams();
-  query.append("IdService", idService.toString());
+  query.append("IdProcedure", idProcedure.toString());
 
-  const url = `${SERVICE}${DELETE_SERVICE}?${query.toString()}`;
+  const url = `${PROCEDURE}${DELETE_PROCEDURE}?${query.toString()}`;
 
   try {
     const response = await serverApi.delete<TBaseResponse<boolean>>(url);

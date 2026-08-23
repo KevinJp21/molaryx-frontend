@@ -1,15 +1,24 @@
 "use client";
 
-import { Trash2, X } from "lucide-react";
-import { FormProvider, useWatch, type UseFormReturn } from "react-hook-form";
+import { Plus, Trash2, X } from "lucide-react";
+import {
+  FormProvider,
+  useFieldArray,
+  useFormContext,
+  useWatch,
+  type UseFormReturn,
+} from "react-hook-form";
 import {
   Button,
   CustomFormField,
   CustomFormSelect,
   CustomFormTextarea,
 } from "@/components";
-import { formatDate } from "@/utils";
-import type { TAppointmentForm } from "../schemas";
+import { currencyFormat, formatDate } from "@/utils";
+import {
+  emptyAppointmentProcedure,
+  type TAppointmentForm,
+} from "../schemas";
 import type { TAppointmentCalendarEvent } from "../types";
 
 type SelectItem = { value: number; name: string };
@@ -29,12 +38,13 @@ type Props = {
   patientsStatus: string;
   professionalItems: SelectItem[];
   professionalsStatus: string;
-  serviceItems: SelectItem[];
-  servicesStatus: string;
+  procedureItems: SelectItem[];
+  procedureReferencePriceById: Map<number, number | null>;
+  proceduresStatus: string;
   statusItems: SelectItem[];
   searchPatients: (query: string) => void;
   searchProfessionals: (query: string) => void;
-  searchServices: (query: string) => void;
+  searchProcedures: (query: string) => void;
   patientsPagination: {
     onLoadMore: () => void;
     hasMore: boolean;
@@ -47,12 +57,12 @@ type Props = {
     isLoadingMore: boolean;
   };
   professionalsSearching: boolean;
-  servicesPagination: {
+  proceduresPagination: {
     onLoadMore: () => void;
     hasMore: boolean;
     isLoadingMore: boolean;
   };
-  servicesSearching: boolean;
+  proceduresSearching: boolean;
   treatmentsPagination: {
     onLoadMore: () => void;
     hasMore: boolean;
@@ -62,6 +72,141 @@ type Props = {
   treatmentItems: SelectItem[];
   treatmentsStatus: string;
   hasTreatment: boolean;
+};
+
+const AppointmentProceduresFields = ({
+  procedureItems,
+  procedureReferencePriceById,
+  proceduresSearching,
+  searchProcedures,
+  proceduresPagination,
+  hasTreatment,
+}: {
+  procedureItems: SelectItem[];
+  procedureReferencePriceById: Map<number, number | null>;
+  proceduresSearching: boolean;
+  searchProcedures: (query: string) => void;
+  proceduresPagination: Props["proceduresPagination"];
+  hasTreatment: boolean;
+}) => {
+  const { control, setValue, getValues, formState } = useFormContext<TAppointmentForm>();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "procedures",
+  });
+  const watchedProcedures = useWatch({ control, name: "procedures" }) ?? [];
+  const totalPrice = watchedProcedures.reduce(
+    (sum, item) => sum + Number(item?.price ?? 0),
+    0,
+  );
+  const proceduresError =
+    typeof formState.errors.procedures?.message === "string"
+      ? formState.errors.procedures.message
+      : undefined;
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-sm font-medium text-ink-100">Procedimientos</p>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="rounded-xl"
+          onClick={() => append(emptyAppointmentProcedure())}
+        >
+          <Plus className="size-4" />
+          Agregar
+        </Button>
+      </div>
+
+      {fields.map((field, index) => (
+        <div
+          key={field.id}
+          className="space-y-3 rounded-2xl border border-ink-800 bg-ink-900/40 p-3"
+        >
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-xs font-medium uppercase tracking-wider text-ink-400">
+              Procedimiento {index + 1}
+            </p>
+            {fields.length > 1 && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                aria-label={`Quitar procedimiento ${index + 1}`}
+                className="text-ink-400 hover:bg-coral-500/10 hover:text-coral-600"
+                onClick={() => remove(index)}
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            )}
+          </div>
+
+          <CustomFormSelect
+            name={`procedures.${index}.idProcedure`}
+            label="Procedimiento"
+            placeholder={
+              proceduresSearching && procedureItems.length === 0
+                ? "Cargando procedimientos..."
+                : "Selecciona un procedimiento"
+            }
+            items={procedureItems}
+            disabled={proceduresSearching && procedureItems.length === 0}
+            searchable
+            searchPlaceholder="Buscar procedimiento..."
+            isSearching={proceduresSearching}
+            onSearch={searchProcedures}
+            {...proceduresPagination}
+            onChange={(value) => {
+              if (hasTreatment) {
+                setValue(`procedures.${index}.price`, 0, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+                return;
+              }
+              if (typeof value !== "number" || value <= 0) return;
+              const reference = procedureReferencePriceById.get(value);
+              if (reference == null) return;
+              const current = getValues(`procedures.${index}.price`);
+              if (current != null && Number(current) > 0) return;
+              setValue(`procedures.${index}.price`, reference, {
+                shouldDirty: true,
+                shouldValidate: true,
+              });
+            }}
+          />
+
+          {!hasTreatment ? (
+            <CustomFormField
+              name={`procedures.${index}.price`}
+              label="Precio"
+              placeholder="0"
+              mode="currency"
+            />
+          ) : (
+            <p className="text-xs text-ink-400">
+              Precio incluido en el plan de tratamiento.
+            </p>
+          )}
+        </div>
+      ))}
+
+      {!hasTreatment && totalPrice > 0 && (
+        <p className="text-right text-sm text-ink-300">
+          Total:{" "}
+          <span className="font-medium tabular-nums text-ink-50">
+            {currencyFormat(totalPrice)}
+          </span>
+        </p>
+      )}
+
+      {proceduresError && (
+        <p className="text-xs text-coral-500">{proceduresError}</p>
+      )}
+    </div>
+  );
 };
 
 export const AppointmentEventForm = ({
@@ -77,17 +222,18 @@ export const AppointmentEventForm = ({
   onDelete,
   patientItems,
   professionalItems,
-  serviceItems,
+  procedureItems,
+  procedureReferencePriceById,
   statusItems,
   searchPatients,
   searchProfessionals,
-  searchServices,
+  searchProcedures,
   patientsPagination,
   patientsSearching,
   professionalsPagination,
   professionalsSearching,
-  servicesPagination,
-  servicesSearching,
+  proceduresPagination,
+  proceduresSearching,
   treatmentsPagination,
   treatmentsSearching,
   treatmentItems,
@@ -175,10 +321,13 @@ export const AppointmentEventForm = ({
             {...treatmentsPagination}
             resetKey={idPatient}
             onChange={(value) => {
+              const procedures = getValues("procedures") ?? [];
               if (typeof value === "number" && value > 0) {
-                setValue("price", null, {
-                  shouldDirty: true,
-                  shouldValidate: true,
+                procedures.forEach((_, index) => {
+                  setValue(`procedures.${index}.price`, 0, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
                 });
               }
             }}
@@ -192,15 +341,6 @@ export const AppointmentEventForm = ({
                 Este paciente no tiene planes de tratamiento activos.
               </p>
             )}
-
-          {!hasTreatment && (
-            <CustomFormField
-              name="price"
-              label="Precio (opcional)"
-              placeholder="0"
-              mode="currency"
-            />
-          )}
 
           <CustomFormSelect
             name="idUser"
@@ -221,21 +361,13 @@ export const AppointmentEventForm = ({
             {...professionalsPagination}
           />
 
-          <CustomFormSelect
-            name="idService"
-            label="Servicio"
-            placeholder={
-              servicesSearching && serviceItems.length === 0
-                ? "Cargando servicios..."
-                : "Selecciona un servicio"
-            }
-            items={serviceItems}
-            disabled={servicesSearching && serviceItems.length === 0}
-            searchable
-            searchPlaceholder="Buscar servicio..."
-            isSearching={servicesSearching}
-            onSearch={searchServices}
-            {...servicesPagination}
+          <AppointmentProceduresFields
+            procedureItems={procedureItems}
+            procedureReferencePriceById={procedureReferencePriceById}
+            proceduresSearching={proceduresSearching}
+            searchProcedures={searchProcedures}
+            proceduresPagination={proceduresPagination}
+            hasTreatment={hasTreatment}
           />
 
           {isEdit && (

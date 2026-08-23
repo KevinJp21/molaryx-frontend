@@ -4,7 +4,7 @@ export interface IGetAppointmentsSummaryResponse extends TBaseResponse<IGetAppoi
 export interface IGetAppointmentsSummaryResponseData {
     todayCount: number;
     byStatus: IByStatus[];
-    topServices: ITopServices[];
+    topProcedures: ITopProcedures[];
     upcoming: IUpcoming[];
 };
 
@@ -14,9 +14,9 @@ export interface IByStatus {
     count: number;
 };
 
-export interface ITopServices {
-    idService: number;
-    serviceName: string;
+export interface ITopProcedures {
+    idProcedure: number;
+    procedureName: string;
     count: number;
 };
 
@@ -26,7 +26,7 @@ export interface IUpcoming {
     endAt: string;
     patientName: string;
     patientSurname: string;
-    serviceName: string;
+    procedureNames: string;
     professionalName: string;
     professionalSurname: string;
     idAppointmentStatus: string;

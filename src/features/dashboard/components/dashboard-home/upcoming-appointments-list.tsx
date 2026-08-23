@@ -181,10 +181,10 @@ export const UpcomingAppointmentsList = ({ data, className }: UpcomingAppointmen
                                                             {formatEventTime(appointment.start)} -{" "}
                                                             {formatEventTime(appointment.end)}
                                                         </span>
-                                                        {appointment.serviceName ? (
+                                                        {appointment.procedureNames ? (
                                                             <span className="flex items-center gap-1.5 text-xs text-ink-400">
                                                                 <Stethoscope className="size-3.5 shrink-0" />
-                                                                <span className="line-clamp-1">{appointment.serviceName}</span>
+                                                                <span className="line-clamp-1">{appointment.procedureNames}</span>
                                                             </span>
                                                         ) : null}
                                                         {professionalName ? (

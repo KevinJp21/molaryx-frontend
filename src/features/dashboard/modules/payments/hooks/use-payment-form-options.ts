@@ -8,6 +8,7 @@ import { getAppointmentsList, selectGetAppointmentsList } from "@/store/appointm
 import { getPatientTreatments, selectGetPatientTreatments } from "@/store/patient-treatments/patient-treatments-slice";
 import { currencyFormat, formatDate } from "@/utils";
 import { APPOINTMENT_STATUS } from "@/features/dashboard/modules/appointments/consts";
+import { formatProcedureNames } from "@/features/dashboard/modules/appointments/utils/format-procedure-names";
 import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
 import { PAYMENT_CONTEXT } from "../consts";
 import { fullName } from "../utils";
@@ -117,7 +118,7 @@ export const usePaymentFormOptions = ({
         )
         .map((item) => ({
           value: item.idAppointment,
-          name: `${item.serviceName} · ${formatDate(item.startAt, "d MMM yyyy · HH:mm", { hour12: true })}`,
+          name: `${formatProcedureNames(item.procedures, "Cita")} · ${formatDate(item.startAt, "d MMM yyyy · HH:mm", { hour12: true })}`,
         })),
     [appointments.items],
   );

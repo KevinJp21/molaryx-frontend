@@ -131,8 +131,12 @@ export const AppointmentEventView = ({
           label="Plan de tratamiento"
           value={event.patientTreatmentName || "Sin plan"}
         />
-        {event.price != null && (
-          <InfoRow label="Precio" value={currencyFormat(event.price)} />
+        <InfoRow
+          label="Procedimientos"
+          value={event.procedureNames || "Sin procedimientos"}
+        />
+        {event.totalPrice > 0 && (
+          <InfoRow label="Precio total" value={currencyFormat(event.totalPrice)} />
         )}
       </div>
     </div>

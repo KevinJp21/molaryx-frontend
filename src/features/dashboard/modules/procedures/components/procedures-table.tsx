@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react"
 import { Logs, SquarePen, Trash } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/store"
-import { getServices, selectGetServices } from "@/store/services/services-slice"
-import { IServicesItems } from "../interfaces"
+import { getProcedures, selectGetProcedures } from "@/store/procedures/procedures-slice"
+import { IProceduresItems } from "../interfaces"
 import {
     BaseTable,
     Table,
@@ -20,27 +20,28 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components"
+import { currencyFormat } from "@/utils"
 
 type Props = {
-    onEdit: (service: IServicesItems) => void;
-    onDelete: (service: IServicesItems) => void;
+    onEdit: (procedure: IProceduresItems) => void;
+    onDelete: (procedure: IProceduresItems) => void;
     refreshKey?: number;
 };
 
-export const ServicesTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
+export const ProceduresTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
     const dispatch = useAppDispatch();
-    const { data, status, message, error } = useAppSelector(selectGetServices);
+    const { data, status, message, error } = useAppSelector(selectGetProcedures);
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
-        dispatch(getServices({
+        dispatch(getProcedures({
             Page: currentPage,
         }));
     }, [dispatch, currentPage, refreshKey]);
 
     const items = data?.items ?? [];
     const totalPages = data?.totalPages ?? 0;
-    const colSpan = 4;
+    const colSpan = 5;
 
     useEffect(() => {
         if (status === "success" && items.length === 0 && currentPage > 1) {
@@ -61,8 +62,9 @@ export const ServicesTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Servicio</TableHead>
+                            <TableHead>Procedimiento</TableHead>
                             <TableHead>Descripción</TableHead>
+                            <TableHead>Precio ref.</TableHead>
                             <TableHead>Estado</TableHead>
                             <TableHead className="w-14 text-right">Acciones</TableHead>
                         </TableRow>
@@ -81,19 +83,26 @@ export const ServicesTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
                         {status === "success" && items.length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={colSpan} className="py-16 text-center text-sm text-ink-400 group-hover/row:bg-transparent">
-                                    No hay servicios con los filtros seleccionados.
+                                    No hay procedimientos con los filtros seleccionados.
                                 </TableCell>
                             </TableRow>
                         )}
                         {status === "success" &&
                             items.map((item) => {
                                 return (
-                                    <TableRow key={item.idService}>
+                                    <TableRow key={item.idProcedure}>
                                         <TableCell>
                                             <span>{item.name}</span>
                                         </TableCell>
                                         <TableCell className="max-w-40">
                                             <span className="line-clamp-2 text-ink-300 truncate">{item.description ?? "—"}</span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="tabular-nums text-ink-200">
+                                                {item.referencePrice != null
+                                                    ? currencyFormat(item.referencePrice)
+                                                    : "—"}
+                                            </span>
                                         </TableCell>
                                         <TableCell>
                                             {item.isActive ? (
@@ -119,7 +128,7 @@ export const ServicesTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
                                                             variant="ghost"
                                                             size="sm"
                                                             className="text-xs justify-start text-ink-200 font-normal"
-                                                            aria-label={`Editar servicio ${item.name}`}
+                                                            aria-label={`Editar procedimiento ${item.name}`}
                                                             onClick={() => onEdit(item)}
                                                         >
                                                             <SquarePen className="size-4" strokeWidth={1.75} />
@@ -129,7 +138,7 @@ export const ServicesTable = ({ onEdit, onDelete, refreshKey = 0 }: Props) => {
                                                             variant="destructive"
                                                             size="sm"
                                                             className="text-xs justify-start text-ink-200 font-normal"
-                                                            aria-label={`Eliminar servicio ${item.name}`}
+                                                            aria-label={`Eliminar procedimiento ${item.name}`}
                                                             onClick={() => onDelete(item)}
                                                         >
                                                             <Trash className="size-4" strokeWidth={1.75} />

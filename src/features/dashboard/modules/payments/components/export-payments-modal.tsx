@@ -13,6 +13,7 @@ import { getAppointmentsList, selectGetAppointmentsList } from "@/store/appointm
 import { getPatientTreatments, selectGetPatientTreatments } from "@/store/patient-treatments/patient-treatments-slice";
 import { currencyFormat, downloadReport, formatDate } from "@/utils";
 import { APPOINTMENT_STATUS } from "@/features/dashboard/modules/appointments/consts";
+import { formatProcedureNames } from "@/features/dashboard/modules/appointments/utils/format-procedure-names";
 import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
 import { apiGetPaymentsReportAction, TGetPaymentsReportParams } from "../actions";
 import { EXPORT_PAYMENT_FILTER, EXPORT_PAYMENT_FILTER_OPTIONS } from "../consts";
@@ -126,7 +127,7 @@ export const ExportPaymentsModal = ({ open, onOpenChange }: TProps) => {
     )
     .map((item) => ({
       value: item.idAppointment,
-      name: `${item.serviceName} · ${formatDate(item.startAt, "d MMM yyyy · HH:mm", { hour12: true })}`,
+      name: `${formatProcedureNames(item.procedures, "Cita")} · ${formatDate(item.startAt, "d MMM yyyy · HH:mm", { hour12: true })}`,
     }));
 
   const treatmentItems = treatments.items

@@ -18,7 +18,7 @@ export const apiPostCreateClinicalRecordAction = async (
         idPatient: data.idPatient,
         idAppointment: data.idAppointment ?? null,
         idPatientTreatment: data.idPatientTreatment ?? null,
-        idService: data.idService ?? null,
+        idProcedure: data.idProcedure ?? null,
         recordedAt: data.recordedAt,
         reason: data.reason,
         diagnosis: data.diagnosis ?? null,

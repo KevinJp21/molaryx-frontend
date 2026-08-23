@@ -18,7 +18,7 @@ type Props = {
   idPatient?: number;
   idAppointment?: number;
   idPatientTreatment?: number;
-  idService?: number;
+  idProcedure?: number;
   onSuccess?: () => void;
 };
 
@@ -28,7 +28,7 @@ export const ClinicalRecordFormModal = ({
   idPatient,
   idAppointment,
   idPatientTreatment,
-  idService,
+  idProcedure,
   onSuccess,
 }: Props) => {
   const {
@@ -39,17 +39,17 @@ export const ClinicalRecordFormModal = ({
     patientItems,
     appointmentItems,
     treatmentItems,
-    serviceItems,
+    procedureItems,
     searchPatients,
-    searchServices,
+    searchProcedures,
     patientsPagination,
     patientsSearching,
     appointmentsPagination,
     appointmentsSearching,
     treatmentsPagination,
     treatmentsSearching,
-    servicesPagination,
-    servicesSearching,
+    proceduresPagination,
+    proceduresSearching,
     patientKey,
     handleDialogOpenChange,
     onSubmit,
@@ -60,7 +60,7 @@ export const ClinicalRecordFormModal = ({
     idPatient,
     idAppointment,
     idPatientTreatment,
-    idService,
+    idProcedure,
     onSuccess,
   });
 
@@ -141,24 +141,24 @@ export const ClinicalRecordFormModal = ({
               )}
 
               <CustomFormSelect
-                name="idService"
-                label="Servicio (opcional)"
+                name="idProcedure"
+                label="Procedimiento (opcional)"
                 placeholder={
-                  servicesSearching
-                    ? "Cargando servicios..."
-                    : "Sin servicio asociado"
+                  proceduresSearching
+                    ? "Cargando procedimientos..."
+                    : "Sin procedimiento asociado"
                 }
-                items={serviceItems}
+                items={procedureItems}
                 disabled={
-                  idService != null ||
-                  (servicesSearching && serviceItems.length === 0)
+                  idProcedure != null ||
+                  (proceduresSearching && procedureItems.length === 0)
                 }
                 searchable
-                searchPlaceholder="Buscar servicio..."
-                emptyLabel="Sin servicio asociado"
-                onSearch={searchServices}
-                isSearching={servicesSearching}
-                {...servicesPagination}
+                searchPlaceholder="Buscar procedimiento..."
+                emptyLabel="Sin procedimiento asociado"
+                onSearch={searchProcedures}
+                isSearching={proceduresSearching}
+                {...proceduresPagination}
               />
 
               <CustomFormField
