@@ -59,8 +59,10 @@ export const DashboardHomeTemplate = () => {
                             "grid grid-cols-1 gap-4",
                             canViewPayments && canViewAppointments
                                 ? "md:grid-cols-2 lg:grid-cols-3"
-                                : canViewPayments || canViewAppointments
-                                  ? "md:grid-cols-1"
+                                : canViewPayments 
+                                  ? "md:grid-cols-2"
+                                  : canViewAppointments
+                                    ? "md:grid-cols-1"
                                   : "md:grid-cols-1",
                         )}
                     >
