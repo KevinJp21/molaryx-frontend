@@ -13,6 +13,7 @@ type Props = {
   onEdit: () => void;
   onDelete: () => void;
   onClose: () => void;
+  canUpdate?: boolean;
 };
 
 const InfoRow = ({
@@ -46,6 +47,7 @@ export const AppointmentEventView = ({
   onEdit,
   onDelete,
   onClose,
+  canUpdate = false,
 }: Props) => (
   <div className="flex max-h-[90vh] w-full flex-col overflow-hidden bg-ink-950">
     <div
@@ -65,28 +67,32 @@ export const AppointmentEventView = ({
           </span>
         </div>
         <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            onClick={onEdit}
-            title="Editar"
-            aria-label="Editar cita"
-            className="text-ink-400"
-          >
-            <Edit2 className="size-4" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            onClick={onDelete}
-            title="Eliminar"
-            aria-label="Eliminar cita"
-            className="text-ink-400 hover:bg-coral-500/10 hover:text-coral-600"
-          >
-            <Trash2 className="size-4" />
-          </Button>
+          {canUpdate && (
+            <>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={onEdit}
+                title="Editar"
+                aria-label="Editar cita"
+                className="text-ink-400"
+              >
+                <Edit2 className="size-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={onDelete}
+                title="Eliminar"
+                aria-label="Eliminar cita"
+                className="text-ink-400 hover:bg-coral-500/10 hover:text-coral-600"
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            </>
+          )}
           <Button
             type="button"
             variant="ghost"
@@ -131,8 +137,12 @@ export const AppointmentEventView = ({
           label="Plan de tratamiento"
           value={event.patientTreatmentName || "Sin plan"}
         />
-        {event.price != null && (
-          <InfoRow label="Precio" value={currencyFormat(event.price)} />
+        <InfoRow
+          label="Procedimientos"
+          value={event.procedureNames || "Sin procedimientos"}
+        />
+        {event.totalPrice > 0 && (
+          <InfoRow label="Precio total" value={currencyFormat(event.totalPrice)} />
         )}
       </div>
     </div>

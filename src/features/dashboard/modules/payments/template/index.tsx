@@ -5,7 +5,8 @@ import { FileDownIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
-import { hasPermissionCode } from "@/features/dashboard/utils";
+import { checkCanCreate, checkCanView } from "@/features/dashboard/utils";
+import { PERMISSION_MODULES } from "@/features/dashboard/consts";
 import {
   ExportPaymentsModal,
   PaymentFormModal,
@@ -14,12 +15,14 @@ import {
 
 export const PaymentsTemplate = () => {
   const { data: userData } = useAppSelector(selectGetUserData);
-  const canCreate = hasPermissionCode(
+  const canView = checkCanView(
     userData?.permissions,
-    "PAYMENTS",
-    "CREATE_PAYMENT",
+    PERMISSION_MODULES.PAYMENTS,
   );
-
+  const canCreate = checkCanCreate(
+    userData?.permissions,
+    PERMISSION_MODULES.PAYMENTS,
+  );
   const [modalOpen, setModalOpen] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [listRefreshKey, setListRefreshKey] = useState(0);
@@ -36,13 +39,15 @@ export const PaymentsTemplate = () => {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant="destructive"
-            onClick={() => setExportModalOpen(true)}
-          >
-            <FileDownIcon className="h-4 w-4" />
-            Exportar pagos
-          </Button>
+          {canView && (
+            <Button
+              variant="destructive"
+              onClick={() => setExportModalOpen(true)}
+            >
+              <FileDownIcon className="h-4 w-4" />
+              Exportar pagos
+            </Button>
+          )}
           {canCreate && (
             <Button onClick={() => setModalOpen(true)}>
               <PlusIcon className="h-4 w-4" />

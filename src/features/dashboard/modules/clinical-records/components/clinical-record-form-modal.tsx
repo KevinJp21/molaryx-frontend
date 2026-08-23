@@ -1,7 +1,11 @@
 "use client";
 
-import { FileText } from "lucide-react";
-import { FormProvider } from "react-hook-form";
+import { FileText, Plus, Trash2 } from "lucide-react";
+import {
+  FormProvider,
+  useFieldArray,
+  useFormContext,
+} from "react-hook-form";
 import {
   BaseModal,
   Button,
@@ -11,6 +15,12 @@ import {
   Spinner,
 } from "@/components";
 import { useClinicalRecordForm } from "../hooks";
+import {
+  emptyClinicalRecordProcedure,
+  type TClinicalRecordForm,
+} from "../schemas";
+
+type SelectItem = { value: number; name: string };
 
 type Props = {
   open: boolean;
@@ -18,8 +28,121 @@ type Props = {
   idPatient?: number;
   idAppointment?: number;
   idPatientTreatment?: number;
-  idService?: number;
+  idProcedure?: number;
   onSuccess?: () => void;
+};
+
+const ClinicalRecordProceduresFields = ({
+  procedureItems,
+  proceduresSearching,
+  searchProcedures,
+  proceduresPagination,
+  locked,
+}: {
+  procedureItems: SelectItem[];
+  proceduresSearching: boolean;
+  searchProcedures: (query: string) => void;
+  proceduresPagination: {
+    onLoadMore: () => void;
+    hasMore: boolean;
+    isLoadingMore: boolean;
+  };
+  locked: boolean;
+}) => {
+  const { control, formState } = useFormContext<TClinicalRecordForm>();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "procedures",
+  });
+  const proceduresError =
+    typeof formState.errors.procedures?.message === "string"
+      ? formState.errors.procedures.message
+      : undefined;
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-sm font-medium text-ink-100">
+          Procedimientos {locked ? "" : "(opcional)"}
+        </p>
+        {!locked && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="rounded-xl"
+            onClick={() => append(emptyClinicalRecordProcedure())}
+          >
+            <Plus className="size-4" />
+            Agregar
+          </Button>
+        )}
+      </div>
+
+      {fields.length === 0 && (
+        <p className="text-xs text-ink-400">
+          {locked
+            ? "Esta cita no tiene procedimientos asociados."
+            : "Agrega uno o más procedimientos, o déjalos vacíos."}
+        </p>
+      )}
+
+      {fields.map((field, index) => (
+        <div
+          key={field.id}
+          className="space-y-3 rounded-2xl border border-ink-800 bg-ink-900/40 p-3"
+        >
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-xs font-medium uppercase tracking-wider text-ink-400">
+              Procedimiento {index + 1}
+            </p>
+            {!locked && fields.length > 0 && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                aria-label={`Quitar procedimiento ${index + 1}`}
+                className="text-ink-400 hover:bg-coral-500/10 hover:text-coral-600"
+                onClick={() => remove(index)}
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            )}
+          </div>
+
+          <CustomFormSelect
+            name={`procedures.${index}.idProcedure`}
+            label="Procedimiento"
+            placeholder={
+              proceduresSearching && procedureItems.length === 0
+                ? "Cargando procedimientos..."
+                : "Selecciona un procedimiento"
+            }
+            items={procedureItems}
+            disabled={
+              locked ||
+              (proceduresSearching && procedureItems.length === 0)
+            }
+            searchable={!locked}
+            searchPlaceholder="Buscar procedimiento..."
+            isSearching={proceduresSearching}
+            onSearch={locked ? undefined : searchProcedures}
+            {...(locked ? {} : proceduresPagination)}
+          />
+        </div>
+      ))}
+
+      {proceduresError && (
+        <p className="text-xs text-coral-500">{proceduresError}</p>
+      )}
+
+      {locked && fields.length > 0 && (
+        <p className="text-xs text-ink-400">
+          Los procedimientos se toman de la cita seleccionada.
+        </p>
+      )}
+    </div>
+  );
 };
 
 export const ClinicalRecordFormModal = ({
@@ -28,7 +151,7 @@ export const ClinicalRecordFormModal = ({
   idPatient,
   idAppointment,
   idPatientTreatment,
-  idService,
+  idProcedure,
   onSuccess,
 }: Props) => {
   const {
@@ -36,33 +159,38 @@ export const ClinicalRecordFormModal = ({
     isSubmitting,
     needsPatientSelect,
     showPatientAssociations,
+    hasLinkedAppointment,
     patientItems,
     appointmentItems,
     treatmentItems,
-    serviceItems,
+    procedureItems,
     searchPatients,
-    searchServices,
+    searchProcedures,
     patientsPagination,
     patientsSearching,
     appointmentsPagination,
     appointmentsSearching,
     treatmentsPagination,
     treatmentsSearching,
-    servicesPagination,
-    servicesSearching,
+    proceduresPagination,
+    proceduresSearching,
     patientKey,
     handleDialogOpenChange,
     onSubmit,
     clearPatientDependentFields,
+    applyAppointmentAssociations,
   } = useClinicalRecordForm({
     open,
     onOpenChange,
     idPatient,
     idAppointment,
     idPatientTreatment,
-    idService,
+    idProcedure,
     onSuccess,
   });
+
+  const proceduresLocked =
+    hasLinkedAppointment || idAppointment != null;
 
   return (
     <BaseModal
@@ -116,6 +244,11 @@ export const ClinicalRecordFormModal = ({
                     emptyLabel="Sin cita asociada"
                     {...appointmentsPagination}
                     resetKey={patientKey}
+                    onChange={(value) => {
+                      applyAppointmentAssociations(
+                        typeof value === "number" && value > 0 ? value : null,
+                      );
+                    }}
                   />
 
                   <CustomFormSelect
@@ -129,9 +262,10 @@ export const ClinicalRecordFormModal = ({
                     items={treatmentItems}
                     disabled={
                       idPatientTreatment != null ||
+                      proceduresLocked ||
                       (treatmentsSearching && treatmentItems.length === 0)
                     }
-                    searchable
+                    searchable={!proceduresLocked}
                     searchPlaceholder="Buscar plan..."
                     emptyLabel="Sin plan asociado"
                     {...treatmentsPagination}
@@ -140,25 +274,12 @@ export const ClinicalRecordFormModal = ({
                 </>
               )}
 
-              <CustomFormSelect
-                name="idService"
-                label="Servicio (opcional)"
-                placeholder={
-                  servicesSearching
-                    ? "Cargando servicios..."
-                    : "Sin servicio asociado"
-                }
-                items={serviceItems}
-                disabled={
-                  idService != null ||
-                  (servicesSearching && serviceItems.length === 0)
-                }
-                searchable
-                searchPlaceholder="Buscar servicio..."
-                emptyLabel="Sin servicio asociado"
-                onSearch={searchServices}
-                isSearching={servicesSearching}
-                {...servicesPagination}
+              <ClinicalRecordProceduresFields
+                procedureItems={procedureItems}
+                proceduresSearching={proceduresSearching}
+                searchProcedures={searchProcedures}
+                proceduresPagination={proceduresPagination}
+                locked={proceduresLocked}
               />
 
               <CustomFormField

@@ -9,6 +9,7 @@ import type {
   TCalendarFilter,
   TCalendarResource,
 } from "../types";
+import { formatProcedureNames } from "./format-procedure-names";
 
 const fullName = (name?: string | null, surname?: string | null) =>
   `${name ?? ""} ${surname ?? ""}`.trim();
@@ -27,13 +28,13 @@ export const mapAppointmentsToEvents = (
       appointment.professionalName,
       appointment.professionalSurname,
     );
-    const serviceName = appointment.serviceName ?? "Cita";
+    const procedureNames = formatProcedureNames(appointment.procedures);
 
     return {
       id: String(appointment.idAppointment),
       title: patientName
-        ? `${patientName} · ${serviceName}`
-        : serviceName,
+        ? `${patientName} · ${procedureNames}`
+        : procedureNames,
       start: toColombiaDate(appointment.startAt),
       end: toColombiaDate(appointment.endAt),
       description: appointment.notes ?? undefined,
@@ -46,13 +47,13 @@ export const mapAppointmentsToEvents = (
       ),
       idPatient: appointment.idPatient,
       idUser: appointment.idUser,
-      idService: appointment.idService,
+      procedures: appointment.procedures ?? [],
+      totalPrice: appointment.totalPrice ?? 0,
       idPatientTreatment: appointment.idPatientTreatment ?? null,
       patientTreatmentName: appointment.patientTreatmentName ?? null,
-      price: appointment.price ?? null,
       patientName,
       professionalName,
-      serviceName,
+      procedureNames,
     };
   });
 };

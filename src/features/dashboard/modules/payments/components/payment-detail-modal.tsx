@@ -81,7 +81,13 @@ export const PaymentDetailModal = ({
                     <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
                         <h3 className="text-sm font-medium text-ink-50">Cita</h3>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <Field label="Servicio" value={appointment.serviceName} />
+                            <Field label="Procedimientos" value={appointment.procedureNames} />
+                            {appointment.totalPrice > 0 && (
+                                <Field
+                                    label="Precio total"
+                                    value={currencyFormat(appointment.totalPrice)}
+                                />
+                            )}
                             <Field
                                 label="Estado"
                                 value={appointment.appointmentStatus}

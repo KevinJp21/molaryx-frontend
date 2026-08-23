@@ -31,18 +31,6 @@ export const hasRouteAccess = (
     return Boolean(userPermissions?.some((p) => p.module === rule.module));
 };
 
-export const hasPermissionCode = (
-    userPermissions: TUserPermission[] | undefined,
-    module: string,
-    code: string,
-): boolean =>
-    Boolean(
-        userPermissions?.some(
-            (permission) =>
-                permission.module === module && permission.codes.includes(code),
-        ),
-    );
-
 export const filterSectionItemsByPermissions = (
     userPermissions: TUserPermission[] | undefined,
 ) => {

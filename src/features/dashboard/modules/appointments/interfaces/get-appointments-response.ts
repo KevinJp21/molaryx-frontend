@@ -2,6 +2,13 @@ import { TBaseResponse } from "@/types";
 
 export type IGetAppointmentsResponse = TBaseResponse<IGetAppointmentsResponseData[]>;
 
+export interface IAppointmentProcedure {
+    idProcedure: number;
+    name: string;
+    price: number;
+    notes?: string | null;
+}
+
 export interface IGetAppointmentsResponseData {
     idAppointment: number;
     idPatient: number;
@@ -11,15 +18,14 @@ export interface IGetAppointmentsResponseData {
     idUser: number;
     professionalName: string;
     professionalSurname: string;
-    idService: number;
-    serviceName: string;
+    procedures: IAppointmentProcedure[];
+    totalPrice: number;
     idPatientTreatment?: number | null;
     patientTreatmentName?: string | null;
-    price?: number | null;
     idAppointmentStatus: number;
     appointmentStatus?: string | null;
     appointmentStatusName?: string | null;
     startAt: string;
     endAt: string;
-    notes: string |null;
+    notes: string | null;
 };

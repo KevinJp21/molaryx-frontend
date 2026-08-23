@@ -33,8 +33,8 @@ interface IPaymentPatient {
 
 interface IPaymentAppointment {
   idAppointment: number;
-  idService: number;
-  serviceName: string;
+  procedureNames: string;
+  totalPrice: number;
   idAppointmentStatus: number;
   appointmentStatus: string;
   startAt: string;

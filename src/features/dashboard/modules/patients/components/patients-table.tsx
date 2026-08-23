@@ -34,10 +34,21 @@ type Props = {
     onEdit: (patient: IPatientsItems) => void;
     onDelete: (patient: IPatientsItems) => void;
     onCreate: () => void;
+    canCreate?: boolean;
+    canUpdate?: boolean;
+    canDelete?: boolean;
     refreshKey?: number;
 };
 
-export const PatientsTable = ({ onEdit, onDelete, onCreate, refreshKey = 0 }: Props) => {
+export const PatientsTable = ({
+    onEdit,
+    onDelete,
+    onCreate,
+    canCreate = false,
+    canUpdate = false,
+    canDelete = false,
+    refreshKey = 0,
+}: Props) => {
     const dispatch = useAppDispatch();
     const { data, status, message, error } = useAppSelector(selectGetPatients);
     const [currentPage, setCurrentPage] = useState(1);
@@ -66,7 +77,8 @@ export const PatientsTable = ({ onEdit, onDelete, onCreate, refreshKey = 0 }: Pr
 
     const items = data?.items ?? [];
     const totalPages = data?.totalPages ?? 0;
-    const colSpan = 6;
+    const showActions = canUpdate || canDelete;
+    const colSpan = showActions ? 6 : 5;
     const hasActiveFilters = Boolean(search.trim() || statusFilter !== "all");
 
     const filterParamsForForm: TGetPatientsParams = {
@@ -96,18 +108,21 @@ export const PatientsTable = ({ onEdit, onDelete, onCreate, refreshKey = 0 }: Pr
                         setCurrentPage(1);
                     }}
                     onCreateClick={onCreate}
+                    canCreate={canCreate}
                 />
 
                 <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
                     <div className="border-b border-ink-800 px-3 py-3 lg:hidden">
-                        <Button
-                            type="button"
-                            className="mb-3 h-11 w-full justify-center gap-2 rounded-2xl"
-                            onClick={onCreate}
-                        >
-                            <PlusIcon className="size-4" />
-                            Agregar paciente
-                        </Button>
+                        {canCreate && (
+                            <Button
+                                type="button"
+                                className="mb-3 h-11 w-full justify-center gap-2 rounded-2xl"
+                                onClick={onCreate}
+                            >
+                                <PlusIcon className="size-4" />
+                                Agregar paciente
+                            </Button>
+                        )}
                         <PatientsTableFilter
                             params={filterParamsForForm}
                             onFiltersChange={handleMobileFiltersChange}
@@ -131,7 +146,9 @@ export const PatientsTable = ({ onEdit, onDelete, onCreate, refreshKey = 0 }: Pr
                                     <TableHead>Nacimiento</TableHead>
                                     <TableHead>Contacto</TableHead>
                                     <TableHead>Estado</TableHead>
-                                    <TableHead className="w-14 text-right">Acciones</TableHead>
+                                    {showActions && (
+                                        <TableHead className="w-14 text-right">Acciones</TableHead>
+                                    )}
                                 </TableRow>
                             </TableHeader>
                             {(status === "loading" || status === "idle") && (
@@ -171,7 +188,7 @@ export const PatientsTable = ({ onEdit, onDelete, onCreate, refreshKey = 0 }: Pr
                                                         ? "No hay pacientes con los filtros seleccionados. Ajusta la búsqueda o el estado."
                                                         : "Registra el primer paciente para empezar a gestionar fichas, citas y tratamientos."}
                                                 </p>
-                                                {!hasActiveFilters && (
+                                                {!hasActiveFilters && canCreate && (
                                                     <Button
                                                         type="button"
                                                         size="sm"
@@ -237,43 +254,49 @@ export const PatientsTable = ({ onEdit, onDelete, onCreate, refreshKey = 0 }: Pr
                                                         <Badge variant="destructive">Inactivo</Badge>
                                                     )}
                                                 </TableCell>
-                                                <TableCell className="text-right">
-                                                    <Popover>
-                                                        <PopoverTrigger asChild>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon-sm"
-                                                                aria-label={`Ver ${fullName}`}
-                                                            >
-                                                                <Logs className="size-4" strokeWidth={1.75} />
-                                                            </Button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent className="w-72 p-2" align="end">
-                                                            <div className="flex flex-col gap-2">
+                                                {showActions && (
+                                                    <TableCell className="text-right">
+                                                        <Popover>
+                                                            <PopoverTrigger asChild>
                                                                 <Button
                                                                     variant="ghost"
-                                                                    size="sm"
-                                                                    className="justify-start text-xs font-normal text-ink-200"
-                                                                    aria-label={`Editar paciente ${fullName}`}
-                                                                    onClick={() => onEdit(item)}
+                                                                    size="icon-sm"
+                                                                    aria-label={`Ver ${fullName}`}
                                                                 >
-                                                                    <SquarePen className="size-4" strokeWidth={1.75} />
-                                                                    Editar
+                                                                    <Logs className="size-4" strokeWidth={1.75} />
                                                                 </Button>
-                                                                <Button
-                                                                    variant="destructive"
-                                                                    size="sm"
-                                                                    className="justify-start text-xs font-normal text-ink-200"
-                                                                    aria-label={`Eliminar paciente ${fullName}`}
-                                                                    onClick={() => onDelete(item)}
-                                                                >
-                                                                    <Trash className="size-4" strokeWidth={1.75} />
-                                                                    Eliminar
-                                                                </Button>
-                                                            </div>
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                </TableCell>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent className="w-72 p-2" align="end">
+                                                                <div className="flex flex-col gap-2">
+                                                                    {canUpdate && (
+                                                                        <Button
+                                                                            variant="ghost"
+                                                                            size="sm"
+                                                                            className="justify-start text-xs font-normal text-ink-200"
+                                                                            aria-label={`Editar paciente ${fullName}`}
+                                                                            onClick={() => onEdit(item)}
+                                                                        >
+                                                                            <SquarePen className="size-4" strokeWidth={1.75} />
+                                                                            Editar
+                                                                        </Button>
+                                                                    )}
+                                                                    {canDelete && (
+                                                                        <Button
+                                                                            variant="destructive"
+                                                                            size="sm"
+                                                                            className="justify-start text-xs font-normal text-ink-200"
+                                                                            aria-label={`Eliminar paciente ${fullName}`}
+                                                                            onClick={() => onDelete(item)}
+                                                                        >
+                                                                            <Trash className="size-4" strokeWidth={1.75} />
+                                                                            Eliminar
+                                                                        </Button>
+                                                                    )}
+                                                                </div>
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                    </TableCell>
+                                                )}
                                             </TableRow>
                                         );
                                     })

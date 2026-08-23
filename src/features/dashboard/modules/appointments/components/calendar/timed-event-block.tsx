@@ -15,7 +15,7 @@ type Props = {
   readonly?: boolean;
   compact?: boolean;
   onClick: (event: TAppointmentCalendarEvent) => void;
-  onContextMenu: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
+  onContextMenu?: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
   onResize?: (event: TAppointmentCalendarEvent, newEnd: Date) => void;
   onResizePreview?: (event: TAppointmentCalendarEvent, newEnd: Date) => void;
 };
@@ -91,7 +91,7 @@ export const TimedEventBlock = ({
               onClick(event);
             }
           }}
-          onContextMenu={(mouseEvent) => onContextMenu(event, mouseEvent)}
+          onContextMenu={(mouseEvent) => onContextMenu?.(event, mouseEvent)}
           className={cn(
             "group relative h-full overflow-hidden rounded-md border shadow-sm transition-all hover:z-20 hover:shadow-md",
             isShort

@@ -1,20 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Plus, Search } from "lucide-react";
-import { Button, Input } from "@/components";
-import { cn } from "@/lib/utils";
+import { FormProvider, useForm } from "react-hook-form";
+import { Plus, Search } from "lucide-react";
+import { Button, CustomFormSelect, Input } from "@/components";
 import {
   PATIENT_STATUS_FILTER_OPTIONS,
   type TPatientStatusFilter,
 } from "../consts";
+
+type TFilterForm = {
+  isActive: TPatientStatusFilter;
+};
 
 type Props = {
   search: string;
   status: TPatientStatusFilter;
   onSearchChange: (value: string) => void;
   onStatusChange: (value: TPatientStatusFilter) => void;
-  onCreateClick: () => void;
+  onCreateClick?: () => void;
+  canCreate?: boolean;
 };
 
 export const PatientsSidebar = ({
@@ -23,8 +28,14 @@ export const PatientsSidebar = ({
   onSearchChange,
   onStatusChange,
   onCreateClick,
+  canCreate = false,
 }: Props) => {
   const [searchDraft, setSearchDraft] = useState(search);
+  const methods = useForm<TFilterForm>({
+    values: {
+      isActive: status,
+    },
+  });
 
   useEffect(() => {
     setSearchDraft(search);
@@ -40,16 +51,18 @@ export const PatientsSidebar = ({
   return (
     <aside className="hidden h-full w-64 shrink-0 flex-col overflow-hidden border-r border-ink-800 lg:flex">
       <div className="scrollbar-hide flex h-full flex-col overflow-y-auto bg-linear-to-b from-ink-950 via-ink-950 to-ink-900/40 py-4">
-        <div className="mb-5 px-4">
-          <Button
-            type="button"
-            className="h-12 w-full justify-center gap-3 rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-accent-500/20 active:scale-[0.98]"
-            onClick={onCreateClick}
-          >
-            <Plus className="size-5" />
-            <span className="text-sm">Agregar paciente</span>
-          </Button>
-        </div>
+        {canCreate && onCreateClick && (
+          <div className="mb-5 px-4">
+            <Button
+              type="button"
+              className="h-12 w-full justify-center gap-3 rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-accent-500/20 active:scale-[0.98]"
+              onClick={onCreateClick}
+            >
+              <Plus className="size-5" />
+              <span className="text-sm">Agregar paciente</span>
+            </Button>
+          </div>
+        )}
 
         <div className="mb-5 px-4">
           <label className="mb-2 block text-[10px] font-semibold uppercase tracking-wider text-ink-400">
@@ -67,48 +80,23 @@ export const PatientsSidebar = ({
           </div>
         </div>
 
-        <div className="px-4">
-          <div className="rounded-2xl bg-ink-900/60 p-3">
-            <p className="mb-2 px-2 text-sm font-semibold text-ink-50">Estado</p>
-            <div className="space-y-1">
-              {PATIENT_STATUS_FILTER_OPTIONS.map((option) => {
-                const isActive = status === option.value;
-
-                return (
-                  <Button
-                    key={String(option.value)}
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onStatusChange(option.value)}
-                    className="group h-auto w-full justify-start gap-3 rounded-xl px-2 py-2 font-medium hover:bg-accent-500/10"
-                  >
-                    <span
-                      className={cn(
-                        "flex size-5 shrink-0 items-center justify-center rounded-md border-2 transition-all duration-200",
-                        isActive ? "border-transparent" : "border-ink-600 bg-ink-950",
-                      )}
-                      style={{
-                        backgroundColor: isActive ? option.color : undefined,
-                      }}
-                    >
-                      {isActive && (
-                        <Check className="size-3.5 text-white" strokeWidth={3} />
-                      )}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink-100">
-                      {option.label}
-                    </span>
-                    <span
-                      className="size-2 rounded-full opacity-60 transition-opacity group-hover:opacity-100"
-                      style={{ backgroundColor: option.color }}
-                    />
-                  </Button>
-                );
-              })}
-            </div>
+        <FormProvider {...methods}>
+          <div className="px-4">
+            <CustomFormSelect
+              name="isActive"
+              label="Estado"
+              placeholder="Todos"
+              items={PATIENT_STATUS_FILTER_OPTIONS.map((option) => ({
+                name: option.label,
+                value: option.value,
+              }))}
+              onChange={(value) => {
+                if (value == null) return;
+                onStatusChange(value as TPatientStatusFilter);
+              }}
+            />
           </div>
-        </div>
+        </FormProvider>
       </div>
     </aside>
   );

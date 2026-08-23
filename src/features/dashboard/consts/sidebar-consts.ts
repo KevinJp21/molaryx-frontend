@@ -1,4 +1,5 @@
 import { Home, User, Layers, Calendar, Users, ClipboardPlus, ClipboardList, Wallet, FileText } from "lucide-react";
+import { PERMISSION_MODULES } from "./permission-codes";
 import { SidebarSection } from "../types";
 
 export const SIDEBAR_SECTIONS: SidebarSection[] = [
@@ -13,24 +14,24 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         label: "Pacientes",
         href: "/dashboard/patients",
         icon: User,
-        permission: { module: "PATIENTS" },
+        permission: { module: PERMISSION_MODULES.PATIENTS },
       },
       {
         label: "Historia clínica",
         href: "/dashboard/clinical-records",
         icon: FileText,
-        permission: { module: "CLINICAL_RECORDS" },
+        permission: { module: PERMISSION_MODULES.CLINICAL_RECORDS },
       },
     ],
   },
   {
-    title: "Servicios",
+    title: "Procedimientos",
     items: [
       {
-        label: "Servicios",
-        href: "/dashboard/services",
+        label: "Procedimientos",
+        href: "/dashboard/procedures",
         icon: Layers,
-        permission: { module: "SERVICES" },
+        permission: { module: PERMISSION_MODULES.PROCEDURES },
       },
     ],
   },
@@ -41,7 +42,7 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         label: "Citas",
         href: "/dashboard/appointments",
         icon: Calendar,
-        permission: { module: "APPOINTMENTS" },
+        permission: { module: PERMISSION_MODULES.APPOINTMENTS },
       },
     ],
   },
@@ -52,13 +53,13 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         label: "Tratamientos",
         href: "/dashboard/treatments",
         icon: ClipboardPlus,
-        permission: { module: "TREATMENTS" },
+        permission: { module: PERMISSION_MODULES.TREATMENTS },
       },
       {
         label: "Planes de tratamiento",
         href: "/dashboard/patient-treatments",
         icon: ClipboardList,
-        permission: { module: "PATIENT_TREATMENTS" },
+        permission: { module: PERMISSION_MODULES.PATIENT_TREATMENTS },
       },
     ],
   },
@@ -69,7 +70,18 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         label: "Pagos",
         href: "/dashboard/payments",
         icon: Wallet,
-        permission: { module: "PAYMENTS" },
+        permission: { module: PERMISSION_MODULES.PAYMENTS },
+      },
+    ],
+  },
+  {
+    title: "Equipo",
+    items: [
+      {
+        label: "Equipo",
+        href: "/dashboard/team",
+        icon: Users,
+        permission: { module: PERMISSION_MODULES.USERS },
       },
     ],
   }

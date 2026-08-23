@@ -1,10 +1,32 @@
 "use client";
 
 import { useState } from "react";
+import { useAppSelector } from "@/store";
+import { selectGetUserData } from "@/store/authentication/authentication-slice";
+import {
+  checkCanCreate,
+  checkCanDelete,
+  checkCanUpdate,
+} from "@/features/dashboard/utils";
+import { PERMISSION_MODULES } from "@/features/dashboard/consts";
 import { PatientFormModal, PatientsTable, DeletePatientModal } from "../components";
 import { IPatientsItems } from "../interfaces";
 
 export const PatientsTemplate = () => {
+    const { data: userData } = useAppSelector(selectGetUserData);
+    const canCreate = checkCanCreate(
+        userData?.permissions,
+        PERMISSION_MODULES.PATIENTS,
+    );
+    const canUpdate = checkCanUpdate(
+        userData?.permissions,
+        PERMISSION_MODULES.PATIENTS,
+    );
+    const canDelete = checkCanDelete(
+        userData?.permissions,
+        PERMISSION_MODULES.PATIENTS,
+    );
+
     const [patientModalOpen, setPatientModalOpen] = useState(false);
     const [selectedPatient, setSelectedPatient] = useState<IPatientsItems | null>(null);
 
@@ -54,21 +76,28 @@ export const PatientsTemplate = () => {
                 onEdit={openEditModal}
                 onDelete={openDeleteModal}
                 onCreate={openCreateModal}
+                canCreate={canCreate}
+                canUpdate={canUpdate}
+                canDelete={canDelete}
                 refreshKey={listRefreshKey}
             />
 
-            <PatientFormModal
-                open={patientModalOpen}
-                onOpenChange={handleModalOpenChange}
-                patient={selectedPatient}
-                onSuccess={refreshPatientsList}
-            />
-            <DeletePatientModal
-                open={deletePatientModalOpen}
-                onOpenChange={handleDeleteModalOpenChange}
-                patient={patientToDelete}
-                onSuccess={refreshPatientsList}
-            />
+            {(canCreate || canUpdate) && (
+                <PatientFormModal
+                    open={patientModalOpen}
+                    onOpenChange={handleModalOpenChange}
+                    patient={selectedPatient}
+                    onSuccess={refreshPatientsList}
+                />
+            )}
+            {canDelete && (
+                <DeletePatientModal
+                    open={deletePatientModalOpen}
+                    onOpenChange={handleDeleteModalOpenChange}
+                    patient={patientToDelete}
+                    onSuccess={refreshPatientsList}
+                />
+            )}
         </>
     );
 };

@@ -4,13 +4,20 @@ import { useMemo } from "react";
 import { usePaginatedSelect } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice";
-import { getServices, selectGetServices } from "@/store/services/services-slice";
-import { getProfessionals, selectGetProfessionals } from "@/store/professionals/professionals-slice";
+import { getProcedures, selectGetProcedures } from "@/store/procedures/procedures-slice";
+import { getTeam, selectGetTeam } from "@/store/team/team-slice";
 import { getPatientTreatments, selectGetPatientTreatments } from "@/store/patient-treatments/patient-treatments-slice";
 import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
+import { ROLES_IDS } from "@/consts";
 import { APPOINTMENT_STATUS_OPTIONS } from "../consts/appointment-status";
-import { USER_STATUS } from "../consts/user-status";
+import { USER_STATUS } from "@/features/dashboard/consts";
 import { fullName } from "../utils/appointment-form-values";
+
+/** Roles que pueden asignarse como profesional de una cita (oculto al usuario final). */
+const APPOINTMENT_PROFESSIONAL_ROLES = [
+  ROLES_IDS.OWNER,
+  ROLES_IDS.PROFESSIONAL,
+] as const;
 
 type Params = {
   open: boolean;
@@ -28,10 +35,10 @@ export const useAppointmentFormOptions = ({
   const dispatch = useAppDispatch();
   const { data: patientsData, status: patientsStatus } =
     useAppSelector(selectGetPatients);
-  const { data: servicesData, status: servicesStatus } =
-    useAppSelector(selectGetServices);
+  const { data: proceduresData, status: proceduresStatus } =
+    useAppSelector(selectGetProcedures);
   const { data: professionalsData, status: professionalsStatus } =
-    useAppSelector(selectGetProfessionals);
+    useAppSelector(selectGetTeam);
   const { data: treatmentsData, status: treatmentsStatus } =
     useAppSelector(selectGetPatientTreatments);
 
@@ -56,8 +63,9 @@ export const useAppointmentFormOptions = ({
     status: professionalsStatus,
     fetchPage: ({ page, search }) => {
       dispatch(
-        getProfessionals({
+        getTeam({
           IdUserStatus: USER_STATUS.ACTIVE,
+          IdUserRoles: [...APPOINTMENT_PROFESSIONAL_ROLES],
           Page: page,
           ...(search ? { Search: search } : {}),
         }),
@@ -65,13 +73,13 @@ export const useAppointmentFormOptions = ({
     },
   });
 
-  const services = usePaginatedSelect({
+  const procedures = usePaginatedSelect({
     enabled: open,
-    data: servicesData,
-    status: servicesStatus,
+    data: proceduresData,
+    status: proceduresStatus,
     fetchPage: ({ page, search }) => {
       dispatch(
-        getServices({
+        getProcedures({
           IsActive: true,
           Page: page,
           ...(search ? { Search: search } : {}),
@@ -111,14 +119,22 @@ export const useAppointmentFormOptions = ({
     [patients.items],
   );
 
-  const serviceItems = useMemo(
+  const procedureItems = useMemo(
     () =>
-      services.items.map((service) => ({
-        value: service.idService,
-        name: service.name,
+      procedures.items.map((procedure) => ({
+        value: procedure.idProcedure,
+        name: procedure.name,
       })),
-    [services.items],
+    [procedures.items],
   );
+
+  const procedureReferencePriceById = useMemo(() => {
+    const map = new Map<number, number | null>();
+    for (const procedure of procedures.items) {
+      map.set(procedure.idProcedure, procedure.referencePrice ?? null);
+    }
+    return map;
+  }, [procedures.items]);
 
   const professionalItems = useMemo(
     () =>
@@ -172,20 +188,21 @@ export const useAppointmentFormOptions = ({
     patientsStatus,
     professionalItems,
     professionalsStatus,
-    serviceItems,
-    servicesStatus,
+    procedureItems,
+    procedureReferencePriceById,
+    proceduresStatus,
     treatmentItems,
     treatmentsStatus,
     statusItems,
     searchPatients: patients.onSearch,
     searchProfessionals: professionals.onSearch,
-    searchServices: services.onSearch,
+    searchProcedures: procedures.onSearch,
     patientsPagination: patients.paginationProps,
     patientsSearching: patients.isSearching,
     professionalsPagination: professionals.paginationProps,
     professionalsSearching: professionals.isSearching,
-    servicesPagination: services.paginationProps,
-    servicesSearching: services.isSearching,
+    proceduresPagination: procedures.paginationProps,
+    proceduresSearching: procedures.isSearching,
     treatmentsPagination: treatments.paginationProps,
     treatmentsSearching: treatments.isSearching,
   };

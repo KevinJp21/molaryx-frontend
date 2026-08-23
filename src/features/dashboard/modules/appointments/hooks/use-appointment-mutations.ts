@@ -27,6 +27,13 @@ export const useAppointmentMutations = ({
 }: Params) => {
   const dispatch = useAppDispatch();
 
+  const toProceduresPayload = (event: TAppointmentCalendarEvent) =>
+    event.procedures.map((procedure) => ({
+      idProcedure: procedure.idProcedure,
+      price: procedure.price,
+      notes: procedure.notes ?? undefined,
+    }));
+
   /** Optimistic UI + persistencia en API para drag/resize. */
   const syncAppointmentSchedule = async (
     event: TAppointmentCalendarEvent,
@@ -42,9 +49,8 @@ export const useAppointmentMutations = ({
         idAppointmentStatus: Number(event.calendarId),
         idPatient: event.idPatient,
         idUser: event.idUser,
-        idService: event.idService,
+        procedures: toProceduresPayload(event),
         idPatientTreatment: event.idPatientTreatment,
-        price: event.price,
         startAt: colombiaToUtcIso(start),
         endAt: colombiaToUtcIso(end),
         notes: event.description || undefined,
@@ -80,9 +86,8 @@ export const useAppointmentMutations = ({
         idAppointmentStatus: APPOINTMENT_STATUS.CANCELLED,
         idPatient: event.idPatient,
         idUser: event.idUser,
-        idService: event.idService,
+        procedures: toProceduresPayload(event),
         idPatientTreatment: event.idPatientTreatment,
-        price: event.price,
         startAt: colombiaToUtcIso(event.start),
         endAt: colombiaToUtcIso(event.end),
         notes: event.description || undefined,

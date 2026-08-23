@@ -22,8 +22,8 @@ type Props = {
   currentDate: Date;
   events: TAppointmentCalendarEvent[];
   onEventClick: (event: TAppointmentCalendarEvent) => void;
-  onEventContextMenu: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
-  onCreateClick: () => void;
+  onEventContextMenu?: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
+  onCreateClick?: () => void;
 };
 
 const getDateLabel = (date: Date) => {
@@ -109,7 +109,7 @@ export const AgendaView = ({
                         onEventClick(event);
                       }
                     }}
-                    onContextMenu={(mouseEvent) => onEventContextMenu(event, mouseEvent)}
+                    onContextMenu={(mouseEvent) => onEventContextMenu?.(event, mouseEvent)}
                     className="group relative flex cursor-pointer gap-4 rounded-2xl border border-ink-800 bg-ink-950 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-300 hover:shadow-lg hover:shadow-accent-500/5"
                   >
                     <span
@@ -154,7 +154,7 @@ export const AgendaView = ({
                         </span>
                         <span className="flex items-center gap-1.5 text-xs text-ink-400">
                           <Stethoscope className="size-3.5" />
-                          {event.serviceName}
+                          {event.procedureNames}
                         </span>
                         {event.professionalName && (
                           <span className="flex items-center gap-1.5 text-xs text-ink-400">

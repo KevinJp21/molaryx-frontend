@@ -1,4 +1,5 @@
 import { TBaseResponse, TPaginationResponse } from "@/types";
+import type { IAppointmentProcedure } from "./get-appointments-response";
 
 export interface IGetAppointmentsListResponse
   extends TBaseResponse<IGetAppointmentsListResponseData> {}
@@ -15,11 +16,10 @@ export interface IAppointmentListItems {
   idUser: number;
   professionalName: string;
   professionalSurname: string;
-  idService: number;
-  serviceName: string;
+  procedures: IAppointmentProcedure[];
+  totalPrice: number;
   idPatientTreatment?: number | null;
   patientTreatmentName?: string | null;
-  price?: number | null;
   idAppointmentStatus: number;
   appointmentStatus: string;
   startAt: string;

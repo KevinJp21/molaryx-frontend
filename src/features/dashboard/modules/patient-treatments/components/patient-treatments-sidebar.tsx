@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, ClipboardList, Plus, Search } from "lucide-react";
-import { Button, Input } from "@/components";
-import { cn } from "@/lib/utils";
+import { FormProvider, useForm } from "react-hook-form";
+import { ClipboardList, Plus, Search } from "lucide-react";
+import { Button, CustomFormSelect, Input } from "@/components";
 import {
   PATIENT_TREATMENT_STATUS_SIDEBAR_OPTIONS,
   type TPatientTreatmentStatusFilter,
 } from "../consts";
+
+type TFilterForm = {
+  idPatientTreatmentStatus: TPatientTreatmentStatusFilter;
+};
 
 type Props = {
   search: string;
@@ -27,6 +31,11 @@ export const PatientTreatmentsSidebar = ({
   canCreate = false,
 }: Props) => {
   const [searchDraft, setSearchDraft] = useState(search);
+  const methods = useForm<TFilterForm>({
+    values: {
+      idPatientTreatmentStatus: status,
+    },
+  });
 
   useEffect(() => {
     setSearchDraft(search);
@@ -78,48 +87,23 @@ export const PatientTreatmentsSidebar = ({
           </div>
         </div>
 
-        <div className="px-4">
-          <div className="rounded-2xl bg-ink-900/60 p-3">
-            <p className="mb-2 px-2 text-sm font-semibold text-ink-50">Estado</p>
-            <div className="space-y-1">
-              {PATIENT_TREATMENT_STATUS_SIDEBAR_OPTIONS.map((option) => {
-                const isActive = status === option.value;
-
-                return (
-                  <Button
-                    key={String(option.value)}
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onStatusChange(option.value)}
-                    className="group h-auto w-full justify-start gap-3 rounded-xl px-2 py-2 font-medium hover:bg-accent-500/10"
-                  >
-                    <span
-                      className={cn(
-                        "flex size-5 shrink-0 items-center justify-center rounded-md border-2 transition-all duration-200",
-                        isActive ? "border-transparent" : "border-ink-600 bg-ink-950",
-                      )}
-                      style={{
-                        backgroundColor: isActive ? option.color : undefined,
-                      }}
-                    >
-                      {isActive && (
-                        <Check className="size-3.5 text-white" strokeWidth={3} />
-                      )}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink-100">
-                      {option.label}
-                    </span>
-                    <span
-                      className="size-2 rounded-full opacity-60 transition-opacity group-hover:opacity-100"
-                      style={{ backgroundColor: option.color }}
-                    />
-                  </Button>
-                );
-              })}
-            </div>
+        <FormProvider {...methods}>
+          <div className="px-4">
+            <CustomFormSelect
+              name="idPatientTreatmentStatus"
+              label="Estado"
+              placeholder="Todos"
+              items={PATIENT_TREATMENT_STATUS_SIDEBAR_OPTIONS.map((option) => ({
+                name: option.label,
+                value: option.value,
+              }))}
+              onChange={(value) => {
+                if (value == null) return;
+                onStatusChange(value as TPatientTreatmentStatusFilter);
+              }}
+            />
           </div>
-        </div>
+        </FormProvider>
       </div>
     </aside>
   );

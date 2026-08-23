@@ -21,7 +21,7 @@ type Props = {
   events: TAppointmentCalendarEvent[];
   readonly?: boolean;
   onEventClick: (event: TAppointmentCalendarEvent) => void;
-  onEventContextMenu: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
+  onEventContextMenu?: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
   onDateClick: (date: Date) => void;
 };
 
@@ -35,7 +35,7 @@ const MonthEventItem = memo(
     event: TAppointmentCalendarEvent;
     readonly?: boolean;
     onEventClick: (event: TAppointmentCalendarEvent) => void;
-    onEventContextMenu: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
+    onEventContextMenu?: (event: TAppointmentCalendarEvent, mouse: MouseEvent) => void;
   }) => (
     <DraggableEvent event={event} disabled={readonly}>
       <div
@@ -58,7 +58,7 @@ const MonthEventItem = memo(
             onEventClick(event);
           }
         }}
-        onContextMenu={(mouseEvent) => onEventContextMenu(event, mouseEvent)}
+        onContextMenu={(mouseEvent) => onEventContextMenu?.(event, mouseEvent)}
       >
         <span className="font-medium">{event.title}</span>
       </div>

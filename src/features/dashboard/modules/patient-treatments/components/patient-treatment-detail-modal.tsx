@@ -5,7 +5,12 @@ import { ClipboardPlus, PlusIcon } from "lucide-react";
 import { Badge, BaseModal, Button } from "@/components";
 import { useAppSelector } from "@/store";
 import { selectGetUserData } from "@/store/authentication/authentication-slice";
-import { hasPermissionCode } from "@/features/dashboard/utils";
+import {
+  checkCanCreate,
+  checkCanView,
+  checkCanViewPaymentsSummary,
+} from "@/features/dashboard/utils";
+import { PERMISSION_MODULES } from "@/features/dashboard/consts";
 import { currencyFormat, formatDate } from "@/utils";
 import { RelatedPaymentsTable } from "@/features/dashboard/components";
 import {
@@ -47,20 +52,14 @@ export const PatientTreatmentDetailModal = ({
     patientTreatment,
 }: Props) => {
     const { data: userData } = useAppSelector(selectGetUserData);
-    const canViewPayments = hasPermissionCode(
+    const canViewPayments = checkCanView(
         userData?.permissions,
-        "PAYMENTS",
-        "GET_PAYMENTS",
+        PERMISSION_MODULES.PAYMENTS,
     );
-    const canViewPaymentSummary = hasPermissionCode(
+    const canViewPaymentSummary = checkCanViewPaymentsSummary(userData?.permissions);
+    const canCreatePayment = checkCanCreate(
         userData?.permissions,
-        "PAYMENTS",
-        "GET_PAYMENTS_SUMMARY_BY_CONCEPT",
-    );
-    const canCreatePayment = hasPermissionCode(
-        userData?.permissions,
-        "PAYMENTS",
-        "CREATE_PAYMENT",
+        PERMISSION_MODULES.PAYMENTS,
     );
     const [paymentModalOpen, setPaymentModalOpen] = useState(false);
     const [paymentsRefreshKey, setPaymentsRefreshKey] = useState(0);

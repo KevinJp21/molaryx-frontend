@@ -22,6 +22,7 @@ import {
   AppointmentFormSchema,
   buildAppointmentFormDefaults,
   type TAppointmentForm,
+  type TAppointmentFormValues,
 } from "../schemas";
 import { formatDuration } from "../utils/format-time";
 import { toAppointmentFormValues } from "../utils/appointment-form-values";
@@ -62,7 +63,7 @@ export const useAppointmentForm = ({
   const isSubmitting =
     createStatus === "loading" || updateStatus === "loading";
 
-  const methods = useForm<TAppointmentForm>({
+  const methods = useForm<TAppointmentForm, unknown, TAppointmentFormValues>({
     mode: "onTouched",
     resolver: zodResolver(AppointmentFormSchema),
     defaultValues: buildAppointmentFormDefaults(initialDate),
@@ -81,20 +82,21 @@ export const useAppointmentForm = ({
     patientsStatus,
     professionalItems,
     professionalsStatus,
-    serviceItems,
-    servicesStatus,
+    procedureItems,
+    procedureReferencePriceById,
+    proceduresStatus,
     treatmentItems,
     treatmentsStatus,
     statusItems,
     searchPatients,
     searchProfessionals,
-    searchServices,
+    searchProcedures,
     patientsPagination,
     patientsSearching,
     professionalsPagination,
     professionalsSearching,
-    servicesPagination,
-    servicesSearching,
+    proceduresPagination,
+    proceduresSearching,
     treatmentsPagination,
     treatmentsSearching,
   } = useAppointmentFormOptions({
@@ -187,24 +189,21 @@ export const useAppointmentForm = ({
     onClose();
   };
 
-  const onSubmit = (data: TAppointmentForm) => {
-    const hasTreatment = (data.idPatientTreatment ?? 0) > 0;
+  const onSubmit = (data: TAppointmentFormValues) => {
+    const hasTreatmentPlan = (data.idPatientTreatment ?? 0) > 0;
     const payload = {
       idPatient: data.idPatient,
       idUser: data.idUser,
-      idService: data.idService,
-      idPatientTreatment: hasTreatment
+      procedures: data.procedures.map((procedure) => ({
+        idProcedure: procedure.idProcedure,
+        price: hasTreatmentPlan ? 0 : procedure.price,
+        notes: procedure.notes,
+      })),
+      idPatientTreatment: hasTreatmentPlan
         ? data.idPatientTreatment
         : isEdit
           ? 0
           : null,
-      price: hasTreatment
-        ? null
-        : data.price
-          ? Number(data.price)
-          : isEdit
-            ? 0
-            : null,
       startAt: colombiaToUtcIso(data.startAt),
       endAt: colombiaToUtcIso(data.endAt),
       notes: data.notes?.trim() || undefined,
@@ -241,18 +240,19 @@ export const useAppointmentForm = ({
     patientsStatus,
     professionalItems,
     professionalsStatus,
-    serviceItems,
-    servicesStatus,
+    procedureItems,
+    procedureReferencePriceById,
+    proceduresStatus,
     statusItems,
     searchPatients,
     searchProfessionals,
-    searchServices,
+    searchProcedures,
     patientsPagination,
     patientsSearching,
     professionalsPagination,
     professionalsSearching,
-    servicesPagination,
-    servicesSearching,
+    proceduresPagination,
+    proceduresSearching,
     treatmentsPagination,
     treatmentsSearching,
     treatmentItems,
