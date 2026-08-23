@@ -5,12 +5,19 @@ import { usePaginatedSelect } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice";
 import { getProcedures, selectGetProcedures } from "@/store/procedures/procedures-slice";
-import { getProfessionals, selectGetProfessionals } from "@/store/professionals/professionals-slice";
+import { getTeam, selectGetTeam } from "@/store/team/team-slice";
 import { getPatientTreatments, selectGetPatientTreatments } from "@/store/patient-treatments/patient-treatments-slice";
 import { PATIENT_TREATMENT_STATUS } from "@/features/dashboard/modules/patient-treatments/consts";
+import { ROLES_IDS } from "@/consts";
 import { APPOINTMENT_STATUS_OPTIONS } from "../consts/appointment-status";
 import { USER_STATUS } from "../consts/user-status";
 import { fullName } from "../utils/appointment-form-values";
+
+/** Roles que pueden asignarse como profesional de una cita (oculto al usuario final). */
+const APPOINTMENT_PROFESSIONAL_ROLES = [
+  ROLES_IDS.OWNER,
+  ROLES_IDS.PROFESSIONAL,
+] as const;
 
 type Params = {
   open: boolean;
@@ -31,7 +38,7 @@ export const useAppointmentFormOptions = ({
   const { data: proceduresData, status: proceduresStatus } =
     useAppSelector(selectGetProcedures);
   const { data: professionalsData, status: professionalsStatus } =
-    useAppSelector(selectGetProfessionals);
+    useAppSelector(selectGetTeam);
   const { data: treatmentsData, status: treatmentsStatus } =
     useAppSelector(selectGetPatientTreatments);
 
@@ -56,8 +63,9 @@ export const useAppointmentFormOptions = ({
     status: professionalsStatus,
     fetchPage: ({ page, search }) => {
       dispatch(
-        getProfessionals({
+        getTeam({
           IdUserStatus: USER_STATUS.ACTIVE,
+          IdUserRoles: [...APPOINTMENT_PROFESSIONAL_ROLES],
           Page: page,
           ...(search ? { Search: search } : {}),
         }),

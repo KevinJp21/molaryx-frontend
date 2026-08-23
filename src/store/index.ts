@@ -7,7 +7,7 @@ import authenticationReducer from './authentication/authentication-slice'
 import patientsReducer from './patients/patiens-slice'
 import proceduresReducer from './procedures/procedures-slice'
 import appointmentsReducer from './appointments/appointments-slice'
-import professionalsReducer from './professionals/professionals-slice'
+import teamReducer from './team/team-slice'
 import treatmentsReducer from './treatments/treatments-slice'
 import patientTreatmentsReducer from './patient-treatments/patient-treatments-slice'
 import paymentsReducer from './payments/payments-slice'
@@ -21,7 +21,7 @@ export const store = configureStore({
         patients: patientsReducer,
         procedures: proceduresReducer,
         appointments: appointmentsReducer,
-        professionals: professionalsReducer,
+        team: teamReducer,
         treatments: treatmentsReducer,
         patientTreatments: patientTreatmentsReducer,
         payments: paymentsReducer,
