@@ -6,10 +6,10 @@ export interface IGetPublicPlans {
   idPlan: number;
   name: string;
   description: string;
-  price: number;
-  maxProfessionals: number;
-  maxAssistants: number;
-  maxPatients: number;
+  price: number | null;
+  maxProfessionals: number | null;
+  maxAssistants: number | null;
+  maxPatients: number | null;
   promotionPlan: IPromotionPlan | null;
 }
 

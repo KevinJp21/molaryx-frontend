@@ -26,7 +26,7 @@ export default function AuthenticationLayout({ children, }: { children: React.Re
                         Tu consultorio, <span className="gradient-text">más simple.</span>
                     </h2>
                     <p className="mt-4 text-sm leading-relaxed text-ink-300">
-                        Molaryx es una plataforma de gestión de consultorios odontológicos que te permite gestionar tu consultorio de forma simple y eficiente.
+                        Molaryx es una plataforma de gestión de consultorios que te permite gestionar tu consultorio de forma simple y eficiente.
                     </p>
 
                     <ul className="mt-8 flex flex-col gap-3">

@@ -8,6 +8,10 @@ import {
   apiGetUserAction,
   apiLogoutAction,
   IGetUserResponseData,
+  apiPostForgotPasswordAction,
+  IPostForgotPasswordFormRequest,
+  apiPostResetPasswordAction,
+  IPostResetPasswordFormRequest,
 } from "@/features/authentication";
 
 type TAuthenticationState = {
@@ -31,6 +35,16 @@ type TAuthenticationState = {
     message?: string;
     data?: IGetUserResponseData;
     userState: TUserState;
+  };
+  postForgotPassword: {
+    status: TStatus;
+    message?: string;
+    error?: string;
+  };
+  postResetPassword: {
+    status: TStatus;
+    message?: string;
+    error?: string;
   };
 };
 
@@ -56,6 +70,16 @@ const initialState: TAuthenticationState = {
     data: undefined,
     userState: "unauthenticated",
   },
+  postForgotPassword: {
+    status: "idle",
+    message: undefined,
+    error: undefined,
+  },
+  postResetPassword: {
+    status: "idle",
+    message: undefined,
+    error: undefined,
+  },
 };
 
 const clearAuthenticatedSession = (state: TAuthenticationState) => {
@@ -66,6 +90,8 @@ const clearAuthenticatedSession = (state: TAuthenticationState) => {
     status: "success",
     userState: "unauthenticated",
   };
+  state.postForgotPassword = initialState.postForgotPassword;
+  state.postResetPassword = initialState.postResetPassword;
 };
 
 const authenticationSlice = createAppSlice({
@@ -123,37 +149,40 @@ const authenticationSlice = createAppSlice({
         },
       },
     ),
-    getUserData: create.asyncThunk(async () => {
-      const first = await apiGetUserAction();
-      if (first.success) return first;
-      // El proxy puede haber rotado el refresh en el documento y este
-      // Server Action aún sale con las cookies viejas. Un segundo intento
-      // ya lleva el access token nuevo.
-      await new Promise((resolve) => setTimeout(resolve, 400));
-      return apiGetUserAction();
-    }, {
-      pending: (state) => {
-        state.getUserData.status = "loading";
-        state.getUserData.userState = "checking";
+    getUserData: create.asyncThunk(
+      async () => {
+        const first = await apiGetUserAction();
+        if (first.success) return first;
+        // El proxy puede haber rotado el refresh en el documento y este
+        // Server Action aún sale con las cookies viejas. Un segundo intento
+        // ya lleva el access token nuevo.
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        return apiGetUserAction();
       },
-      fulfilled: (state, action) => {
-        if (!action.payload.success) {
-          state.getUserData.status = "error";
+      {
+        pending: (state) => {
+          state.getUserData.status = "loading";
+          state.getUserData.userState = "checking";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.getUserData.status = "error";
+            state.getUserData.message = action.payload.message;
+            state.getUserData.userState = "unauthenticated";
+            return;
+          }
+          state.getUserData.status = "success";
           state.getUserData.message = action.payload.message;
+          state.getUserData.data = action.payload.data;
+          state.getUserData.userState = "authenticated";
+        },
+        rejected: (state, action) => {
+          state.getUserData.status = "error";
+          state.getUserData.message = action.error.message;
           state.getUserData.userState = "unauthenticated";
-          return;
-        }
-        state.getUserData.status = "success";
-        state.getUserData.message = action.payload.message;
-        state.getUserData.data = action.payload.data;
-        state.getUserData.userState = "authenticated";
+        },
       },
-      rejected: (state, action) => {
-        state.getUserData.status = "error";
-        state.getUserData.message = action.error.message;
-        state.getUserData.userState = "unauthenticated";
-      },
-    }),
+    ),
     postLogout: create.asyncThunk(async () => apiLogoutAction(), {
       pending: (state) => {
         state.postLogout.status = "loading";
@@ -194,12 +223,70 @@ const authenticationSlice = createAppSlice({
         userState: "unauthenticated",
       },
     })),
+    postForgotPassword: create.asyncThunk(
+      async (data: IPostForgotPasswordFormRequest) =>
+        apiPostForgotPasswordAction(data),
+      {
+        pending: (state) => {
+          state.postForgotPassword.status = "loading";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.postForgotPassword.status = "error";
+            state.postForgotPassword.message = action.payload.message;
+            state.postForgotPassword.error = action.payload.error ?? undefined;
+            return;
+          }
+          state.postForgotPassword.status = "success";
+          state.postForgotPassword.message = action.payload.message;
+          state.postForgotPassword.error = undefined;
+        },
+        rejected: (state, action) => {
+          state.postForgotPassword.status = "error";
+          state.postForgotPassword.message = action.error.message;
+          state.postForgotPassword.error = undefined;
+        },
+      },
+    ),
+    resetPostForgotPassword: create.reducer((state) => {
+      state.postForgotPassword = initialState.postForgotPassword;
+    }),
+    postResetPassword: create.asyncThunk(
+      async (data: IPostResetPasswordFormRequest) =>
+        apiPostResetPasswordAction(data),
+      {
+        pending: (state) => {
+          state.postResetPassword.status = "loading";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.postResetPassword.status = "error";
+            state.postResetPassword.message = action.payload.message;
+            state.postResetPassword.error = action.payload.error ?? undefined;
+            return;
+          }
+          state.postResetPassword.status = "success";
+          state.postResetPassword.message = action.payload.message;
+          state.postResetPassword.error = undefined;
+        },
+        rejected: (state, action) => {
+          state.postResetPassword.status = "error";
+          state.postResetPassword.message = action.error.message;
+          state.postResetPassword.error = undefined;
+        },
+      },
+    ),
+    resetPostResetPassword: create.reducer((state) => {
+      state.postResetPassword = initialState.postResetPassword;
+    }),
   }),
   selectors: {
     selectPostSignUp: (state) => state.postSignUp,
     selectPostSignIn: (state) => state.postSignIn,
     selectPostLogout: (state) => state.postLogout,
     selectGetUserData: (state) => state.getUserData,
+    selectPostForgotPassword: (state) => state.postForgotPassword,
+    selectPostResetPassword: (state) => state.postResetPassword,
   },
 });
 
@@ -211,11 +298,17 @@ export const {
   resetPostLogout,
   getUserData,
   logout,
+  postForgotPassword,
+  resetPostForgotPassword,
+  postResetPassword,
+  resetPostResetPassword,
 } = authenticationSlice.actions;
 export const {
   selectPostSignUp,
   selectPostSignIn,
   selectPostLogout,
   selectGetUserData,
+  selectPostForgotPassword,
+  selectPostResetPassword,
 } = authenticationSlice.selectors;
 export default authenticationSlice.reducer;

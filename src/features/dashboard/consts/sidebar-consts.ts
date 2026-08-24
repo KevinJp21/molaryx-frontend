@@ -1,4 +1,14 @@
-import { Home, User, Layers, Calendar, Users, ClipboardPlus, ClipboardList, Wallet, FileText } from "lucide-react";
+import {
+  Home,
+  User,
+  Layers,
+  Calendar,
+  Users,
+  ClipboardPlus,
+  ClipboardList,
+  Wallet,
+  FileText,
+} from "lucide-react";
 import { PERMISSION_MODULES } from "./permission-codes";
 import { SidebarSection } from "../types";
 
@@ -36,17 +46,6 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
     ],
   },
   {
-    title: "Citas",
-    items: [
-      {
-        label: "Citas",
-        href: "/dashboard/appointments",
-        icon: Calendar,
-        permission: { module: PERMISSION_MODULES.APPOINTMENTS },
-      },
-    ],
-  },
-  {
     title: "Tratamientos",
     items: [
       {
@@ -60,6 +59,17 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         href: "/dashboard/patient-treatments",
         icon: ClipboardList,
         permission: { module: PERMISSION_MODULES.PATIENT_TREATMENTS },
+      },
+    ],
+  },
+  {
+    title: "Citas",
+    items: [
+      {
+        label: "Citas",
+        href: "/dashboard/appointments",
+        icon: Calendar,
+        permission: { module: PERMISSION_MODULES.APPOINTMENTS },
       },
     ],
   },
@@ -84,5 +94,5 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         permission: { module: PERMISSION_MODULES.USERS },
       },
     ],
-  }
+  },
 ];
