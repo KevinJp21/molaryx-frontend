@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +18,7 @@ import { IPostForgotPasswordFormRequest } from "../interfaces";
 export const ForgotPasswordTemplate = () => {
     const dispatch = useAppDispatch();
     const { status, message, error } = useAppSelector(selectPostForgotPassword);
+    const [submittedEmail, setSubmittedEmail] = useState("");
 
     const methods = useForm<IPostForgotPasswordFormRequest>({
         mode: "onTouched",
@@ -29,10 +30,10 @@ export const ForgotPasswordTemplate = () => {
     const {
         handleSubmit,
         formState: { isValid },
-        getValues,
     } = methods;
 
     const onSubmit = (data: IPostForgotPasswordFormRequest) => {
+        setSubmittedEmail(data.email);
         dispatch(postForgotPassword(data));
     };
 
@@ -48,8 +49,6 @@ export const ForgotPasswordTemplate = () => {
             toast.success(message);
         }
     }, [status, message, error]);
-
-    const submittedEmail = getValues("email");
 
     return (
         <div className="flex w-full max-w-md flex-1 flex-col justify-center">
