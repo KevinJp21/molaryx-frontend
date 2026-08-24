@@ -18,11 +18,10 @@ export const PricingFounderCallout = () => {
           </h3>
 
           <p className="mt-3 max-w-2xl text-sm leading-relaxed wrap-break-word text-ink-200 sm:text-base">
-            Durante nuestro lanzamiento, el plan{" "}
-            <strong className="text-ink-50">Professional</strong> estará disponible con un
-            <strong className="text-ink-50"> precio Founder</strong>. Esta tarifa especial
-            está dirigida a los primeros consultorios que decidan implementar
-            Molaryx y acompañarnos en esta etapa de crecimiento.
+            Durante el lanzamiento, el plan{" "}
+            <strong className="text-ink-50">Professional</strong> tiene un{" "}
+            <strong className="text-ink-50">precio Founder</strong> para los primeros
+            consultorios que quieran operar con Molaryx desde el inicio.
           </p>
 
           <p className="mt-3 max-w-2xl text-sm leading-relaxed wrap-break-word text-ink-300 sm:text-base">

@@ -1,10 +1,11 @@
-import { LayoutGrid, CalendarDays, Users, Stethoscope, CreditCard, Settings, Activity, CircleDollarSign } from "lucide-react";
+import { LayoutGrid, CalendarDays, Users, Layers, CreditCard, Settings, Activity, CircleDollarSign, FileText } from "lucide-react";
 
 export const NAV_ITEMS = [
   { icon: LayoutGrid, label: "Inicio", active: true },
   { icon: CalendarDays, label: "Agenda" },
   { icon: Users, label: "Pacientes" },
-  { icon: Stethoscope, label: "Servicios" },
+  { icon: FileText, label: "Historia clínica" },
+  { icon: Layers, label: "Procedimientos" },
   { icon: CreditCard, label: "Pagos" },
   { icon: Settings, label: "Ajustes" },
 ];
@@ -50,25 +51,25 @@ export const APPOINTMENTS = [
   {
     time: "09:00",
     patient: "María Fernández",
-    service: "Consulta odontológica",
+    service: "Consulta general",
     status: "Confirmada",
   },
   {
     time: "10:30",
     patient: "Carlos Ruiz",
-    service: "Profilaxis dental",
-    status: "En sala",
+    service: "Control de seguimiento",
+    status: "En progreso",
   },
   {
     time: "12:00",
     patient: "Ana Torres",
-    service: "Primera valoración",
+    service: "Evaluación inicial",
     status: "Pendiente",
   },
   {
     time: "15:30",
     patient: "Jorge Mendieta",
-    service: "Resina · molar superior",
+    service: "Procedimiento especializado",
     status: "Confirmada",
   },
 ];
@@ -81,7 +82,7 @@ export const RECENT_PATIENTS = [
 
 export const STATUS_STYLES: Record<string, string> = {
   Confirmada: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/20",
-  "En sala": "bg-accent-500/15 text-accent-300 ring-accent-500/20",
+  "En progreso": "bg-accent-500/15 text-accent-300 ring-accent-500/20",
   Pendiente: "bg-ink-500/40 text-ink-200 ring-white/10",
 };
 

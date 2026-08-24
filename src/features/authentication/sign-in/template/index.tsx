@@ -54,7 +54,7 @@ export const SignInTemplate = () => {
                 Inicia sesión
             </h1>
             <p className="mt-2 text-sm text-ink-300">
-                Ingresa a tu cuenta para gestionar tu consultorio.
+                Ingresa a tu cuenta para continuar con la gestión de tu consultorio.
             </p>
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)} className="mt-7 flex flex-col gap-3">

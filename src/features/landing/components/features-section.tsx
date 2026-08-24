@@ -1,9 +1,19 @@
 import type { ReactNode } from "react";
 import { FEATURES, type TFeatureId } from "../const";
-import { FeatureItem, PatientsVisual, AgendaVisual, AppointmentsVisual, PaymentsVisual, ServicesVisual, AdminVisual } from "./features";
+import {
+  FeatureItem,
+  PatientsVisual,
+  ClinicalRecordsVisual,
+  AgendaVisual,
+  AppointmentsVisual,
+  PaymentsVisual,
+  ServicesVisual,
+  AdminVisual,
+} from "./features";
 
 const FEATURE_VISUALS: Record<TFeatureId, ReactNode> = {
   patients: <PatientsVisual />,
+  clinical: <ClinicalRecordsVisual />,
   agenda: <AgendaVisual />,
   appointments: <AppointmentsVisual />,
   payments: <PaymentsVisual />,
@@ -20,11 +30,11 @@ export const FeaturesSection = () => {
             Funcionalidades
           </span>
           <h2 className="mt-4 text-3xl font-semibold tracking-tighter text-ink-50 sm:text-4xl lg:text-5xl">
-            Una plataforma, todo lo que tu consultorio necesita
+            Todo lo que tu consultorio necesita, en un solo lugar
           </h2>
           <p className="mt-5 text-ink-200">
-            Cada módulo de Molaryx está diseñado para una parte real de tu operación, con la
-            profundidad que un consultorio moderno exige.
+            Módulos pensados para el día a día de cualquier especialidad: pacientes,
+            historia clínica, agenda, procedimientos, tratamientos, pagos y equipo.
           </p>
         </div>
 
