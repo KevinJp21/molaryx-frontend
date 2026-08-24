@@ -7,10 +7,14 @@ import { useAppSelector } from '@/store';
 import { selectGetPublicPlans } from '@/store/plans/plans-slice';
 import type { TSignUpForm } from '../schemas';
 import { InputErrorMessage } from '@/components';
+import { SIGN_UP_EXCLUDED_PLAN_IDS } from '../consts';
 
 export function StepPlan() {
   const { control, setValue } = useFormContext<TSignUpForm>();
   const { data: plans } = useAppSelector(selectGetPublicPlans);
+  const selectablePlans = plans?.filter(
+    (plan) => !SIGN_UP_EXCLUDED_PLAN_IDS.includes(plan.idPlan),
+  );
 
   return (
       <Controller
@@ -18,7 +22,7 @@ export function StepPlan() {
         control={control}
         render={({ field, fieldState }) => (
             <div className="mt-7 flex flex-col gap-3">
-              {plans?.map((plan) => {
+              {selectablePlans?.map((plan) => {
                 const selected = field.value === plan.idPlan;
                 return (
                   <button
@@ -42,7 +46,7 @@ export function StepPlan() {
                         }`}
                     >
                       {selected && (
-                        <Check className="h-3 w-3 text-[#ffffff]" strokeWidth={3} />
+                        <Check className="h-3 w-3 text-ink-950" strokeWidth={3} />
                       )}
                     </span>
 

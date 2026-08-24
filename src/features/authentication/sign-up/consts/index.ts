@@ -59,3 +59,6 @@ export const SIGN_UP_DEFAULT_VALUES: TSignUpForm = {
     confirmPassword: "",
   },
 };
+
+/** Plan Business: no se ofrece en self-service; requiere contacto. */
+export const SIGN_UP_EXCLUDED_PLAN_IDS: number[] = [3];

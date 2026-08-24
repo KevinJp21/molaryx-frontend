@@ -1,38 +1,18 @@
-import type { IPlan, IPlanUiMeta } from "../interfaces";
+import type { IPlanUiMeta } from "../interfaces";
 
-export const PLANS: IPlan[] = [
-  {
-    idPlan: 1,
-    name: "Basic",
-    price: 79900,
-    maxProfessionals: 1,
-    maxAssistants: 1,
-    maxPatients: 500
-  },
-  {
-    idPlan: 2,
-    name: "Professional",
-    price: 119900,
-    maxProfessionals: 3,
-    maxAssistants: 3,
-    maxPatients: 2000,
-    promotion: {
-      idPromotion: 1,
-      price: 89900,
-    },
-  },
-];
-
+/** Solo metadatos de UI que no vienen de la API. */
 export const PLAN_UI_META: Record<number, IPlanUiMeta> = {
   1: {
-    description: "Ideal para consultorios pequeños que quieren ordenar su operación.",
     featured: false,
     ctaLabel: "Comenzar con Basic",
   },
   2: {
-    description: "Para consultorios en crecimiento que necesitan más capacidad.",
     featured: true,
     ctaLabel: "Comenzar con Professional",
+  },
+  3: {
+    featured: false,
+    ctaLabel: "Contáctenos",
   },
 };
 
