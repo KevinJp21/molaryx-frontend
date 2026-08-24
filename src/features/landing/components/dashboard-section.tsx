@@ -6,11 +6,11 @@ export const DashboardSection = () => {
         <section id="dashboard" className="container-py relative">
             <div className="relative default-container container-px mx-auto">
                 <div className="reveal mx-auto max-w-2xl text-center">
-                    <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-accent-400/90">El dashboard</span>
+                    <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-accent-400/90">Tu panel</span>
                     <h2 className="mt-4 text-3xl font-semibold tracking-tighter text-ink-50 sm:text-4xl lg:text-5xl">Toda tu operación, en una sola pantalla</h2>
                     <p className="mt-5 text-ink-200">
-                        Desde el primer vistazo sabes cuántas citas tienes, cuánto ingresó el consultorio
-                        y qué necesita tu atención. Sin abrir cinco apps distintas.
+                        En un vistazo ves citas del día, ingresos y lo que necesita tu atención.
+                        Ideal para consultorios de cualquier tamaño y especialidad.
                     </p>
                 </div>
 

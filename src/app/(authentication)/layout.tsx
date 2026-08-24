@@ -1,13 +1,18 @@
 import Link from "next/link";
 import { Logo } from "@/components";
 import { Check } from "lucide-react";
-export default function AuthenticationLayout({ children, }: { children: React.ReactNode; }) {
 
+export default function AuthenticationLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
     const highlights = [
-        'Agenda, pacientes y pagos en un solo lugar',
-        'Configúralo en minutos, sin curva de aprendizaje',
-        'Pensado para cualquier especialidad',
+        "Historia clínica y registros por paciente",
+        "Pacientes, agenda, procedimientos y pagos en un solo lugar",
+        "Pensado para cualquier tipo de consultorio",
     ];
+
     return (
         <div className="relative flex min-h-dvh flex-col bg-ink-950 text-ink-100 lg:flex-row">
             {/* Brand panel */}
@@ -23,15 +28,20 @@ export default function AuthenticationLayout({ children, }: { children: React.Re
 
                 <div className="max-w-sm">
                     <h2 className="text-3xl font-semibold leading-tight text-ink-50">
-                        Tu consultorio, <span className="gradient-text">más simple.</span>
+                        Tu consultorio,{" "}
+                        <span className="gradient-text">más simple.</span>
                     </h2>
                     <p className="mt-4 text-sm leading-relaxed text-ink-300">
-                        Molaryx es una plataforma de gestión de consultorios que te permite gestionar tu consultorio de forma simple y eficiente.
+                        Organiza pacientes, historia clínica, citas, procedimientos,
+                        tratamientos y pagos desde una sola plataforma.
                     </p>
 
                     <ul className="mt-8 flex flex-col gap-3">
                         {highlights.map((h) => (
-                            <li key={h} className="flex items-start gap-2.5 text-sm text-ink-200">
+                            <li
+                                key={h}
+                                className="flex items-start gap-2.5 text-sm text-ink-200"
+                            >
                                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-500/15 text-accent-300">
                                     <Check className="h-3 w-3" strokeWidth={2.5} />
                                 </span>
@@ -41,7 +51,9 @@ export default function AuthenticationLayout({ children, }: { children: React.Re
                     </ul>
                 </div>
 
-                <p className="text-xs text-ink-500">© {new Date().getFullYear()} Molaryx</p>
+                <p className="text-xs text-ink-500">
+                    © {new Date().getFullYear()} Molaryx
+                </p>
             </div>
 
             {/* Form Panel */}

@@ -17,10 +17,10 @@ export const PLAN_UI_META: Record<number, IPlanUiMeta> = {
 };
 
 export const PLAN_INCLUDED_FEATURES = [
-  "Agenda",
-  "Gestión de citas",
+  "Agenda y citas",
   "Gestión de pacientes",
-  "Gestión de servicios",
+  "Historia clínica y registros",
+  "Procedimientos y tratamientos",
   "Pagos y abonos",
-  "Administración del consultorio",
+  "Equipo y permisos",
 ] as const;

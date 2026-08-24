@@ -1,5 +1,6 @@
 export type TFeatureId =
   | "patients"
+  | "clinical"
   | "agenda"
   | "appointments"
   | "payments"
@@ -17,61 +18,71 @@ export const FEATURES: IFeature[] = [
   {
     id: "patients",
     title: "Gestión de pacientes",
-    desc: "Mantén la información de cada paciente organizada, actualizada y disponible cuando la necesites.",
+    desc: "Centraliza la información de cada paciente y tenla a mano en cada cita, sin importar tu especialidad.",
     bullets: [
-      "Datos de contacto y información relevante en un solo perfil",
-      "Historial de citas y servicios realizados",
-      "Notas y observaciones por paciente",
+      "Perfil con datos de contacto e identificación",
+      "Historial de citas, procedimientos y tratamientos",
+      "Acceso rápido a su historia clínica",
+    ],
+  },
+  {
+    id: "clinical",
+    title: "Historia clínica y registros",
+    desc: "Documenta cada atención con registros clínicos claros y construye el historial del paciente a lo largo del tiempo.",
+    bullets: [
+      "Registros con motivo, diagnóstico, evolución y notas",
+      "Vinculación a cita, procedimiento o plan de tratamiento",
+      "Historial clínico por paciente, listo para consultar o exportar",
     ],
   },
   {
     id: "agenda",
-    title: "Agenda inteligente",
-    desc: "Organiza la agenda de tu consultorio y gestiona tus horarios de forma clara y eficiente.",
+    title: "Agenda clara",
+    desc: "Organiza los horarios de tu consultorio y visualiza la ocupación de tu equipo en un solo calendario.",
     bullets: [
       "Vistas diaria, semanal y mensual",
-      "Detección de traslapes y espacios disponibles",
-      "Organización de citas por profesional y servicio",
+      "Detección de traslapes y espacios libres",
+      "Citas por profesional y procedimiento",
     ],
   },
   {
     id: "appointments",
-    title: "Citas organizadas",
-    desc: "Programa y confirma citas fácilmente, manteniendo a tus pacientes informados y reduciendo las ausencias.",
+    title: "Citas bajo control",
+    desc: "Programa, actualiza y da seguimiento a cada cita con estados claros durante todo el día.",
     bullets: [
-      "Estados: pendiente, confirmada, en sala y completada",
-      "Recordatorios automáticos para tus pacientes",
-      "Reprogramación y cancelación de citas",
+      "Estados: pendiente, confirmada, en progreso y completada",
+      "Reprogramación y cancelación sin fricción",
+      "Visibilidad por profesional y por paciente",
     ],
   },
   {
     id: "payments",
-    title: "Control de pagos y abonos",
-    desc: "Controla cuánto se cobra, cuánto se ha pagado y qué saldos están pendientes en tu consultorio.",
+    title: "Pagos y abonos",
+    desc: "Registra cobros, controla saldos pendientes y entiende cómo entra el dinero a tu consultorio.",
     bullets: [
-      "Registro de pagos y abonos por servicio",
-      "Saldos pendientes y estados de cuenta",
-      "Reportes de ingresos por periodo",
+      "Pagos y abonos vinculados a la atención",
+      "Saldos pendientes visibles",
+      "Resumen de ingresos por periodo",
     ],
   },
   {
     id: "services",
-    title: "Catálogo de servicios",
-    desc: "Configura los servicios de tu consultorio con sus precios y duración para utilizarlos fácilmente en cada cita.",
+    title: "Procedimientos y precios",
+    desc: "Define el catálogo de procedimientos de tu consultorio con precio y duración para usarlos en cada cita.",
     bullets: [
-      "Servicios con precio y duración",
-      "Organización por categorías",
-      "Asignación de servicios a las citas",
+      "Procedimientos con precio y duración",
+      "Catálogo adaptable a tu especialidad",
+      "Asignación rápida a las citas",
     ],
   },
   {
     id: "admin",
-    title: "Administración del consultorio",
-    desc: "Configura los horarios, profesionales, colaboradores y permisos según las necesidades de tu consultorio.",
+    title: "Equipo y consultorio",
+    desc: "Configura profesionales, roles y la información de tu consultorio según cómo trabaja tu equipo.",
     bullets: [
-      "Horarios y días laborales por profesional",
       "Equipo con roles y permisos",
-      "Configuración de la información del consultorio",
+      "Profesionales listos para agenda y citas",
+      "Datos del consultorio centralizados",
     ],
   },
 ];
@@ -103,6 +114,30 @@ export const PATIENT_ROWS = [
   },
 ] as const;
 
+export const CLINICAL_RECORD_ROWS = [
+  {
+    patient: "María Fernández",
+    reason: "Control de seguimiento",
+    when: "Hoy · 09:20",
+    tone: "text-accent-300 bg-accent-500/10",
+    tag: "Registro",
+  },
+  {
+    patient: "Carlos Ruiz",
+    reason: "Evaluación inicial",
+    when: "Ayer · 16:40",
+    tone: "text-emerald-300 bg-emerald-500/10",
+    tag: "Diagnóstico",
+  },
+  {
+    patient: "Ana Torres",
+    reason: "Evolución de tratamiento",
+    when: "12 mar · 11:05",
+    tone: "text-indigo-300 bg-indigo-500/10",
+    tag: "Evolución",
+  },
+] as const;
+
 export const AGENDA_HOURS = [
   "09",
   "10",
@@ -123,19 +158,19 @@ export const AGENDA_BLOCKS = [
     row: 2,
     span: 1,
     color: "bg-coral-500/70",
-    label: "Carlos R. · Profilaxis",
+    label: "Carlos R. · Control",
   },
   {
     row: 3,
     span: 2,
     color: "bg-indigo-500/70",
-    label: "Ana T. · Valoración",
+    label: "Ana T. · Evaluación",
   },
   {
     row: 5,
     span: 1,
     color: "bg-emerald-500/70",
-    label: "Jorge M. · Resina",
+    label: "Jorge M. · Seguimiento",
   },
 ] as const;
 
@@ -143,21 +178,21 @@ export const APPOINTMENT_ITEMS = [
   {
     time: "09:00",
     name: "María Fernández",
-    svc: "Consulta odontológica",
+    svc: "Consulta general",
     status: "Confirmada",
     tone: "text-emerald-300 bg-emerald-500/10",
   },
   {
     time: "10:30",
     name: "Carlos Ruiz",
-    svc: "Profilaxis dental",
-    status: "En sala",
+    svc: "Control de seguimiento",
+    status: "En progreso",
     tone: "text-accent-300 bg-accent-500/10",
   },
   {
     time: "12:00",
     name: "Ana Torres",
-    svc: "Primera valoración",
+    svc: "Evaluación inicial",
     status: "Pendiente",
     tone: "text-ink-200 bg-white/[0.06]",
   },
@@ -187,7 +222,7 @@ export const PAYMENT_ROWS = [
   },
   {
     name: "Carlos R.",
-    svc: "Abono · tratamiento odontológico",
+    svc: "Abono · plan de tratamiento",
     amt: "$120.000",
     tone: "text-emerald-300",
   },
@@ -207,7 +242,7 @@ export const SERVICE_ITEMS = [
     tone: "bg-accent-500/15 text-accent-300",
   },
   {
-    name: "Limpieza dental",
+    name: "Evaluación inicial",
     price: "$120.000",
     dur: "60 min",
     tone: "bg-coral-500/15 text-coral-400",
@@ -219,7 +254,7 @@ export const SERVICE_ITEMS = [
     tone: "bg-indigo-500/15 text-indigo-300",
   },
   {
-    name: "Tratamiento odontológico",
+    name: "Procedimiento especializado",
     price: "$350.000",
     dur: "90 min",
     tone: "bg-emerald-500/15 text-emerald-300",
@@ -228,19 +263,18 @@ export const SERVICE_ITEMS = [
 
 export const ADMIN_TEAM = [
   {
-    name: "Dra. Salinas",
+    name: "Ana Salinas",
     role: "Administradora",
     tone: "text-accent-300",
   },
   {
-    name: "Lic. Pérez",
-    role: "Recepción",
+    name: "Luis Pérez",
+    role: "Asistente",
     tone: "text-indigo-300",
   },
   {
-    name: "Dr. López",
+    name: "Carlos López",
     role: "Profesional",
     tone: "text-emerald-300",
   },
 ] as const;
-

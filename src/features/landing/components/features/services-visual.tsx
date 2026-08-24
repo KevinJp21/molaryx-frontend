@@ -3,7 +3,7 @@ import { FeatureFrame } from "./feature-frame";
 
 export const ServicesVisual = () => {
   return (
-    <FeatureFrame label="Servicios">
+    <FeatureFrame label="Procedimientos">
       <div className="grid gap-2 sm:grid-cols-2">
         {SERVICE_ITEMS.map((service) => (
           <div

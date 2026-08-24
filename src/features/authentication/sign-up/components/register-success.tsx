@@ -16,8 +16,8 @@ export function RegisterSuccess() {
       </h1>
 
       <p className="mt-3 text-sm text-ink-300">
-        Tu registro en Molaryx se ha completado correctamente. Hemos recibido la
-        información de tu consultorio y estamos revisando tu cuenta.
+        Recibimos los datos de tu consultorio. Cuando un administrador active tu
+        cuenta, podrás entrar a Molaryx y empezar a operar.
       </p>
 
       <div className="mt-7 rounded-2xl border border-ink-700 bg-ink-900/50 px-5 py-4 text-left">

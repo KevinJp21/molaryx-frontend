@@ -59,8 +59,8 @@ export const PricingSection = () => {
             <span className="gradient-text">etapa de tu consultorio</span>
           </h2>
           <p className="mt-5 text-ink-200">
-            Organiza tu consultorio odontológico desde una sola plataforma. Elige el plan
-            que se ajuste a tu equipo y aprovecha el precio Founder mientras esté disponible.
+            Elige el plan que se ajuste al tamaño de tu equipo. Precio Founder disponible
+            durante el lanzamiento, para consultorios de cualquier especialidad.
           </p>
         </div>
 
