@@ -21,7 +21,7 @@ export const PricingFounderCallout = () => {
             Durante nuestro lanzamiento, el plan{" "}
             <strong className="text-ink-50">Professional</strong> estará disponible con un
             <strong className="text-ink-50"> precio Founder</strong>. Esta tarifa especial
-            está dirigida a los primeros consultorios odontológicos que decidan implementar
+            está dirigida a los primeros consultorios que decidan implementar
             Molaryx y acompañarnos en esta etapa de crecimiento.
           </p>
 

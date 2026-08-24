@@ -25,12 +25,12 @@ export const PLANS: IPlan[] = [
 
 export const PLAN_UI_META: Record<number, IPlanUiMeta> = {
   1: {
-    description: "Ideal para consultorios odontológicos pequeños que quieren ordenar su operación.",
+    description: "Ideal para consultorios pequeños que quieren ordenar su operación.",
     featured: false,
     ctaLabel: "Comenzar con Basic",
   },
   2: {
-    description: "Para consultorios odontológicos en crecimiento que necesitan más capacidad.",
+    description: "Para consultorios en crecimiento que necesitan más capacidad.",
     featured: true,
     ctaLabel: "Comenzar con Professional",
   },
