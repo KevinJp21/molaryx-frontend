@@ -145,7 +145,9 @@ export const useSignalR = (options: TUseSignalROptions = {}) => {
     if (!autoConnect) return;
 
     void start().catch((error) => {
-      console.error("[SignalR]", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("[SignalR]", error);
+      }
     });
 
     return () => {

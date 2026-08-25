@@ -13,11 +13,11 @@ export type TNotificationTypeMeta = {
  * Varios tipos pueden compartir la misma vista (`href`); el icono es por tipo.
  */
 export const NOTIFICATIONS_TYPES = {
-  APPOINTMENT_STATUS_CHANGED: {
+  APPOINTMENT_ASSIGNED: {
     id: 1,
     href: "/dashboard/appointments",
     icon: CalendarCheck2,
-    label: "Estado de cita",
+    label: "Cita asignada",
   },
   APPOINTMENT_REMINDER: {
     id: 2,

@@ -92,7 +92,9 @@ export const Notification = () => {
       await invoke("mark_all_as_viewed");
       dispatch(markAllNotificationsAsViewed());
     } catch (error) {
-      console.error("[SignalR] mark_all_as_viewed", error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("[SignalR] mark_all_as_viewed", error);
+      }
     } finally {
       setMarkingAll(false);
     }
@@ -107,7 +109,9 @@ export const Notification = () => {
           await invoke("mark_as_viewed", notification.idNotification);
           dispatch(markNotificationAsViewed(notification.idNotification));
         } catch (error) {
-          console.error("[SignalR] mark_as_viewed", error);
+          if (process.env.NODE_ENV === "development") {
+            console.error("[SignalR] mark_as_viewed", error);
+          }
         }
       }
 
