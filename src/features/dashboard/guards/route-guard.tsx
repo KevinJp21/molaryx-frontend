@@ -3,8 +3,12 @@
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useAppSelector } from '@/store';
+import { useAppDispatch, useAppSelector } from '@/store';
 import { selectGetUserData } from '@/store/authentication/authentication-slice';
+import {
+  getNotifications,
+  selectGetNotifications,
+} from '@/store/notifications/notifications-slice';
 import { DASHBOARD_HOME_ROUTE, hasRouteAccess } from '../utils/route-permissions';
 
 type Props = {
@@ -27,7 +31,9 @@ const RouteLoading = () => (
 export const RouteGuard = ({ children }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
   const { data: userData, status } = useAppSelector(selectGetUserData);
+  const { status: notificationsStatus } = useAppSelector(selectGetNotifications);
 
   const isUserReady = status === 'success' && !!userData;
   const isAllowed =
@@ -38,6 +44,14 @@ export const RouteGuard = ({ children }: Props) => {
     if (hasRouteAccess(pathname, userData.permissions)) return;
     router.replace(DASHBOARD_HOME_ROUTE);
   }, [isUserReady, pathname, userData, router]);
+
+  useEffect(() => {
+    if (!isUserReady) return;
+    if (notificationsStatus === 'loading' || notificationsStatus === 'success') {
+      return;
+    }
+    dispatch(getNotifications());
+  }, [dispatch, isUserReady, notificationsStatus]);
 
   if (status === 'error') return null;
 

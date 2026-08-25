@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Bell, CreditCard, LogOut, Menu, Settings, User } from 'lucide-react';
+import { CreditCard, LogOut, Menu, Settings, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
@@ -22,6 +22,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components';
+import { Notification } from './notification';
 
 type Props = {
     isSidebarCollapsed: boolean;
@@ -101,17 +102,7 @@ export const DashboardHeader = ({
             </div>
 
             <div className="flex items-center gap-2">
-                <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-ink-950 hover:bg-ink-800"
-                    aria-label="Notificaciones"
-                >
-                    <Bell className="h-4 w-4" strokeWidth={1.75} />
-                    <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-accent-500" />
-                </Button>
-
+                <Notification />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <button
