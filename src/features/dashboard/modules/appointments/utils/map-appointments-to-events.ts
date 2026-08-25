@@ -32,6 +32,7 @@ export const mapAppointmentsToEvents = (
 
     return {
       id: String(appointment.idAppointment),
+      idAppointment: appointment.idAppointment,
       title: patientName
         ? `${patientName} · ${procedureNames}`
         : procedureNames,

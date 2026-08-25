@@ -61,7 +61,7 @@ export const AppointmentsListTable = () => {
 
   const items = data?.items ?? [];
   const totalPages = data?.totalPages ?? 0;
-  const colSpan = 6;
+  const colSpan = 7;
 
   useEffect(() => {
     if (status === "success" && items.length === 0 && currentPage > 1) {
@@ -83,6 +83,7 @@ export const AppointmentsListTable = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-20">N°</TableHead>
                 <TableHead>Paciente</TableHead>
                 <TableHead>Procedimientos</TableHead>
                 <TableHead>Profesional</TableHead>
@@ -128,6 +129,11 @@ export const AppointmentsListTable = () => {
 
                   return (
                     <TableRow key={item.idAppointment}>
+                      <TableCell>
+                        <span className="font-medium text-ink-200">
+                          #{item.idAppointment}
+                        </span>
+                      </TableCell>
                       <TableCell>
                         <span className="min-w-40">{patientName}</span>
                       </TableCell>

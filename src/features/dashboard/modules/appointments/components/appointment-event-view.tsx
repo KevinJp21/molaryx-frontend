@@ -129,6 +129,7 @@ export const AppointmentEventView = ({
         </span>
       </div>
       <div className="mt-6 space-y-3">
+        <InfoRow label="N° de cita" value={`#${event.idAppointment}`} />
         <InfoRow
           label="Profesional"
           value={event.professionalName || "Sin asignar"}
