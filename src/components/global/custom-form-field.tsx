@@ -243,17 +243,20 @@ export const CustomFormField = ({
                                     variant={"outline"}
                                     disabled={disabled}
                                     id={name}
+                                    title={displayValue ?? undefined}
                                     aria-invalid={!!fieldState.error && fieldState.isTouched}
                                     className={cn(
-                                        "h-auto w-full justify-start rounded-xl border border-ink-700 bg-ink-900 px-3.5 py-2.5 text-left text-sm font-normal text-ink-50 shadow-none",
+                                        "flex h-auto w-full min-w-0 justify-start rounded-xl border border-ink-700 bg-ink-900 px-3.5 py-2.5 text-left text-sm font-normal text-ink-50 shadow-none",
                                         "hover:bg-ink-900 hover:border-ink-600 hover:text-ink-50",
                                         "focus-visible:border-accent-500 focus-visible:ring-[3px] focus-visible:ring-accent-500/20",
                                         !field.value && "text-ink-400",
                                         fieldState.error && fieldState.isTouched && "border-coral-500 ring-[3px] ring-coral-500/20",
                                     )}
                                 >
-                                    <CalendarIcon className="mr-2 h-4 w-4 text-ink-400" />
-                                    {displayValue ?? <span>{placeholder}</span>}
+                                    <CalendarIcon className="mr-2 size-4 shrink-0 text-ink-400" />
+                                    <span className="min-w-0 truncate">
+                                        {displayValue ?? <span>{placeholder}</span>}
+                                    </span>
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
