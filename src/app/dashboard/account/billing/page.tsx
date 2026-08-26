@@ -1,10 +1,5 @@
-import { AccountPlaceholderTemplate } from "@/features/dashboard/modules/account";
+import { BillingTemplate } from "@/features/dashboard/modules/account/modules/billing";
 
 export default function AccountBillingPage() {
-  return (
-    <AccountPlaceholderTemplate
-      title="Facturación"
-      description="Pronto podrás ver tu plan, métodos de pago y facturas desde aquí."
-    />
-  );
+  return <BillingTemplate />;
 }

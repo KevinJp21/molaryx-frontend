@@ -34,4 +34,5 @@ interface ISubscription {
     startsAt: string | null;
     endsAt: string | null;
     daysRemaining: number | null;
+    statusName: string;
 }
