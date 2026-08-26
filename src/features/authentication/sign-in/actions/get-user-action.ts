@@ -13,9 +13,14 @@ import {
 } from "@/lib/auth/refresh-session";
 import { IGetUserResponse } from "../interfaces/get-user-response";
 
+/** Resultado de getUser: `unauthorized` solo cuando la sesión no es válida (401). */
+export type TGetUserActionResult = IGetUserResponse & {
+  unauthorized?: boolean;
+};
+
 const userEndpoint = () => `${process.env.AUTH}${process.env.GET_USER}`;
 
-const fetchUser = async (accessToken?: string) => {
+const fetchUser = async (accessToken?: string): Promise<TGetUserActionResult> => {
   const response = await serverApi.get<IGetUserResponse>(
     userEndpoint(),
     accessToken
@@ -24,15 +29,16 @@ const fetchUser = async (accessToken?: string) => {
   );
 
   return {
-    success: true as const,
+    success: true,
     message: response.data.message,
     data: response.data.data,
   };
 };
 
-const persistRefreshedSession = async (
-  tokens: { auth_token: string; refresh_token: string },
-) => {
+const persistRefreshedSession = async (tokens: {
+  auth_token: string;
+  refresh_token: string;
+}) => {
   const cookieStore = await cookies();
   cookieStore.set(authCookieName(), tokens.auth_token, authCookieOptions);
   cookieStore.set(
@@ -57,7 +63,15 @@ const refreshAccessToken = async () => {
   return tokens.auth_token;
 };
 
-export const apiGetUserAction = async (): Promise<IGetUserResponse> => {
+const fail = async (
+  error: unknown,
+  unauthorized = false,
+): Promise<TGetUserActionResult> => {
+  const { message } = await handleApiError(error, { redirectOn401: false });
+  return { success: false, message, unauthorized };
+};
+
+export const apiGetUserAction = async (): Promise<TGetUserActionResult> => {
   try {
     return await fetchUser();
   } catch (error) {
@@ -69,15 +83,15 @@ export const apiGetUserAction = async (): Promise<IGetUserResponse> => {
         try {
           return await fetchUser(accessToken);
         } catch (retryError) {
-          const { message } = await handleApiError(retryError, {
-            redirectOn401: false,
-          });
-          return { success: false, message };
+          const stillUnauthorized =
+            retryError instanceof ApiError && retryError.status === 401;
+          return fail(retryError, stillUnauthorized);
         }
       }
+
+      return fail(error, true);
     }
 
-    const { message } = await handleApiError(error, { redirectOn401: false });
-    return { success: false, message };
+    return fail(error, false);
   }
 };

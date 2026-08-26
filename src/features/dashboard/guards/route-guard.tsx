@@ -51,9 +51,7 @@ export const RouteGuard = ({ children }: Props) => {
     dispatch(getNotifications());
   }, [dispatch, isUserReady, notificationsStatus]);
 
-  if (status === 'error') return null;
-
-  // No renderizar la ruta hasta confirmar permisos
+  // No renderizar la ruta hasta confirmar permisos (AuthGuard cubre error de sesión).
   if (!isUserReady || !isAllowed) {
     return <RouteLoading />;
   }

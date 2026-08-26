@@ -168,7 +168,10 @@ const authenticationSlice = createAppSlice({
           if (!action.payload.success) {
             state.getUserData.status = "error";
             state.getUserData.message = action.payload.message;
-            state.getUserData.userState = "unauthenticated";
+            // 401 → sin sesión. Error de red/servidor → no forzar sign-in (cookies pueden seguir válidas).
+            state.getUserData.userState = action.payload.unauthorized
+              ? "unauthenticated"
+              : "error";
             return;
           }
           state.getUserData.status = "success";
@@ -179,7 +182,7 @@ const authenticationSlice = createAppSlice({
         rejected: (state, action) => {
           state.getUserData.status = "error";
           state.getUserData.message = action.error.message;
-          state.getUserData.userState = "unauthenticated";
+          state.getUserData.userState = "error";
         },
       },
     ),
