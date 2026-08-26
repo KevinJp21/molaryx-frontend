@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components";
 import { Check } from "lucide-react";
+import { COMPANY_NAME } from "@/consts";
 
 export default function AuthenticationLayout({
     children,
@@ -52,7 +53,7 @@ export default function AuthenticationLayout({
                 </div>
 
                 <p className="text-xs text-ink-500">
-                    © {new Date().getFullYear()} Molaryx
+                    © {new Date().getFullYear()} {COMPANY_NAME}
                 </p>
             </div>
 
