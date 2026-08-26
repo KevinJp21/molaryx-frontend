@@ -30,6 +30,8 @@ export const STEP_FIELDS: Record<number, Path<TSignUpForm>[]> = {
     "owner.phoneNumber",
     "owner.password",
     "owner.confirmPassword",
+    "acceptedTermsAndConditions",
+    "acceptedPrivacyPolicy",
   ],
 };
 
@@ -58,6 +60,8 @@ export const SIGN_UP_DEFAULT_VALUES: TSignUpForm = {
     password: "",
     confirmPassword: "",
   },
+  acceptedTermsAndConditions: false,
+  acceptedPrivacyPolicy: false,
 };
 
 /** Plan Business: no se ofrece en self-service; requiere contacto. */

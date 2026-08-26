@@ -5,7 +5,7 @@ import { FileDownIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { BaseModal, Button, CustomFormField, CustomFormSelect, InputErrorMessage, Spinner } from "@/components";
+import { BaseModal, Button, CustomFormField, CustomFormSelect, Spinner } from "@/components";
 import { usePaginatedSelect } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getPatients, selectGetPatients } from "@/store/patients/patiens-slice";
@@ -38,11 +38,7 @@ export const ExportClinicalHistoryModal = ({
     defaultValues: EXPORT_CLINICAL_HISTORY_DEFAULT_VALUES,
   });
 
-  const {
-    reset,
-    handleSubmit,
-    formState: { errors, touchedFields },
-  } = methods;
+  const { reset, handleSubmit } = methods;
 
   const patients = usePaginatedSelect({
     enabled: open,
@@ -125,30 +121,25 @@ export const ExportClinicalHistoryModal = ({
         <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col">
           <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
             <div className="flex flex-col gap-3">
-              <div className="flex flex-col gap-1.5">
-                <CustomFormSelect
-                  name="idPatient"
-                  label="Paciente"
-                  placeholder={
-                    patients.isSearching
-                      ? "Cargando pacientes..."
-                      : "Selecciona un paciente"
-                  }
-                  items={patientItems}
-                  disabled={
-                    patients.isSearching && patientItems.length === 0
-                  }
-                  searchable
-                  searchPlaceholder="Buscar paciente..."
-                  searchDebounceMs={300}
-                  onSearch={patients.onSearch}
-                  isSearching={patients.isSearching}
-                  {...patients.paginationProps}
-                />
-                {errors.idPatient && !touchedFields.idPatient && (
-                  <InputErrorMessage message={errors.idPatient.message} />
-                )}
-              </div>
+              <CustomFormSelect
+                name="idPatient"
+                label="Paciente"
+                placeholder={
+                  patients.isSearching
+                    ? "Cargando pacientes..."
+                    : "Selecciona un paciente"
+                }
+                items={patientItems}
+                disabled={
+                  patients.isSearching && patientItems.length === 0
+                }
+                searchable
+                searchPlaceholder="Buscar paciente..."
+                searchDebounceMs={300}
+                onSearch={patients.onSearch}
+                isSearching={patients.isSearching}
+                {...patients.paginationProps}
+              />
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <CustomFormField

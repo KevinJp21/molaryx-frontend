@@ -38,14 +38,14 @@ export const CustomFormTextarea = ({
                         rows={rows}
                         placeholder={placeholder}
                         disabled={disabled}
-                        aria-invalid={!!fieldState.error && fieldState.isTouched}
+                        aria-invalid={!!fieldState.error}
                         className={className}
                         value={field.value ?? ''}
                         onChange={(event) => {
                             field.onChange(event.target.value)
                         }}
                     />
-                    {fieldState.error && fieldState.isTouched && (
+                    {fieldState.error && (
                         <InputErrorMessage message={fieldState.error.message} />
                     )}
                 </div>

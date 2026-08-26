@@ -226,7 +226,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                 name={name}
                 defaultValue={defaultValue}
                 render={({ field, fieldState }) => {
-                    const invalid = hasError || Boolean(fieldState.error && fieldState.isTouched);
+                    const invalid = hasError || Boolean(fieldState.error);
                     const selectedFromItems = displayItems.find(
                         (item) => String(item.value) === String(field.value),
                     );
@@ -457,7 +457,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                     )}
                                 </SelectContent>
                             </Select>
-                            {fieldState.error && fieldState.isTouched && (
+                            {fieldState.error && (
                                 <InputErrorMessage message={fieldState.error.message} />
                             )}
                         </>

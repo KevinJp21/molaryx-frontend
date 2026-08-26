@@ -47,9 +47,7 @@ export const RouteGuard = ({ children }: Props) => {
 
   useEffect(() => {
     if (!isUserReady) return;
-    if (notificationsStatus === 'loading' || notificationsStatus === 'success') {
-      return;
-    }
+    if (notificationsStatus !== 'idle') return;
     dispatch(getNotifications());
   }, [dispatch, isUserReady, notificationsStatus]);
 

@@ -244,13 +244,13 @@ export const CustomFormField = ({
                                     disabled={disabled}
                                     id={name}
                                     title={displayValue ?? undefined}
-                                    aria-invalid={!!fieldState.error && fieldState.isTouched}
+                                    aria-invalid={!!fieldState.error}
                                     className={cn(
                                         "flex h-auto w-full min-w-0 justify-start rounded-xl border border-ink-700 bg-ink-900 px-3.5 py-2.5 text-left text-sm font-normal text-ink-50 shadow-none",
                                         "hover:bg-ink-900 hover:border-ink-600 hover:text-ink-50",
                                         "focus-visible:border-accent-500 focus-visible:ring-[3px] focus-visible:ring-accent-500/20",
                                         !field.value && "text-ink-400",
-                                        fieldState.error && fieldState.isTouched && "border-coral-500 ring-[3px] ring-coral-500/20",
+                                        fieldState.error && "border-coral-500 ring-[3px] ring-coral-500/20",
                                     )}
                                 >
                                     <CalendarIcon className="mr-2 size-4 shrink-0 text-ink-400" />
@@ -356,7 +356,7 @@ export const CustomFormField = ({
                                 inputMode={mode === 'digits' ? 'numeric' : undefined}
                                 placeholder={placeholder}
                                 disabled={disabled}
-                                aria-invalid={!!fieldState.error && fieldState.isTouched}
+                                aria-invalid={!!fieldState.error}
                                 className={cn(mode === 'percentage' && 'pr-8')}
                                 value={formatValue(field.value)}
                                 onChange={(e) => {
@@ -429,7 +429,7 @@ export const CustomFormField = ({
                         </div>
                     )}
 
-                    {fieldState.error && fieldState.isTouched && (
+                    {fieldState.error && (
                         <InputErrorMessage message={fieldState.error?.message} />
                     )}
                 </div>

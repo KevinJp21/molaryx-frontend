@@ -32,8 +32,11 @@ export const CustomPasswordFormField = ({ name, label, errorMessage, showForgotP
                             value={field.value ?? ''}
                             type={showPassword ? 'text' : 'password'}
                             placeholder='••••••••'
-                            aria-invalid={!!fieldState.error && fieldState.isTouched}
-                            className={cn('w-full', fieldState.error && fieldState.isTouched && 'border-coral-500 ring-[3px] ring-coral-500/20')}
+                            aria-invalid={!!fieldState.error}
+                            className={cn(
+                                'w-full',
+                                fieldState.error && 'border-coral-500 ring-[3px] ring-coral-500/20',
+                            )}
                         />
                         <button
                             onClick={() => setShowPassword(!showPassword)}
@@ -44,8 +47,10 @@ export const CustomPasswordFormField = ({ name, label, errorMessage, showForgotP
                         </button>
                     </div>
 
-                    {(errorMessage || fieldState.error && fieldState.isTouched) && (
-                        <InputErrorMessage message={errorMessage || fieldState.error?.message?.toString()} />
+                    {(errorMessage || fieldState.error) && (
+                        <InputErrorMessage
+                            message={errorMessage || fieldState.error?.message?.toString()}
+                        />
                     )}
                 </div>
             )}

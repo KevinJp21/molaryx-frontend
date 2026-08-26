@@ -1,12 +1,19 @@
 'use client';
 
+import Link from 'next/link';
 import { useFormContext } from 'react-hook-form';
-import { CustomFormField, CustomFormSelect, CustomPasswordFormField } from '@/components';
+import {
+    CustomFormCheckbox,
+    CustomFormField,
+    CustomFormSelect,
+    CustomPasswordFormField,
+} from '@/components';
 import { useAppSelector } from '@/store';
 import { selectGetIdentificationTypes } from '@/store/masters/masters-slice';
+import type { TSignUpForm } from '../schemas';
 
 export const StepOwner = () => {
-    const { trigger } = useFormContext();
+    const { trigger } = useFormContext<TSignUpForm>();
     const { data, status } = useAppSelector(selectGetIdentificationTypes);
     const isLoading = status === 'loading' || status === 'idle';
     const excludeIdentificationType = [3, 4]
@@ -103,6 +110,41 @@ export const StepOwner = () => {
                     <CustomPasswordFormField
                         name='owner.confirmPassword'
                         label='Confirmar contraseña'
+                    />
+                </div>
+
+                <div className="mt-2 space-y-3 rounded-xl border border-ink-800 bg-ink-900/40 p-4">
+                    <CustomFormCheckbox
+                        name="acceptedTermsAndConditions"
+                        label={
+                            <>
+                                Acepto los{" "}
+                                <Link
+                                    href="/legal/terms-of-service"
+                                    target="_blank"
+                                    className="font-medium text-accent-400 hover:text-accent-300 hover:underline"
+                                >
+                                    términos y condiciones
+                                </Link>
+                                .
+                            </>
+                        }
+                    />
+                    <CustomFormCheckbox
+                        name="acceptedPrivacyPolicy"
+                        label={
+                            <>
+                                Acepto la{" "}
+                                <Link
+                                    href="/legal/privacy-policy"
+                                    target="_blank"
+                                    className="font-medium text-accent-400 hover:text-accent-300 hover:underline"
+                                >
+                                    política de privacidad
+                                </Link>
+                                .
+                            </>
+                        }
                     />
                 </div>
             </div>

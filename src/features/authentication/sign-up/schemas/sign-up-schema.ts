@@ -111,6 +111,12 @@ export const SignUpSchema = z.object({
       message: 'Las contraseñas no coinciden',
       path: ['confirmPassword'],
     }),
+  acceptedTermsAndConditions: z.boolean().refine((value) => value === true, {
+    message: 'Debes aceptar los términos y condiciones',
+  }),
+  acceptedPrivacyPolicy: z.boolean().refine((value) => value === true, {
+    message: 'Debes aceptar la política de privacidad',
+  }),
 });
 
 export type TSignUpForm = z.input<typeof SignUpSchema>;

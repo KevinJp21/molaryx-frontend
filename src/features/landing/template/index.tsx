@@ -24,13 +24,13 @@ export const LandingTemplate = () => {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:justify-end">
             <Link
-              href="/terms-of-service"
+              href="/legal/terms-of-service"
               className="font-medium text-ink-300 transition-colors hover:text-ink-50"
             >
               Términos y condiciones
             </Link>
             <Link
-              href="/privacy-policy"
+              href="/legal/privacy-policy"
               className="font-medium text-ink-300 transition-colors hover:text-ink-50"
             >
               Política de privacidad
