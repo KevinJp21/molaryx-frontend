@@ -18,6 +18,8 @@ import {
   getTenantStatusChipClass,
   getTenantStatusColor,
   getTenantTypeBadgeVariant,
+  getUserStatusBadgeVariant,
+  getUserStatusLabel,
   TENANT_STATUS,
 } from "../consts";
 import type { ITenantsItems } from "../interfaces";
@@ -154,7 +156,7 @@ export const TenantDetailModal = ({
       onOpenChange={handleDialogOpenChange}
       icon={<Building2 className="size-3.5" strokeWidth={2} />}
       title={tenant.consultoryName}
-      description="Detalle del consultorio"
+      description="Detalle del Tenant"
       className="max-w-3xl"
     >
       <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
@@ -224,9 +226,14 @@ export const TenantDetailModal = ({
           <SectionCard title="Propietario" icon={UserRound}>
             {owner ? (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="min-w-0 md:col-span-2">
-                  <p className="truncate font-medium text-ink-50">{owner.name}</p>
-                  <p className="truncate text-xs text-ink-400">@{owner.username}</p>
+                <div className="flex min-w-0 items-start justify-between gap-3 md:col-span-2">
+                  <div className="min-w-0">
+                    <p className="truncate font-medium text-ink-50">{owner.name}</p>
+                    <p className="truncate text-xs text-ink-400">@{owner.username}</p>
+                  </div>
+                  <Badge variant={getUserStatusBadgeVariant(owner.idUserStatus)}>
+                    {getUserStatusLabel(owner.idUserStatus, owner.userStatusName)}
+                  </Badge>
                 </div>
                 <Field label="Correo" value={owner.email} />
                 <Field label="Teléfono" value={owner.phoneNumber} />

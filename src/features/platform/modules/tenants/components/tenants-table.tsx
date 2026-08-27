@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Building2, Logs, PlusIcon } from "lucide-react";
+import { Building2, Logs, PlusIcon, SquarePen } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getTenants, selectGetTenants } from "@/store/tenants/tenants-slice";
 import { useDetailModalState } from "@/features/dashboard/hooks";
@@ -37,7 +37,9 @@ type Props = {
   refreshKey?: number;
   onRefresh?: () => void;
   onCreate?: () => void;
+  onEdit?: (tenant: ITenantsItems) => void;
   canCreate?: boolean;
+  canUpdate?: boolean;
   emptyMessage?: string;
 };
 
@@ -45,7 +47,9 @@ export const TenantsTable = ({
   refreshKey = 0,
   onRefresh,
   onCreate,
+  onEdit,
   canCreate = false,
+  canUpdate = false,
   emptyMessage = "No hay tenants registrados.",
 }: Props) => {
   const dispatch = useAppDispatch();
@@ -312,15 +316,31 @@ export const TenantsTable = ({
                               </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-56 p-2" align="end">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="w-full justify-start text-xs font-normal text-ink-200"
-                                onClick={() => openDetails(item)}
-                              >
-                                <Logs className="size-4" strokeWidth={1.75} />
-                                Ver detalles
-                              </Button>
+                              <div className="flex flex-col gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="w-full justify-start text-xs font-normal text-ink-200"
+                                  onClick={() => openDetails(item)}
+                                >
+                                  <Logs className="size-4" strokeWidth={1.75} />
+                                  Ver detalles
+                                </Button>
+                                {canUpdate && onEdit && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="w-full justify-start text-xs font-normal text-ink-200"
+                                      onClick={() => onEdit(item)}
+                                    >
+                                      <SquarePen
+                                        className="size-4"
+                                        strokeWidth={1.75}
+                                      />
+                                      Editar
+                                    </Button>
+                                  )}
+                              </div>
                             </PopoverContent>
                           </Popover>
                         </TableCell>

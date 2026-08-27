@@ -44,3 +44,12 @@ export const checkCanCreateBusinessTenant = (
     PERMISSION_MODULES.TENANTS,
     PERMISSION_CODES.CREATE_PF_BUSINESS_TENANT,
   );
+
+export const checkCanUpdateTenant = (
+  userPermissions: TUserPermission[] | undefined,
+) =>
+  hasPermissionCode(
+    userPermissions,
+    PERMISSION_MODULES.TENANTS,
+    PERMISSION_CODES.UPDATE_PF_TENANT,
+  );

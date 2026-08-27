@@ -4,9 +4,11 @@ import {
   apiGetTenantsAction,
   apiPostActivateTenantAction,
   apiPostCreateBusinessTenantAction,
+  apiPutUpdateTenantAction,
   IGetTenantsResponseData,
   IPostActivateTenantRequest,
   IPostCreateBusinessTenantRequest,
+  IPutUpdateTenantRequest,
   TGetTenantsParams,
 } from "@/features/platform/modules/tenants";
 
@@ -27,6 +29,11 @@ type TTenantsState = {
     message?: string;
     error?: string;
   };
+  putUpdateTenant: {
+    status: TStatus;
+    message?: string;
+    error?: string;
+  };
 };
 
 const initialState: TTenantsState = {
@@ -42,6 +49,11 @@ const initialState: TTenantsState = {
     error: undefined,
   },
   postCreateBusinessTenant: {
+    status: "idle",
+    message: undefined,
+    error: undefined,
+  },
+  putUpdateTenant: {
     status: "idle",
     message: undefined,
     error: undefined,
@@ -136,11 +148,40 @@ const tenantsSlice = createAppSlice({
     resetPostCreateBusinessTenant: create.reducer((state) => {
       state.postCreateBusinessTenant = initialState.postCreateBusinessTenant;
     }),
+    putUpdateTenant: create.asyncThunk(
+      async (data: IPutUpdateTenantRequest) =>
+        await apiPutUpdateTenantAction(data),
+      {
+        pending: (state) => {
+          state.putUpdateTenant.status = "loading";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.putUpdateTenant.status = "error";
+            state.putUpdateTenant.message = action.payload.message;
+            state.putUpdateTenant.error = action.payload.error ?? undefined;
+            return;
+          }
+          state.putUpdateTenant.status = "success";
+          state.putUpdateTenant.message = action.payload.message;
+          state.putUpdateTenant.error = undefined;
+        },
+        rejected: (state, action) => {
+          state.putUpdateTenant.status = "error";
+          state.putUpdateTenant.message = action.error.message;
+          state.putUpdateTenant.error = undefined;
+        },
+      },
+    ),
+    resetPutUpdateTenant: create.reducer((state) => {
+      state.putUpdateTenant = initialState.putUpdateTenant;
+    }),
   }),
   selectors: {
     selectGetTenants: (state) => state.getTenants,
     selectPostActivateTenant: (state) => state.postActivateTenant,
     selectPostCreateBusinessTenant: (state) => state.postCreateBusinessTenant,
+    selectPutUpdateTenant: (state) => state.putUpdateTenant,
   },
 });
 
@@ -150,10 +191,13 @@ export const {
   resetPostActivateTenant,
   postCreateBusinessTenant,
   resetPostCreateBusinessTenant,
+  putUpdateTenant,
+  resetPutUpdateTenant,
 } = tenantsSlice.actions;
 export const {
   selectGetTenants,
   selectPostActivateTenant,
   selectPostCreateBusinessTenant,
+  selectPutUpdateTenant,
 } = tenantsSlice.selectors;
 export default tenantsSlice.reducer;

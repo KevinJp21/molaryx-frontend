@@ -32,6 +32,8 @@ export interface ITenantOwner {
   identificationNumber: string;
   phoneNumber: string;
   email: string;
+  idUserStatus: number;
+  userStatusName: string;
 }
 
 export interface ITenantSubscriptionSummary {
