@@ -53,6 +53,7 @@ export const Navbar = () => {
       >
         <Link
           href="/#top"
+          scroll={false}
           className="inline-flex shrink-0 items-center leading-none"
           onClick={() => setOpen(false)}
         >
@@ -64,6 +65,7 @@ export const Navbar = () => {
             <Link
               key={link.href}
               href={link.href}
+              scroll={false}
               className="text-sm font-medium text-ink-300 transition-colors duration-200 hover:text-ink-50"
             >
               {link.label}
@@ -110,6 +112,7 @@ export const Navbar = () => {
             <Link
               key={link.href}
               href={link.href}
+              scroll={false}
               onClick={() => setOpen(false)}
               className="rounded-lg px-3 py-3 text-sm font-medium text-ink-300 transition-colors hover:bg-ink-800 hover:text-ink-50"
             >

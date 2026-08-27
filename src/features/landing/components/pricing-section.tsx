@@ -8,6 +8,7 @@ import {
   selectGetPublicPlans,
 } from "@/store/plans/plans-slice";
 import { PLAN_UI_META } from "../const";
+import { Reveal, SectionHeading } from "./motion";
 import { PricingCard, PricingFounderCallout } from "./pricing";
 
 const PricingCardsSkeleton = () => (
@@ -50,21 +51,20 @@ export const PricingSection = () => {
       <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-100 w-1/2 -translate-x-1/2 rounded-full bg-accent-500/10 blur-[150px]" />
 
       <div className="default-container container-px mx-auto w-full min-w-0">
-        <div className="mx-auto w-full min-w-0 max-w-2xl text-center">
-          <span className="inline-flex items-center justify-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-accent-400/90">
-            Planes
-          </span>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tighter text-ink-50 sm:text-4xl lg:text-5xl">
-            Un plan para cada{" "}
-            <span className="gradient-text">etapa de tu consultorio</span>
-          </h2>
-          <p className="mt-5 text-ink-200">
-            Elige el plan que se ajuste al tamaño de tu equipo. Precio Founder disponible
-            durante el lanzamiento, para consultorios de cualquier especialidad.
-          </p>
-        </div>
+        <SectionHeading
+          eyebrow="Planes"
+          titleLines={[
+            "Un plan para cada",
+            <span key="highlight" className="gradient-text">
+              etapa de tu consultorio
+            </span>,
+          ]}
+          description="Elige el plan que se ajuste al tamaño de tu equipo. Precio Founder disponible durante el lanzamiento, para consultorios de cualquier especialidad."
+        />
 
-        <PricingFounderCallout />
+        <Reveal variant="up" delay={0.1}>
+          <PricingFounderCallout />
+        </Reveal>
 
         {isLoading ? (
           <PricingCardsSkeleton />
@@ -75,7 +75,11 @@ export const PricingSection = () => {
             />
           </div>
         ) : (
-          <div className="mx-auto mt-10 grid w-full min-w-0 max-w-6xl gap-6 md:grid-cols-2 md:items-start lg:grid-cols-3">
+          <Reveal
+            className="mx-auto mt-10 grid w-full min-w-0 max-w-6xl gap-6 md:grid-cols-2 md:items-start lg:grid-cols-3"
+            stagger={0.12}
+            duration={0.9}
+          >
             {data?.map((plan) => {
               const meta = PLAN_UI_META[plan.idPlan] ?? {
                 featured: false,
@@ -86,13 +90,15 @@ export const PricingSection = () => {
                 <PricingCard key={plan.idPlan} plan={plan} meta={meta} />
               );
             })}
-          </div>
+          </Reveal>
         )}
 
-        <p className="mt-10 text-center text-xs text-ink-400">
-          Precios en pesos colombianos (COP). El precio Founder aplica a los planes con la
-          promoción activa.
-        </p>
+        <Reveal variant="fade" delay={0.1}>
+          <p className="mt-10 text-center text-xs text-ink-400">
+            Precios en pesos colombianos (COP). El precio Founder aplica a los planes con la
+            promoción activa.
+          </p>
+        </Reveal>
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 export * from './feature-item';
+export * from './feature-index';
 export * from './feature-frame';
 export * from './patients-visual';
 export * from './clinical-records-visual';
