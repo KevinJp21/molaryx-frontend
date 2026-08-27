@@ -29,7 +29,7 @@ export const CustomFormTextarea = ({
             control={control}
             render={({ field, fieldState }) => (
                 <div className="flex flex-col gap-1.5">
-                    <label htmlFor={name} className="text-[13px] font-medium text-ink-200">
+                    <label htmlFor={name} className="text-[13px] font-medium text-ink-800">
                         {label}
                     </label>
                     <Textarea

@@ -34,13 +34,13 @@ export const SectionHeading = ({
       <MaskReveal
         as="h2"
         lines={titleLines}
-        className="mt-5 text-balance text-3xl font-semibold leading-[1.1] tracking-tighter text-ink-50 sm:text-4xl lg:text-[3.25rem]"
+        className="mt-5 text-balance text-3xl font-semibold leading-[1.1] tracking-tighter text-ink-950 sm:text-4xl lg:text-[3.25rem]"
       />
 
       {description && (
         <Reveal variant="up" delay={0.15} duration={0.8}>
           <p
-            className={`mt-5 text-base leading-relaxed text-ink-200 sm:text-lg ${isCentered ? "mx-auto max-w-2xl" : ""}`}
+            className={`mt-5 text-base leading-relaxed text-ink-800 sm:text-lg ${isCentered ? "mx-auto max-w-2xl" : ""}`}
           >
             {description}
           </p>

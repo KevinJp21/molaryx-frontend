@@ -45,8 +45,8 @@ const SectionTitle = ({
   description: string;
 }) => (
   <div className="mb-3">
-    <h3 className="text-sm font-medium text-ink-50">{title}</h3>
-    <p className="mt-0.5 text-xs text-ink-400">{description}</p>
+    <h3 className="text-sm font-medium text-ink-950">{title}</h3>
+    <p className="mt-0.5 text-xs text-ink-600">{description}</p>
   </div>
 );
 
@@ -378,7 +378,7 @@ export const CreateBusinessTenantModal = ({
             </div>
           </div>
 
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-ink-800 bg-ink-900/40 px-5 py-3">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-ink-200 bg-ink-100/40 px-5 py-3">
             <Button
               type="button"
               variant="outline"

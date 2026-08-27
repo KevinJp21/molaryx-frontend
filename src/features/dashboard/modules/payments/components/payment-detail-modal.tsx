@@ -19,8 +19,8 @@ const Field = ({
     value?: string | null;
 }) => (
     <div className="flex flex-col gap-1">
-        <span className="text-xs text-ink-400">{label}</span>
-        <span className="text-sm text-ink-100">{value?.trim() ? value : "—"}</span>
+        <span className="text-xs text-ink-600">{label}</span>
+        <span className="text-sm text-ink-900">{value?.trim() ? value : "—"}</span>
     </div>
 );
 
@@ -67,8 +67,8 @@ export const PaymentDetailModal = ({
                     />
                 </div>
 
-                <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
-                    <h3 className="text-sm font-medium text-ink-50">Paciente</h3>
+                <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-200 bg-ink-100/30 p-4">
+                    <h3 className="text-sm font-medium text-ink-950">Paciente</h3>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <Field label="Nombre" value={fullName(payment.patient.name, payment.patient.surname)} />
                         <Field label={`${payment.patient.identificationType}`} value={payment.patient.identificationNumber} />
@@ -78,8 +78,8 @@ export const PaymentDetailModal = ({
                 </section>
 
                 {appointment && (
-                    <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
-                        <h3 className="text-sm font-medium text-ink-50">Cita</h3>
+                    <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-200 bg-ink-100/30 p-4">
+                        <h3 className="text-sm font-medium text-ink-950">Cita</h3>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <Field label="Procedimientos" value={appointment.procedureNames} />
                             {appointment.totalPrice > 0 && (
@@ -112,8 +112,8 @@ export const PaymentDetailModal = ({
                 )}
 
                 {patientTreatment && (
-                    <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
-                        <h3 className="text-sm font-medium text-ink-50">
+                    <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-200 bg-ink-100/30 p-4">
+                        <h3 className="text-sm font-medium text-ink-950">
                             Plan de tratamiento
                         </h3>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -146,8 +146,8 @@ export const PaymentDetailModal = ({
                 )}
 
                 <div className="mt-5 flex flex-col gap-2">
-                    <span className="text-xs text-ink-400">Notas</span>
-                    <p className="whitespace-pre-wrap rounded-lg border border-ink-800 bg-ink-900/30 p-4 text-sm text-ink-100">
+                    <span className="text-xs text-ink-600">Notas</span>
+                    <p className="whitespace-pre-wrap rounded-lg border border-ink-200 bg-ink-100/30 p-4 text-sm text-ink-900">
                         {payment.notes?.trim() ? payment.notes : "Sin notas."}
                     </p>
                 </div>

@@ -19,7 +19,7 @@ export const CtaSection = () => {
             <MaskReveal
               as="h2"
               lines={["Empieza a operar tu consultorio", "con todo en un solo lugar"]}
-              className="mx-auto mt-6 max-w-3xl text-balance text-3xl font-semibold leading-[1.1] tracking-tighter text-ink-50 sm:text-4xl lg:text-5xl"
+              className="mx-auto mt-6 max-w-3xl text-balance text-3xl font-semibold leading-[1.1] tracking-tighter text-ink-950 sm:text-4xl lg:text-5xl"
             />
 
             <div className="mx-auto mt-5 max-w-xl overflow-hidden">
@@ -28,7 +28,7 @@ export const CtaSection = () => {
                 lines={[
                   "Crea tu cuenta y organiza pacientes, agenda, historia clínica y pagos desde el primer día, sin importar tu especialidad.",
                 ]}
-                className="text-ink-200"
+                className="text-ink-800"
                 delay={0.05}
               />
             </div>

@@ -84,7 +84,7 @@ export const PlatformHeader = ({
           onClick={onToggleSidebar}
           variant="ghost"
           size="icon"
-          className="h-8 w-8 shrink-0 rounded-lg bg-ink-900 hover:bg-ink-800"
+          className="h-8 w-8 shrink-0 rounded-lg bg-ink-100 hover:bg-ink-200"
           aria-label={
             isSidebarCollapsed ? "Expandir menú lateral" : "Colapsar menú lateral"
           }
@@ -93,7 +93,7 @@ export const PlatformHeader = ({
         </Button>
 
         <div className="min-w-0">
-          <p className="truncate text-[11px] text-ink-300">
+          <p className="truncate text-[11px] text-ink-700">
             {getGreeting()}
             {firstName ? `, ${firstName}` : ""}
           </p>
@@ -111,7 +111,7 @@ export const PlatformHeader = ({
               title={fullName}
             >
               <Avatar size="lg" className="cursor-pointer">
-                <AvatarFallback className="bg-linear-to-br from-accent-400 to-coral-500 text-[11px] font-semibold text-ink-950">
+                <AvatarFallback className="bg-linear-to-br from-accent-400 to-coral-500 text-[11px] font-semibold text-ink-50">
                   {initials || "—"}
                 </AvatarFallback>
               </Avatar>
@@ -120,10 +120,10 @@ export const PlatformHeader = ({
 
           <DropdownMenuContent align="end" className="w-60">
             <div className="px-2 py-2">
-              <p className="truncate text-[13px] font-medium text-ink-100">
+              <p className="truncate text-[13px] font-medium text-ink-900">
                 {userData?.username ?? fullName ?? "Usuario"}
               </p>
-              <p className="truncate text-xs text-ink-400">{roleName}</p>
+              <p className="truncate text-xs text-ink-600">{roleName}</p>
             </div>
 
             <DropdownMenuSeparator />

@@ -38,10 +38,10 @@ const DetailField = ({
   className?: string;
 }) => (
   <div className={cn("min-w-0", className)}>
-    <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+    <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
       {label}
     </p>
-    <p className="mt-1 truncate text-sm font-semibold text-ink-50">{value}</p>
+    <p className="mt-1 truncate text-sm font-semibold text-ink-950">{value}</p>
   </div>
 );
 
@@ -62,7 +62,7 @@ export const AppointmentEventView = ({
   const hasPrice = event.totalPrice > 0;
 
   return (
-    <div className="flex max-h-[90vh] w-full flex-col overflow-hidden bg-ink-950">
+    <div className="flex max-h-[90vh] w-full flex-col overflow-hidden bg-ink-50">
       <div
         className="relative shrink-0 px-6 pb-5 pt-6"
         style={{
@@ -97,7 +97,7 @@ export const AppointmentEventView = ({
                   onClick={onEdit}
                   title="Editar"
                   aria-label="Editar cita"
-                  className="text-ink-400 hover:bg-ink-900/80"
+                  className="text-ink-600 hover:bg-ink-100/80"
                 >
                   <Edit2 className="size-4" />
                 </Button>
@@ -108,7 +108,7 @@ export const AppointmentEventView = ({
                   onClick={onDelete}
                   title="Eliminar"
                   aria-label="Eliminar cita"
-                  className="text-ink-400 hover:bg-coral-500/10 hover:text-coral-600"
+                  className="text-ink-600 hover:bg-coral-500/10 hover:text-coral-600"
                 >
                   <Trash2 className="size-4" />
                 </Button>
@@ -121,27 +121,27 @@ export const AppointmentEventView = ({
               onClick={onClose}
               title="Cerrar"
               aria-label="Cerrar"
-              className="text-ink-400 hover:bg-ink-900/80"
+              className="text-ink-600 hover:bg-ink-100/80"
             >
               <X className="size-4" />
             </Button>
           </div>
         </div>
 
-        <h1 className="mb-4 text-xl font-bold leading-snug tracking-tight text-ink-50 sm:text-2xl">
+        <h1 className="mb-4 text-xl font-bold leading-snug tracking-tight text-ink-950 sm:text-2xl">
           {event.title || "Cita"}
         </h1>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-xl border border-ink-800/80 bg-ink-950/50 px-3 py-1.5 text-sm shadow-sm backdrop-blur-sm">
-            <CalendarDays className="size-3.5 text-ink-400" />
-            <span className="font-medium capitalize text-ink-100">
+          <span className="inline-flex items-center gap-1.5 rounded-xl border border-ink-200/80 bg-ink-50/50 px-3 py-1.5 text-sm shadow-sm backdrop-blur-sm">
+            <CalendarDays className="size-3.5 text-ink-600" />
+            <span className="font-medium capitalize text-ink-900">
               {formatDate(event.start, "EEE, d 'de' MMM")}
             </span>
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-xl border border-ink-800/80 bg-ink-950/50 px-3 py-1.5 text-sm shadow-sm backdrop-blur-sm">
-            <Clock className="size-3.5 text-ink-400" />
-            <span className="font-medium tabular-nums text-ink-100">
+          <span className="inline-flex items-center gap-1.5 rounded-xl border border-ink-200/80 bg-ink-50/50 px-3 py-1.5 text-sm shadow-sm backdrop-blur-sm">
+            <Clock className="size-3.5 text-ink-600" />
+            <span className="font-medium tabular-nums text-ink-900">
               {formatEventTime(event.start)} – {formatEventTime(event.end)}
             </span>
           </span>
@@ -154,7 +154,7 @@ export const AppointmentEventView = ({
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto border-t border-ink-800/80 px-6 py-5">
+      <div className="min-h-0 flex-1 overflow-y-auto border-t border-ink-200/80 px-6 py-5">
         <div className="grid grid-cols-2 gap-4 sm:gap-5">
           <DetailField
             label="N° de cita"
@@ -169,25 +169,25 @@ export const AppointmentEventView = ({
         <div
           className={cn(
             "mt-4 flex items-start gap-3 rounded-xl px-3.5 py-3",
-            hasTreatment ? "bg-ink-900/60 ring-1 ring-ink-800" : "bg-ink-900/30",
+            hasTreatment ? "bg-ink-100/60 ring-1 ring-ink-200" : "bg-ink-100/30",
           )}
         >
           <span
             className={cn(
               "flex size-8 shrink-0 items-center justify-center rounded-lg",
-              hasTreatment ? "bg-accent-100 text-accent-600" : "bg-ink-850 text-ink-400",
+              hasTreatment ? "bg-accent-100 text-accent-600" : "bg-ink-150 text-ink-600",
             )}
           >
             <ClipboardList className="size-4" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
               Plan de tratamiento
             </p>
             <p
               className={cn(
                 "mt-0.5 truncate text-sm font-medium",
-                hasTreatment ? "text-ink-50" : "text-ink-400",
+                hasTreatment ? "text-ink-950" : "text-ink-600",
               )}
             >
               {event.patientTreatmentName?.trim() || "Sin plan vinculado"}
@@ -197,8 +197,8 @@ export const AppointmentEventView = ({
 
         <div className="mt-5">
           <div className="mb-2 flex items-center gap-1.5">
-            <Tag className="size-3.5 text-ink-400" />
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+            <Tag className="size-3.5 text-ink-600" />
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
               Procedimientos
             </p>
           </div>
@@ -218,30 +218,30 @@ export const AppointmentEventView = ({
               ))}
             </div>
           ) : (
-            <p className="text-sm text-ink-400">Sin procedimientos registrados</p>
+            <p className="text-sm text-ink-600">Sin procedimientos registrados</p>
           )}
         </div>
 
         {hasNotes && (
           <div className="mt-5">
             <div className="mb-2 flex items-center gap-1.5">
-              <AlignLeft className="size-3.5 text-ink-400" />
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+              <AlignLeft className="size-3.5 text-ink-600" />
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
                 Notas
               </p>
             </div>
-            <p className="whitespace-pre-wrap rounded-xl bg-ink-900/50 px-3.5 py-3 text-sm leading-relaxed text-ink-200 ring-1 ring-ink-800/80">
+            <p className="whitespace-pre-wrap rounded-xl bg-ink-100/50 px-3.5 py-3 text-sm leading-relaxed text-ink-800 ring-1 ring-ink-200/80">
               {event.description}
             </p>
           </div>
         )}
 
         {hasPrice && (
-          <div className="mt-5 flex items-center justify-between gap-3 border-t border-ink-800/80 pt-5">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+          <div className="mt-5 flex items-center justify-between gap-3 border-t border-ink-200/80 pt-5">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
               Precio total
             </span>
-            <span className="text-lg font-bold tabular-nums tracking-tight text-ink-50">
+            <span className="text-lg font-bold tabular-nums tracking-tight text-ink-950">
               {currencyFormat(event.totalPrice)}
             </span>
           </div>

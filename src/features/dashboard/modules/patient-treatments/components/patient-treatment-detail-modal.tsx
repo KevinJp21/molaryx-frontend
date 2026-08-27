@@ -34,8 +34,8 @@ const Field = ({
     value?: string | null;
 }) => (
     <div className="flex flex-col gap-1">
-        <span className="text-xs text-ink-400">{label}</span>
-        <span className="text-sm text-ink-100">{value?.trim() ? value : "—"}</span>
+        <span className="text-xs text-ink-600">{label}</span>
+        <span className="text-sm text-ink-900">{value?.trim() ? value : "—"}</span>
     </div>
 );
 
@@ -94,7 +94,7 @@ export const PatientTreatmentDetailModal = ({
         >
             <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
                 <div className="flex flex-col gap-6">
-                    <div className="grid grid-cols-1 gap-4 rounded-lg border border-ink-800 bg-ink-900/30 p-4 md:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 rounded-lg border border-ink-200 bg-ink-100/30 p-4 md:grid-cols-2">
                         <Field
                             label="Paciente"
                             value={
@@ -106,7 +106,7 @@ export const PatientTreatmentDetailModal = ({
                         />
                         <Field label="Tratamiento" value={patientTreatment.treatmentName} />
                         <div className="flex flex-col gap-1">
-                            <span className="text-xs text-ink-400">Estado</span>
+                            <span className="text-xs text-ink-600">Estado</span>
                             <Badge variant={statusBadgeVariant(patientTreatment.idPatientTreatmentStatus)}>
                                 {getTreatmentStatusLabel(
                                     patientTreatment.idPatientTreatmentStatus,
@@ -141,8 +141,8 @@ export const PatientTreatmentDetailModal = ({
                     <section className="flex flex-col gap-3">
                         <div className="flex items-center justify-between gap-3">
                             <div className="flex flex-col gap-1">
-                                <h3 className="text-sm font-medium text-ink-50">Pagos</h3>
-                                <p className="text-xs text-ink-400">
+                                <h3 className="text-sm font-medium text-ink-950">Pagos</h3>
+                                <p className="text-xs text-ink-600">
                                     Pagos registrados para este plan
                                 </p>
                             </div>
@@ -170,7 +170,7 @@ export const PatientTreatmentDetailModal = ({
                                 emptyMessage="Este plan no tiene pagos registrados."
                             />
                         ) : !canViewPaymentSummary ? (
-                            <p className="text-sm text-ink-400">
+                            <p className="text-sm text-ink-600">
                                 No tienes permiso para ver los pagos de este plan.
                             </p>
                         ) : null}

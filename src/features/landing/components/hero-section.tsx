@@ -73,7 +73,7 @@ export const HeroSection = () => {
                 <div className="flex justify-center">
                     <span
                         data-hero-badge
-                        className="inline-flex items-center text-center gap-2 rounded-full border border-ink-200/8 px-3.5 py-1.5 text-xs font-medium text-ink-200 backdrop-blur-sm"
+                        className="inline-flex items-center text-center gap-2 rounded-full border border-ink-800/8 px-3.5 py-1.5 text-xs font-medium text-ink-800 backdrop-blur-sm"
                     >
                         <Sparkles className="size-3.5 text-accent-400" />
                         Para consultorios de cualquier especialidad
@@ -95,7 +95,7 @@ export const HeroSection = () => {
                     <div className="mx-auto mt-6 max-w-2xl overflow-hidden">
                         <p
                             data-hero-copy
-                            className="will-change-transform text-base text-ink-200 sm:text-lg"
+                            className="will-change-transform text-base text-ink-800 sm:text-lg"
                         >
                             Pacientes, historia clínica, citas, procedimientos, tratamientos y pagos
                             en una sola plataforma. Organiza la operación de tu consultorio sin importar tu especialidad.

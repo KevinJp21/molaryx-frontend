@@ -217,7 +217,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
 
     return (
         <div className="flex flex-col gap-1.5">
-            <label htmlFor={name} className="text-sm font-medium text-ink-200">
+            <label htmlFor={name} className="text-sm font-medium text-ink-800">
                 {label}
             </label>
 
@@ -346,15 +346,15 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                             : undefined
                                     }
                                     className={cn(
-                                        "h-auto w-full min-w-0 rounded-xl border border-ink-700 bg-ink-900 px-3.5 py-2.5 text-sm text-ink-50 shadow-none outline-none",
+                                        "h-auto w-full min-w-0 rounded-xl border border-ink-300 bg-ink-100 px-3.5 py-2.5 text-sm text-ink-950 shadow-none outline-none",
                                         "transition-[border-color,box-shadow] duration-200",
-                                        "data-placeholder:text-ink-400",
+                                        "data-placeholder:text-ink-600",
                                         "focus-visible:border-accent-500 focus-visible:ring-[3px] focus-visible:ring-accent-500/20",
                                         "aria-invalid:border-coral-500 aria-invalid:ring-[3px] aria-invalid:ring-coral-500/20",
                                         "disabled:cursor-not-allowed disabled:opacity-70",
-                                        "[&_svg]:text-ink-400",
+                                        "[&_svg]:text-ink-600",
                                         hideFocusStyles &&
-                                            "border-ink-700! ring-0! outline-none! focus:border-ink-700! focus:ring-0! focus:outline-none! focus-visible:border-ink-700! focus-visible:ring-0! focus-visible:outline-none!",
+                                            "border-ink-300! ring-0! outline-none! focus:border-ink-300! focus:ring-0! focus:outline-none! focus-visible:border-ink-300! focus-visible:ring-0! focus-visible:outline-none!",
                                         className,
                                     )}
                                 >
@@ -364,7 +364,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                 </SelectTrigger>
                                 <SelectContent
                                     className={cn(
-                                        "max-h-80 w-(--radix-select-trigger-width) rounded-xl border-ink-700 bg-ink-950 text-ink-50 shadow-md",
+                                        "max-h-80 w-(--radix-select-trigger-width) rounded-xl border-ink-300 bg-ink-50 text-ink-950 shadow-md",
                                     )}
                                     onCloseAutoFocus={(e) => {
                                         e.preventDefault();
@@ -373,12 +373,12 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                     header={
                                         searchable ? (
                                             <div
-                                                className="border-b border-ink-800 bg-ink-950 p-2"
+                                                className="border-b border-ink-200 bg-ink-50 p-2"
                                                 onPointerDown={(e) => e.stopPropagation()}
                                                 onKeyDown={(e) => e.stopPropagation()}
                                             >
                                                 <div className="relative">
-                                                    <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-ink-400" />
+                                                    <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-ink-600" />
                                                     <Input
                                                         ref={searchInputRef}
                                                         value={search}
@@ -405,7 +405,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                     footer={
                                         infinite && hasMore ? (
                                             <div
-                                                className="border-t border-ink-800 bg-ink-950 p-2"
+                                                className="border-t border-ink-200 bg-ink-50 p-2"
                                                 onPointerDown={(e) => {
                                                     e.preventDefault();
                                                     e.stopPropagation();
@@ -420,7 +420,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                                         e.stopPropagation();
                                                         requestLoadMore();
                                                     }}
-                                                    className="w-full rounded-lg px-2 py-1.5 text-center text-xs font-medium text-accent-400 transition-colors hover:bg-ink-850 hover:text-accent-300 disabled:cursor-not-allowed disabled:opacity-60"
+                                                    className="w-full rounded-lg px-2 py-1.5 text-center text-xs font-medium text-accent-400 transition-colors hover:bg-ink-150 hover:text-accent-300 disabled:cursor-not-allowed disabled:opacity-60"
                                                 >
                                                     {isLoadingMore ? "Cargando más..." : "Cargar más"}
                                                 </button>
@@ -429,7 +429,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                     }
                                 >
                                     {listItems.length === 0 ? (
-                                        <div className="px-3 py-2.5 text-sm text-ink-400">
+                                        <div className="px-3 py-2.5 text-sm text-ink-600">
                                             {isSearching ? "Buscando..." : "Sin resultados"}
                                         </div>
                                     ) : (
@@ -439,7 +439,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                                     key={`${value}-${index}`}
                                                     value={String(value)}
                                                     disabled={itemDisabled}
-                                                    className="rounded-lg text-ink-50 focus:bg-ink-850 focus:text-ink-50"
+                                                    className="rounded-lg text-ink-950 focus:bg-ink-150 focus:text-ink-950"
                                                 >
                                                     <Badge>{itemName}</Badge>
                                                 </SelectItem>
@@ -448,7 +448,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                                     key={`${value}-${index}`}
                                                     value={String(value)}
                                                     disabled={itemDisabled}
-                                                    className="rounded-lg text-ink-50 focus:bg-ink-850 focus:text-ink-50"
+                                                    className="rounded-lg text-ink-950 focus:bg-ink-150 focus:text-ink-950"
                                                 >
                                                     {itemName}
                                                 </SelectItem>

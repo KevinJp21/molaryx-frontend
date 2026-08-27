@@ -129,7 +129,7 @@ export const Notification = () => {
           type="button"
           variant="ghost"
           size="icon"
-          className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-ink-950 hover:bg-ink-800"
+          className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-ink-50 hover:bg-ink-200"
           aria-label="Notificaciones"
         >
           <Bell className="h-4 w-4" strokeWidth={1.75} />
@@ -146,10 +146,10 @@ export const Notification = () => {
         sideOffset={8}
         className="flex w-[min(100vw-1.5rem,22rem)] flex-col gap-0 overflow-hidden p-0"
       >
-        <div className="flex items-start justify-between gap-3 border-b border-ink-800 px-4 py-3">
+        <div className="flex items-start justify-between gap-3 border-b border-ink-200 px-4 py-3">
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-ink-50">Notificaciones</p>
-            <p className="mt-0.5 text-xs text-ink-400">
+            <p className="text-sm font-semibold text-ink-950">Notificaciones</p>
+            <p className="mt-0.5 text-xs text-ink-600">
               {unreadCount > 0 ? `${unreadCount} sin leer` : "Estás al día"}
             </p>
           </div>
@@ -178,18 +178,18 @@ export const Notification = () => {
 
         <div className="max-h-96 overflow-y-auto">
           {isInitialLoading ? (
-            <div className="flex items-center justify-center gap-2 px-4 py-10 text-sm text-ink-400">
+            <div className="flex items-center justify-center gap-2 px-4 py-10 text-sm text-ink-600">
               <Spinner className="size-4" />
               Cargando...
             </div>
           ) : status === "error" && items.length === 0 ? (
-            <p className="px-4 py-8 text-center text-sm text-ink-400">
+            <p className="px-4 py-8 text-center text-sm text-ink-600">
               {message ?? "No se pudieron cargar las notificaciones."}
             </p>
           ) : items.length === 0 ? (
             <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
               <Bell className="size-5 text-ink-500" strokeWidth={1.5} />
-              <p className="text-sm text-ink-400">No tienes notificaciones</p>
+              <p className="text-sm text-ink-600">No tienes notificaciones</p>
             </div>
           ) : (
             <ul className="flex flex-col">
@@ -205,7 +205,7 @@ export const Notification = () => {
                         void handleNotificationClick(notification);
                       }}
                       className={cn(
-                        "flex w-full items-start gap-3 border-b border-ink-800/80 px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-ink-900/70",
+                        "flex w-full items-start gap-3 border-b border-ink-200/80 px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-ink-100/70",
                         !notification.isViewed && "bg-accent-500/5",
                       )}
                     >
@@ -213,7 +213,7 @@ export const Notification = () => {
                         className={cn(
                           "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg",
                           notification.isViewed
-                            ? "bg-ink-900 text-ink-400"
+                            ? "bg-ink-100 text-ink-600"
                             : "bg-accent-500/15 text-accent-300",
                         )}
                       >
@@ -226,8 +226,8 @@ export const Notification = () => {
                             className={cn(
                               "truncate text-[13px]",
                               notification.isViewed
-                                ? "font-medium text-ink-200"
-                                : "font-semibold text-ink-50",
+                                ? "font-medium text-ink-800"
+                                : "font-semibold text-ink-950",
                             )}
                           >
                             {notification.subject}
@@ -236,7 +236,7 @@ export const Notification = () => {
                             <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent-500 animate-pulse" />
                           )}
                         </span>
-                        <span className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-ink-400">
+                        <span className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-ink-600">
                           {notification.body}
                         </span>
                         <span className="mt-1.5 block text-[11px] text-ink-500">
@@ -252,11 +252,11 @@ export const Notification = () => {
         </div>
 
         {hasMore && (
-          <div className="border-t border-ink-800 p-2">
+          <div className="border-t border-ink-200 p-2">
             <Button
               type="button"
               variant="ghost"
-              className="h-9 w-full rounded-lg text-xs text-ink-300 hover:bg-ink-900 hover:text-ink-50"
+              className="h-9 w-full rounded-lg text-xs text-ink-700 hover:bg-ink-100 hover:text-ink-950"
               disabled={loadingMore || status === "loading"}
               onClick={() => {
                 void handleLoadMore();

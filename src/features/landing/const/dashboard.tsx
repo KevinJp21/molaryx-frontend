@@ -83,7 +83,7 @@ export const RECENT_PATIENTS = [
 export const STATUS_STYLES: Record<string, string> = {
   Confirmada: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/20",
   "En progreso": "bg-accent-500/15 text-accent-300 ring-accent-500/20",
-  Pendiente: "bg-ink-500/40 text-ink-200 ring-white/10",
+  Pendiente: "bg-ink-500/40 text-ink-800 ring-white/10",
 };
 
 export const CALENDAR_DAYS = [

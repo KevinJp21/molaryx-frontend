@@ -126,7 +126,7 @@ export const RelatedPaymentsTable = ({
                                 <TableRow>
                                     <TableCell
                                         colSpan={colSpan}
-                                        className="py-16 text-center text-sm text-ink-400 group-hover/row:bg-transparent"
+                                        className="py-16 text-center text-sm text-ink-600 group-hover/row:bg-transparent"
                                     >
                                         {emptyMessage}
                                     </TableCell>
@@ -145,7 +145,7 @@ export const RelatedPaymentsTable = ({
                                         </TableCell>
                                         <TableCell>{item.paymentMethod}</TableCell>
                                         <TableCell>
-                                            <span className="line-clamp-1 text-ink-300">
+                                            <span className="line-clamp-1 text-ink-700">
                                                 {notePreview(item.notes)}
                                             </span>
                                         </TableCell>
@@ -164,7 +164,7 @@ export const RelatedPaymentsTable = ({
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
-                                                        className="w-full text-xs justify-start text-ink-200 font-normal"
+                                                        className="w-full text-xs justify-start text-ink-800 font-normal"
                                                         onClick={() => openDetails(item)}
                                                     >
                                                         <Logs className="size-4" strokeWidth={1.75} />

@@ -58,16 +58,16 @@ export const AppointmentsTopProceduresChartPie = ({ data, className }: Appointme
     return (
         <Card className={cn("h-full", className)}>
             <CardHeader>
-                <CardTitle className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+                <CardTitle className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
                     Procedimientos más solicitados
                 </CardTitle>
-                <CardDescription className="text-2xl font-semibold tracking-tight text-ink-50 tabular-nums">
+                <CardDescription className="text-2xl font-semibold tracking-tight text-ink-950 tabular-nums">
                     {amountFormat(total)}
                 </CardDescription>
 
                 {procedures.length > 0 ? (
                     <CardAction>
-                        <span className="rounded-full bg-ink-900 px-2.5 py-1 text-xs font-medium text-ink-300 ring-1 ring-inset ring-ink-750">
+                        <span className="rounded-full bg-ink-100 px-2.5 py-1 text-xs font-medium text-ink-700 ring-1 ring-inset ring-ink-250">
                             {`${procedures.length} ${procedures.length === 1 ? "procedimiento" : "procedimientos"}`}
                         </span>
                     </CardAction>
@@ -103,7 +103,7 @@ export const AppointmentsTopProceduresChartPie = ({ data, className }: Appointme
                                     outerRadius="100%"
                                     paddingAngle={2}
                                     strokeWidth={2}
-                                    stroke="var(--color-ink-950)"
+                                    stroke="var(--color-ink-50)"
                                 >
                                     <Label
                                         content={({ viewBox }) => {
@@ -114,14 +114,14 @@ export const AppointmentsTopProceduresChartPie = ({ data, className }: Appointme
                                                     <tspan
                                                         x={viewBox.cx}
                                                         y={viewBox.cy}
-                                                        className="fill-ink-50 text-lg font-semibold tabular-nums"
+                                                        className="fill-ink-950 text-lg font-semibold tabular-nums"
                                                     >
                                                         {procedures.length}
                                                     </tspan>
                                                     <tspan
                                                         x={viewBox.cx}
                                                         y={(viewBox.cy ?? 0) + 20}
-                                                        className="fill-ink-400 text-[11px]"
+                                                        className="fill-ink-600 text-[11px]"
                                                     >
                                                         {procedures.length === 1 ? "procedimiento" : "procedimientos"}
                                                     </tspan>
@@ -140,11 +140,11 @@ export const AppointmentsTopProceduresChartPie = ({ data, className }: Appointme
                                         className="size-2 shrink-0 rounded-full"
                                         style={{ backgroundColor: item.color }}
                                     />
-                                    <span className="flex-1 truncate text-ink-300">{item.label}</span>
-                                    <span className="text-ink-400 tabular-nums">
+                                    <span className="flex-1 truncate text-ink-700">{item.label}</span>
+                                    <span className="text-ink-600 tabular-nums">
                                         {total > 0 ? `${Math.round((item.count / total) * 100)}%` : "0%"}
                                     </span>
-                                    <span className="w-16 text-right font-medium text-ink-50 tabular-nums">
+                                    <span className="w-16 text-right font-medium text-ink-950 tabular-nums">
                                         {amountFormat(item.count)}
                                     </span>
                                 </li>
@@ -152,14 +152,14 @@ export const AppointmentsTopProceduresChartPie = ({ data, className }: Appointme
                         </ul>
                     </>
                 ) : (
-                    <div className="flex flex-1 items-center justify-center text-center text-xs text-ink-400">
+                    <div className="flex flex-1 items-center justify-center text-center text-xs text-ink-600">
                         Aún no hay procedimientos con citas para mostrar.
                     </div>
                 )}
             </CardContent>
 
             <CardFooter className="mt-auto">
-                <p className="text-xs text-ink-400">Procedimientos más solicitados del mes actual</p>
+                <p className="text-xs text-ink-600">Procedimientos más solicitados del mes actual</p>
             </CardFooter>
         </Card>
     );

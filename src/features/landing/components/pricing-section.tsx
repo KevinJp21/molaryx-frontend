@@ -16,20 +16,20 @@ const PricingCardsSkeleton = () => (
     {Array.from({ length: 3 }).map((_, index) => (
       <div
         key={index}
-        className="flex h-full w-full flex-col rounded-2xl border border-ink-200/8 bg-ink-900/40 p-5 sm:p-8"
+        className="flex h-full w-full flex-col rounded-2xl border border-ink-800/8 bg-ink-100/40 p-5 sm:p-8"
       >
-        <Skeleton className="h-5 w-28 bg-ink-700" />
-        <Skeleton className="mt-3 h-4 w-full max-w-64 bg-ink-800" />
-        <Skeleton className="mt-6 h-9 w-36 bg-ink-700" />
+        <Skeleton className="h-5 w-28 bg-ink-300" />
+        <Skeleton className="mt-3 h-4 w-full max-w-64 bg-ink-200" />
+        <Skeleton className="mt-6 h-9 w-36 bg-ink-300" />
         <div className="mt-8 flex flex-col gap-3">
           {Array.from({ length: 5 }).map((__, featureIndex) => (
             <Skeleton
               key={featureIndex}
-              className="h-4 w-full max-w-52 bg-ink-800"
+              className="h-4 w-full max-w-52 bg-ink-200"
             />
           ))}
         </div>
-        <Skeleton className="mt-8 h-10 w-full rounded-full bg-ink-700" />
+        <Skeleton className="mt-8 h-10 w-full rounded-full bg-ink-300" />
       </div>
     ))}
   </div>
@@ -94,7 +94,7 @@ export const PricingSection = () => {
         )}
 
         <Reveal variant="fade" delay={0.1}>
-          <p className="mt-10 text-center text-xs text-ink-400">
+          <p className="mt-10 text-center text-xs text-ink-600">
             Precios en pesos colombianos (COP). El precio Founder aplica a los planes con la
             promoción activa.
           </p>

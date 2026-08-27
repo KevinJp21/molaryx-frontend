@@ -44,7 +44,7 @@ export const ResourceView = ({
 }: Props) => {
   if (resources.length === 0) {
     return (
-      <div className="h-full overflow-hidden rounded-2xl bg-ink-950 shadow-sm ring-1 ring-ink-700/60">
+      <div className="h-full overflow-hidden rounded-2xl bg-ink-50 shadow-sm ring-1 ring-ink-300/60">
         <CalendarEmptyState view="resource" onCreateClick={onCreateClick} />
       </div>
     );
@@ -62,24 +62,24 @@ export const ResourceView = ({
   };
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-ink-950 shadow-sm ring-1 ring-ink-700/60">
-      <div className="shrink-0 border-b border-ink-800 bg-ink-900/40 px-4 py-3 text-center">
-        <h2 className="text-sm font-semibold capitalize text-ink-50">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-ink-50 shadow-sm ring-1 ring-ink-300/60">
+      <div className="shrink-0 border-b border-ink-200 bg-ink-100/40 px-4 py-3 text-center">
+        <h2 className="text-sm font-semibold capitalize text-ink-950">
           {format(currentDate, "EEEE d 'de' MMMM yyyy", { locale: es })}
         </h2>
       </div>
 
       <div className="flex-1 overflow-auto">
         <div className="min-w-fit">
-          <div className="sticky top-0 z-30 flex border-b border-ink-800 bg-ink-900/80 backdrop-blur-sm">
-            <div className="sticky left-0 z-30 w-48 shrink-0 border-r border-ink-800 bg-ink-900 p-4 text-sm font-semibold text-ink-50">
+          <div className="sticky top-0 z-30 flex border-b border-ink-200 bg-ink-100/80 backdrop-blur-sm">
+            <div className="sticky left-0 z-30 w-48 shrink-0 border-r border-ink-200 bg-ink-100 p-4 text-sm font-semibold text-ink-950">
               Profesionales
             </div>
             <div className="flex" style={{ width: HOURS.length * HOUR_WIDTH }}>
               {HOURS.map((hour) => (
                 <div
                   key={hour}
-                  className="shrink-0 border-r border-ink-800 p-2 text-xs font-medium text-ink-400"
+                  className="shrink-0 border-r border-ink-200 p-2 text-xs font-medium text-ink-600"
                   style={{ width: HOUR_WIDTH }}
                 >
                   {formatAxisHour(hour)}
@@ -95,16 +95,16 @@ export const ResourceView = ({
             );
 
             return (
-              <div key={resource.id} className="flex min-h-25 border-b border-ink-800">
-                <div className="sticky left-0 z-20 flex w-48 shrink-0 items-center gap-3 border-r border-ink-800 bg-ink-950 p-4">
+              <div key={resource.id} className="flex min-h-25 border-b border-ink-200">
+                <div className="sticky left-0 z-20 flex w-48 shrink-0 items-center gap-3 border-r border-ink-200 bg-ink-50 p-4">
                   <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-100 text-xs font-bold text-accent-600">
                     {initials(resource.label)}
                   </span>
                   <div className="flex min-w-0 flex-col">
-                    <span className="truncate text-sm font-medium text-ink-50">
+                    <span className="truncate text-sm font-medium text-ink-950">
                       {resource.label}
                     </span>
-                    <span className="text-xs text-ink-400">
+                    <span className="text-xs text-ink-600">
                       {resourceEvents.length}{" "}
                       {resourceEvents.length === 1 ? "cita" : "citas"}
                     </span>
@@ -124,7 +124,7 @@ export const ResourceView = ({
                             id={`${resource.id}-${slotDate.toISOString()}`}
                             date={slotDate}
                             resourceId={resource.id}
-                            className="h-full flex-1 border-r border-ink-800/40 transition-colors last:border-ink-800"
+                            className="h-full flex-1 border-r border-ink-200/40 transition-colors last:border-ink-200"
                             onClick={() => onTimeSlotClick?.(slotDate, resource.id)}
                           />
                         );

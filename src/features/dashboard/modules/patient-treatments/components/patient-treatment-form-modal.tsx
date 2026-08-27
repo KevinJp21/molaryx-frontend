@@ -306,8 +306,8 @@ export const PatientTreatmentFormModal = ({
 
                             {isEdit && patientTreatment ? (
                                 <div className="flex flex-col gap-1">
-                                    <span className="text-xs text-ink-400">Tratamiento</span>
-                                    <span className="text-sm text-ink-100">
+                                    <span className="text-xs text-ink-600">Tratamiento</span>
+                                    <span className="text-sm text-ink-900">
                                         {patientTreatment.treatmentName}
                                     </span>
                                 </div>
@@ -349,10 +349,10 @@ export const PatientTreatmentFormModal = ({
 
                             {isEdit && patientTreatment?.endAt && (
                                 <div className="flex flex-col gap-1">
-                                    <span className="text-xs text-ink-400">
+                                    <span className="text-xs text-ink-600">
                                         Fecha de finalización
                                     </span>
-                                    <span className="text-sm text-ink-100">
+                                    <span className="text-sm text-ink-900">
                                         {formatDate(
                                             patientTreatment.endAt,
                                             "d MMM yyyy · HH:mm",
@@ -394,7 +394,7 @@ export const PatientTreatmentFormModal = ({
                         </div>
                     </div>
 
-                    <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-ink-800 bg-ink-900/40 px-5 py-3">
+                    <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-ink-200 bg-ink-100/40 px-5 py-3">
                         <Button
                             type="button"
                             variant="outline"

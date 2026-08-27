@@ -16,15 +16,15 @@ export const LegalDocumentTemplate = async ({ document }: Props) => {
   });
 
   return (
-    <div className="min-h-dvh bg-ink-950 text-ink-100">
-      <header className="sticky top-0 z-40 border-b border-ink-800/80 bg-ink-950/90 backdrop-blur-md">
+    <div className="min-h-dvh bg-ink-50 text-ink-900">
+      <header className="sticky top-0 z-40 border-b border-ink-200/80 bg-ink-50/90 backdrop-blur-md">
         <div className="container-px mx-auto flex h-14 max-w-3xl items-center justify-between">
           <Link href="/" className="inline-flex items-center">
             <Logo size={24} />
           </Link>
           <Link
             href="/"
-            className="text-sm font-medium text-ink-400 transition-colors hover:text-ink-50"
+            className="text-sm font-medium text-ink-600 transition-colors hover:text-ink-950"
           >
             Volver al inicio
           </Link>
@@ -32,14 +32,14 @@ export const LegalDocumentTemplate = async ({ document }: Props) => {
       </header>
 
       <main className="container-px mx-auto max-w-3xl py-10 sm:py-14">
-        <p className="text-xs font-medium uppercase tracking-wider text-ink-400">
+        <p className="text-xs font-medium uppercase tracking-wider text-ink-600">
           Última actualización: {document.updatedAt}
         </p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-ink-50 sm:text-4xl">
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-ink-950 sm:text-4xl">
           {document.title}
         </h1>
         <div className="legal-mdx">{body}</div>
-        <p className="mt-14 border-t border-ink-800 pt-6 text-xs text-ink-400">
+        <p className="mt-14 border-t border-ink-200 pt-6 text-xs text-ink-600">
           © {new Date().getFullYear()} {COMPANY_NAME}. Todos los derechos
           reservados.
         </p>

@@ -22,9 +22,9 @@ export const DashboardTemplate = ({ children }: Props) => {
         children
       ) : (
         <SignalRProvider>
-          <div className="relative flex h-dvh w-full overflow-hidden bg-ink-950">
+          <div className="relative flex h-dvh w-full overflow-hidden bg-ink-50">
             <DashboardSidebar isCollapsed={isSidebarCollapsed} />
-            <div className="flex min-w-0 flex-1 flex-col bg-ink-950/40">
+            <div className="flex min-w-0 flex-1 flex-col bg-ink-50/40">
               <DashboardHeader
                 isSidebarCollapsed={isSidebarCollapsed}
                 onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}

@@ -71,23 +71,23 @@ export const ConfirmUpdateTenantModal = ({
       description="¿Estás seguro de guardar estos cambios?"
     >
       <div className="px-5 py-4">
-        <div className="rounded-xl border border-ink-800 bg-ink-900/60 px-4 py-3">
-          <p className="text-sm font-medium tracking-tight text-ink-50">
+        <div className="rounded-xl border border-ink-200 bg-ink-100/60 px-4 py-3">
+          <p className="text-sm font-medium tracking-tight text-ink-950">
             {tenantName}
           </p>
           {payload && (
-            <p className="mt-1 font-mono text-xs tabular-nums text-ink-400">
+            <p className="mt-1 font-mono text-xs tabular-nums text-ink-600">
               #{payload.idTenant}
             </p>
           )}
         </div>
-        <p className="mt-3 text-sm leading-relaxed text-ink-300">
+        <p className="mt-3 text-sm leading-relaxed text-ink-700">
           Se actualizarán los datos del consultorio, propietario y/o
           suscripción según lo que hayas modificado.
         </p>
       </div>
 
-      <div className="flex shrink-0 items-center justify-end gap-2 border-t border-ink-800 bg-ink-900/40 px-5 py-3">
+      <div className="flex shrink-0 items-center justify-end gap-2 border-t border-ink-200 bg-ink-100/40 px-5 py-3">
         <Button
           type="button"
           variant="outline"

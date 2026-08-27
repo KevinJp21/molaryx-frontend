@@ -41,8 +41,8 @@ const Field = ({
   className?: string;
 }) => (
   <div className={cn("flex flex-col gap-1", className)}>
-    <span className="text-xs text-ink-400">{label}</span>
-    <span className="text-sm text-ink-100">{value?.trim() ? value : "—"}</span>
+    <span className="text-xs text-ink-600">{label}</span>
+    <span className="text-sm text-ink-900">{value?.trim() ? value : "—"}</span>
   </div>
 );
 
@@ -55,12 +55,12 @@ const SectionCard = ({
   icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   children: React.ReactNode;
 }) => (
-  <section className="flex flex-col gap-4 rounded-xl border border-ink-800 bg-ink-900/30 p-4">
+  <section className="flex flex-col gap-4 rounded-xl border border-ink-200 bg-ink-100/30 p-4">
     <div className="flex items-center gap-2">
       <span className="inline-flex size-7 items-center justify-center rounded-lg bg-accent-500/10 text-accent-300 ring-1 ring-inset ring-accent-500/20">
         <Icon className="size-3.5" strokeWidth={2} />
       </span>
-      <h3 className="text-sm font-medium text-ink-50">{title}</h3>
+      <h3 className="text-sm font-medium text-ink-950">{title}</h3>
     </div>
     {children}
   </section>
@@ -75,11 +75,11 @@ const InfoTile = ({
   value: string;
   icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 }) => (
-  <div className="flex items-start gap-3 rounded-xl border border-ink-800 bg-ink-900/20 p-3">
-    <Icon className="mt-0.5 size-4 shrink-0 text-ink-400" strokeWidth={1.75} />
+  <div className="flex items-start gap-3 rounded-xl border border-ink-200 bg-ink-100/20 p-3">
+    <Icon className="mt-0.5 size-4 shrink-0 text-ink-600" strokeWidth={1.75} />
     <div className="min-w-0">
-      <p className="text-[11px] text-ink-400">{label}</p>
-      <p className="truncate text-sm text-ink-100">{value}</p>
+      <p className="text-[11px] text-ink-600">{label}</p>
+      <p className="truncate text-sm text-ink-900">{value}</p>
     </div>
   </div>
 );
@@ -177,7 +177,7 @@ export const TenantDetailModal = ({
             <Badge variant={getTenantTypeBadgeVariant(tenant.idTenantType)}>
               {tenant.tenantTypeCode}
             </Badge>
-            <span className="inline-flex items-center rounded-full bg-ink-800 px-2.5 py-1 font-mono text-[11px] tabular-nums text-ink-200 ring-1 ring-inset ring-ink-700">
+            <span className="inline-flex items-center rounded-full bg-ink-200 px-2.5 py-1 font-mono text-[11px] tabular-nums text-ink-800 ring-1 ring-inset ring-ink-300">
               #{tenant.idTenant}
             </span>
 
@@ -228,8 +228,8 @@ export const TenantDetailModal = ({
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="flex min-w-0 items-start justify-between gap-3 md:col-span-2">
                   <div className="min-w-0">
-                    <p className="truncate font-medium text-ink-50">{owner.name}</p>
-                    <p className="truncate text-xs text-ink-400">@{owner.username}</p>
+                    <p className="truncate font-medium text-ink-950">{owner.name}</p>
+                    <p className="truncate text-xs text-ink-600">@{owner.username}</p>
                   </div>
                   <Badge variant={getUserStatusBadgeVariant(owner.idUserStatus)}>
                     {getUserStatusLabel(owner.idUserStatus, owner.userStatusName)}
@@ -244,7 +244,7 @@ export const TenantDetailModal = ({
                 />
               </div>
             ) : (
-              <p className="text-sm text-ink-400">Sin propietario registrado.</p>
+              <p className="text-sm text-ink-600">Sin propietario registrado.</p>
             )}
           </SectionCard>
         </div>

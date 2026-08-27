@@ -181,7 +181,7 @@ export const TreatmentsFormModal = ({
                         </div>
                     </div>
 
-                    <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-ink-800 bg-ink-900/40 px-5 py-3">
+                    <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-ink-200 bg-ink-100/40 px-5 py-3">
                         <Button
                             type="button"
                             variant="outline"

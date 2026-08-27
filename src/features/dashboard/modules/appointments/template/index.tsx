@@ -15,15 +15,15 @@ export const AppointmentsTemplate = () => {
       <section className="mb-4 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-1">
-            <h1 className="text-xl font-medium text-ink-50">Citas</h1>
-            <p className="text-sm text-ink-300">
+            <h1 className="text-xl font-medium text-ink-950">Citas</h1>
+            <p className="text-sm text-ink-700">
               {view === "calendar"
                 ? "Agenda de la clínica por día, semana y mes"
                 : "Listado de citas"}
             </p>
           </div>
         </div>
-        <nav className="flex gap-1 border-b border-ink-800">
+        <nav className="flex gap-1 border-b border-ink-200">
           {(
             [
               { id: "calendar", label: "Calendario" },
@@ -39,8 +39,8 @@ export const AppointmentsTemplate = () => {
                 className={cn(
                   "px-3 py-2 text-sm border-b-2 -mb-px",
                   isActive
-                    ? "border-accent-500 text-ink-50"
-                    : "border-transparent text-ink-400 hover:text-ink-200",
+                    ? "border-accent-500 text-ink-950"
+                    : "border-transparent text-ink-600 hover:text-ink-800",
                 )}
               >
                 {tab.label}

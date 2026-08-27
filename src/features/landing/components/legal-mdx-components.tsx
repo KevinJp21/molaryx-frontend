@@ -5,7 +5,7 @@ export const legalMdxComponents: MDXComponents = {
   h1: ({ className, ...props }) => (
     <h1
       className={cn(
-        "mt-3 text-3xl font-semibold tracking-tight text-ink-50 sm:text-4xl",
+        "mt-3 text-3xl font-semibold tracking-tight text-ink-950 sm:text-4xl",
         className,
       )}
       {...props}
@@ -14,7 +14,7 @@ export const legalMdxComponents: MDXComponents = {
   h2: ({ className, ...props }) => (
     <h2
       className={cn(
-        "mt-12 scroll-mt-24 text-xl font-semibold tracking-tight text-ink-50 sm:text-2xl",
+        "mt-12 scroll-mt-24 text-xl font-semibold tracking-tight text-ink-950 sm:text-2xl",
         className,
       )}
       {...props}
@@ -23,7 +23,7 @@ export const legalMdxComponents: MDXComponents = {
   h3: ({ className, ...props }) => (
     <h3
       className={cn(
-        "mt-8 scroll-mt-24 border-b border-ink-800 pb-2 text-sm font-semibold uppercase tracking-wider text-ink-200",
+        "mt-8 scroll-mt-24 border-b border-ink-200 pb-2 text-sm font-semibold uppercase tracking-wider text-ink-800",
         className,
       )}
       {...props}
@@ -31,14 +31,14 @@ export const legalMdxComponents: MDXComponents = {
   ),
   p: ({ className, ...props }) => (
     <p
-      className={cn("mt-3 text-sm leading-relaxed text-ink-300", className)}
+      className={cn("mt-3 text-sm leading-relaxed text-ink-700", className)}
       {...props}
     />
   ),
   ul: ({ className, ...props }) => (
     <ul
       className={cn(
-        "mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-ink-300",
+        "mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-ink-700",
         className,
       )}
       {...props}
@@ -47,7 +47,7 @@ export const legalMdxComponents: MDXComponents = {
   ol: ({ className, ...props }) => (
     <ol
       className={cn(
-        "mt-3 list-decimal space-y-2.5 pl-5 text-sm leading-relaxed text-ink-300",
+        "mt-3 list-decimal space-y-2.5 pl-5 text-sm leading-relaxed text-ink-700",
         className,
       )}
       {...props}
@@ -73,12 +73,12 @@ export const legalMdxComponents: MDXComponents = {
     );
   },
   strong: ({ className, ...props }) => (
-    <strong className={cn("font-semibold text-ink-100", className)} {...props} />
+    <strong className={cn("font-semibold text-ink-900", className)} {...props} />
   ),
   em: ({ className, ...props }) => (
-    <em className={cn("italic text-ink-300", className)} {...props} />
+    <em className={cn("italic text-ink-700", className)} {...props} />
   ),
   hr: ({ className, ...props }) => (
-    <hr className={cn("my-8 border-ink-800", className)} {...props} />
+    <hr className={cn("my-8 border-ink-200", className)} {...props} />
   ),
 };

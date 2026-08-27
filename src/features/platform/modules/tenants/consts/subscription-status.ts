@@ -40,7 +40,7 @@ export const TENANT_SUBSCRIPTION_STATUS_COLORS: Record<
   [TENANT_SUBSCRIPTION_STATUS.ACTIVE]: "var(--color-accent-400)",
   [TENANT_SUBSCRIPTION_STATUS.SCHEDULED]: "var(--color-accent-500)",
   [TENANT_SUBSCRIPTION_STATUS.CANCELLED]: "var(--color-coral-500)",
-  [TENANT_SUBSCRIPTION_STATUS.EXPIRED]: "var(--color-ink-400)",
+  [TENANT_SUBSCRIPTION_STATUS.EXPIRED]: "var(--color-ink-600)",
   [TENANT_SUBSCRIPTION_STATUS.SUSPENDED]: "var(--color-coral-600)",
 };
 
@@ -68,7 +68,7 @@ export const TENANT_SUBSCRIPTION_STATUS_CHIP_CLASS: Record<
   [TENANT_SUBSCRIPTION_STATUS.CANCELLED]:
     "bg-coral-500/12 text-coral-600 ring-1 ring-inset ring-coral-500/25",
   [TENANT_SUBSCRIPTION_STATUS.EXPIRED]:
-    "bg-ink-800 text-ink-300 ring-1 ring-inset ring-ink-700",
+    "bg-ink-200 text-ink-700 ring-1 ring-inset ring-ink-300",
   [TENANT_SUBSCRIPTION_STATUS.SUSPENDED]:
     "bg-coral-600/12 text-coral-700 ring-1 ring-inset ring-coral-600/25",
 };

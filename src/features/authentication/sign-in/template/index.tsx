@@ -56,10 +56,10 @@ export const SignInTemplate = () => {
 
     return (
         <div className="flex w-full max-w-md flex-1 flex-col justify-center">
-            <h1 className="font-semibold text-ink-50 text-2xl md:text-3xl">
+            <h1 className="font-semibold text-ink-950 text-2xl md:text-3xl">
                 Inicia sesión
             </h1>
-            <p className="mt-2 text-sm text-ink-300">
+            <p className="mt-2 text-sm text-ink-700">
                 Ingresa a tu cuenta para continuar con la gestión de tu consultorio.
             </p>
             <FormProvider {...methods}>
@@ -90,7 +90,7 @@ export const SignInTemplate = () => {
                     </Button>
                 </form>
             </FormProvider>
-            <p className="mt-8 flex items-center justify-center gap-1 text-center text-sm text-ink-300">
+            <p className="mt-8 flex items-center justify-center gap-1 text-center text-sm text-ink-700">
                 ¿No tienes una cuenta?
                 <Link href="/sign-up" className="font-semibold text-accent-400 hover:text-accent-300 hover:underline">
                     Regístrate

@@ -110,7 +110,7 @@ export const AppointmentsListTable = () => {
                 <TableRow>
                   <TableCell
                     colSpan={colSpan}
-                    className="py-16 text-center text-sm text-ink-400 group-hover/row:bg-transparent"
+                    className="py-16 text-center text-sm text-ink-600 group-hover/row:bg-transparent"
                   >
                     No hay citas registradas.
                   </TableCell>
@@ -130,7 +130,7 @@ export const AppointmentsListTable = () => {
                   return (
                     <TableRow key={item.idAppointment}>
                       <TableCell>
-                        <span className="font-medium text-ink-200">
+                        <span className="font-medium text-ink-800">
                           #{item.idAppointment}
                         </span>
                       </TableCell>
@@ -147,7 +147,7 @@ export const AppointmentsListTable = () => {
                           <span>
                             {formatDate(item.startAt, "d MMM yyyy")}
                           </span>
-                          <span className="text-xs text-ink-400">
+                          <span className="text-xs text-ink-600">
                             {formatDate(toColombiaDate(item.startAt), "h:mm a")}
                           </span>
                         </div>
@@ -177,7 +177,7 @@ export const AppointmentsListTable = () => {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="w-full text-xs justify-start text-ink-200 font-normal"
+                              className="w-full text-xs justify-start text-ink-800 font-normal"
                               onClick={() => openDetails(item)}
                             >
                               <Logs className="size-4" strokeWidth={1.75} />

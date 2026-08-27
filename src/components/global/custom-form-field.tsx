@@ -224,7 +224,7 @@ export const CustomFormField = ({
 
                 return (
                 <div className="flex flex-col gap-1.5">
-                    <label htmlFor={name} className="text-[13px] font-medium text-ink-200">
+                    <label htmlFor={name} className="text-[13px] font-medium text-ink-800">
                         {label}
                     </label>
 
@@ -246,14 +246,14 @@ export const CustomFormField = ({
                                     title={displayValue ?? undefined}
                                     aria-invalid={!!fieldState.error}
                                     className={cn(
-                                        "flex h-auto w-full min-w-0 justify-start rounded-xl border border-ink-700 bg-ink-900 px-3.5 py-2.5 text-left text-sm font-normal text-ink-50 shadow-none",
-                                        "hover:bg-ink-900 hover:border-ink-600 hover:text-ink-50",
+                                        "flex h-auto w-full min-w-0 justify-start rounded-xl border border-ink-300 bg-ink-100 px-3.5 py-2.5 text-left text-sm font-normal text-ink-950 shadow-none",
+                                        "hover:bg-ink-100 hover:border-ink-400 hover:text-ink-950",
                                         "focus-visible:border-accent-500 focus-visible:ring-[3px] focus-visible:ring-accent-500/20",
-                                        !field.value && "text-ink-400",
+                                        !field.value && "text-ink-600",
                                         fieldState.error && "border-coral-500 ring-[3px] ring-coral-500/20",
                                     )}
                                 >
-                                    <CalendarIcon className="mr-2 size-4 shrink-0 text-ink-400" />
+                                    <CalendarIcon className="mr-2 size-4 shrink-0 text-ink-600" />
                                     <span className="min-w-0 truncate">
                                         {displayValue ?? <span>{placeholder}</span>}
                                     </span>
@@ -272,8 +272,8 @@ export const CustomFormField = ({
                                     {...calendarProps}
                                 />
                                 {type === "datetime" && (
-                                    <div className="border-t border-ink-800 p-3">
-                                        <p className="mb-1.5 text-[11px] font-medium text-ink-300">
+                                    <div className="border-t border-ink-200 p-3">
+                                        <p className="mb-1.5 text-[11px] font-medium text-ink-700">
                                             Hora
                                         </p>
                                         <div className="grid grid-cols-3 gap-2">
@@ -422,7 +422,7 @@ export const CustomFormField = ({
                                 }}
                             />
                             {mode === 'percentage' && field.value && (
-                                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-ink-400">
+                                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-ink-600">
                                     %
                                 </span>
                             )}

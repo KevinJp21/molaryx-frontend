@@ -37,7 +37,7 @@ function SheetOverlay({
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-ink-700/60 duration-200 supports-backdrop-filter:backdrop-blur-sm",
+        "fixed inset-0 z-50 bg-ink-300/60 duration-200 supports-backdrop-filter:backdrop-blur-sm",
         "data-[state=open]:animate-in data-[state=open]:fade-in-0",
         "data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
         className
@@ -64,11 +64,11 @@ function SheetContent({
         data-slot="sheet-content"
         data-side={side}
         className={cn(
-          "fixed z-50 flex flex-col gap-4 bg-ink-950 text-sm text-ink-100 shadow-2xl",
-          "data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:border-t data-[side=bottom]:border-ink-800",
-          "data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=left]:border-ink-800 data-[side=left]:sm:max-w-sm",
-          "data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=right]:border-ink-800 data-[side=right]:sm:max-w-sm",
-          "data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:border-b data-[side=top]:border-ink-800",
+          "fixed z-50 flex flex-col gap-4 bg-ink-50 text-sm text-ink-900 shadow-2xl",
+          "data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:border-t data-[side=bottom]:border-ink-200",
+          "data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=left]:border-ink-200 data-[side=left]:sm:max-w-sm",
+          "data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=right]:border-ink-200 data-[side=right]:sm:max-w-sm",
+          "data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:border-b data-[side=top]:border-ink-200",
           "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-300",
           "data-[state=open]:data-[side=bottom]:slide-in-from-bottom-full",
           "data-[state=open]:data-[side=left]:slide-in-from-left-full",
@@ -105,7 +105,7 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sheet-header"
-      className={cn("flex flex-col gap-0.5 border-b border-ink-800 px-5 py-4", className)}
+      className={cn("flex flex-col gap-0.5 border-b border-ink-200 px-5 py-4", className)}
       {...props}
     />
   )
@@ -115,7 +115,7 @@ function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sheet-footer"
-      className={cn("mt-auto flex items-center gap-2 border-t border-ink-800 px-5 py-4", className)}
+      className={cn("mt-auto flex items-center gap-2 border-t border-ink-200 px-5 py-4", className)}
       {...props}
     />
   )
@@ -129,7 +129,7 @@ function SheetTitle({
     <SheetPrimitive.Title
       data-slot="sheet-title"
       className={cn(
-        "text-base font-semibold text-ink-50",
+        "text-base font-semibold text-ink-950",
         className
       )}
       {...props}
@@ -144,7 +144,7 @@ function SheetDescription({
   return (
     <SheetPrimitive.Description
       data-slot="sheet-description"
-      className={cn("text-sm text-ink-400", className)}
+      className={cn("text-sm text-ink-600", className)}
       {...props}
     />
   )

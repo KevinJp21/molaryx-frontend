@@ -110,13 +110,13 @@ const FormSection = ({
         <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-accent-100 text-accent-600">
           <Icon className="size-3.5" />
         </span>
-        <h3 className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+        <h3 className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
           {title}
         </h3>
       </div>
       {action}
     </div>
-    <div className="space-y-3 rounded-xl bg-ink-900/40 p-4 ring-1 ring-ink-800/80">
+    <div className="space-y-3 rounded-xl bg-ink-100/40 p-4 ring-1 ring-ink-200/80">
       {children}
     </div>
   </section>
@@ -173,10 +173,10 @@ const AppointmentProceduresFields = ({
         {fields.map((field, index) => (
           <div
             key={field.id}
-            className="space-y-3 rounded-xl bg-ink-950/50 p-3.5 ring-1 ring-ink-800/60"
+            className="space-y-3 rounded-xl bg-ink-50/50 p-3.5 ring-1 ring-ink-200/60"
           >
             <div className="flex items-start justify-between gap-2">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
                 Procedimiento {index + 1}
               </p>
               {fields.length > 1 && (
@@ -185,7 +185,7 @@ const AppointmentProceduresFields = ({
                   variant="ghost"
                   size="icon-sm"
                   aria-label={`Quitar procedimiento ${index + 1}`}
-                  className="size-7 text-ink-400 hover:bg-coral-500/10 hover:text-coral-600"
+                  className="size-7 text-ink-600 hover:bg-coral-500/10 hover:text-coral-600"
                   onClick={() => remove(index)}
                 >
                   <Trash2 className="size-3.5" />
@@ -236,7 +236,7 @@ const AppointmentProceduresFields = ({
                 mode="currency"
               />
             ) : (
-              <p className="text-xs leading-relaxed text-ink-400">
+              <p className="text-xs leading-relaxed text-ink-600">
                 Precio incluido en el plan de tratamiento.
               </p>
             )}
@@ -244,11 +244,11 @@ const AppointmentProceduresFields = ({
         ))}
 
         {!hasTreatment && totalPrice > 0 && (
-          <div className="flex items-center justify-between gap-3 border-t border-ink-800/80 pt-3">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+          <div className="flex items-center justify-between gap-3 border-t border-ink-200/80 pt-3">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
               Total
             </span>
-            <span className="text-base font-bold tabular-nums tracking-tight text-ink-50">
+            <span className="text-base font-bold tabular-nums tracking-tight text-ink-950">
               {currencyFormat(totalPrice)}
             </span>
           </div>
@@ -307,7 +307,7 @@ export const AppointmentEventForm = ({
     <FormProvider {...methods}>
       <form
         onSubmit={onSubmit}
-        className="flex max-h-[90vh] w-full flex-col overflow-hidden bg-ink-950"
+        className="flex max-h-[90vh] w-full flex-col overflow-hidden bg-ink-50"
       >
         <div
           className="relative shrink-0 px-6 pb-4 pt-6"
@@ -342,18 +342,18 @@ export const AppointmentEventForm = ({
               size="icon-sm"
               onClick={onClose}
               aria-label="Cerrar"
-              className="text-ink-400 hover:bg-ink-900/80"
+              className="text-ink-600 hover:bg-ink-100/80"
             >
               <X className="size-4" />
             </Button>
           </div>
 
           <div>
-            <h2 className="text-xl font-bold tracking-tight text-ink-50 sm:text-2xl">
+            <h2 className="text-xl font-bold tracking-tight text-ink-950 sm:text-2xl">
               {isCreate ? "Nueva cita" : "Editar cita"}
             </h2>
             {isEdit && event && (
-              <p className="mt-1 text-sm text-ink-400">
+              <p className="mt-1 text-sm text-ink-600">
                 Cita #{event.idAppointment}
                 {event.patientName ? ` · ${event.patientName}` : ""}
               </p>
@@ -361,7 +361,7 @@ export const AppointmentEventForm = ({
           </div>
         </div>
 
-        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto border-t border-ink-800/80 px-6 py-5">
+        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto border-t border-ink-200/80 px-6 py-5">
           <FormSection title="Participantes" icon={Users}>
             <CustomFormSelect
               name="idPatient"
@@ -423,7 +423,7 @@ export const AppointmentEventForm = ({
               treatmentsStatus === "success" &&
               !treatmentsPagination.hasMore &&
               !hasActiveTreatments && (
-                <p className="text-xs leading-relaxed text-ink-400">
+                <p className="text-xs leading-relaxed text-ink-600">
                   Este paciente no tiene planes de tratamiento activos.
                 </p>
               )}
@@ -527,7 +527,7 @@ export const AppointmentEventForm = ({
           </FormSection>
         </div>
 
-        <div className="flex shrink-0 items-center justify-between gap-3 border-t border-ink-800/80 bg-ink-950/95 px-6 py-4 backdrop-blur-sm">
+        <div className="flex shrink-0 items-center justify-between gap-3 border-t border-ink-200/80 bg-ink-50/95 px-6 py-4 backdrop-blur-sm">
           {!isCreate && event && canUpdate ? (
             <Button
               type="button"
@@ -549,7 +549,7 @@ export const AppointmentEventForm = ({
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="rounded-xl text-ink-400"
+              className="rounded-xl text-ink-600"
             >
               Cancelar
             </Button>

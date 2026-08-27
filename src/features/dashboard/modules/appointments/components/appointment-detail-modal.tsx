@@ -43,8 +43,8 @@ const Field = ({
   className?: string;
 }) => (
   <div className={cn("flex flex-col gap-1", className)}>
-    <span className="text-xs text-ink-400">{label}</span>
-    <span className="text-sm text-ink-100">{value?.trim() ? value : "—"}</span>
+    <span className="text-xs text-ink-600">{label}</span>
+    <span className="text-sm text-ink-900">{value?.trim() ? value : "—"}</span>
   </div>
 );
 
@@ -123,12 +123,12 @@ export const AppointmentDetailModal = ({
             {statusLabel}
           </span>
 
-          <div className="grid grid-cols-1 gap-4 rounded-lg border border-ink-800 bg-ink-900/30 p-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 rounded-lg border border-ink-200 bg-ink-100/30 p-4 md:grid-cols-2">
             <Field label="N° de cita" value={`#${appointment.idAppointment}`} />
             <Field label="Paciente" value={patientName} />
             <Field label="Profesional" value={professionalName} />
             <div className="flex flex-col gap-1.5">
-              <span className="text-xs text-ink-400">Procedimientos</span>
+              <span className="text-xs text-ink-600">Procedimientos</span>
               {hasProcedures ? (
                 <div className="flex flex-wrap gap-2">
                   {appointment.procedures.map((procedure) => (
@@ -145,7 +145,7 @@ export const AppointmentDetailModal = ({
                   ))}
                 </div>
               ) : (
-                <span className="text-sm text-ink-100">—</span>
+                <span className="text-sm text-ink-900">—</span>
               )}
             </div>
             <Field
@@ -159,17 +159,17 @@ export const AppointmentDetailModal = ({
               />
             )}
             <div className="flex flex-col gap-1.5 md:col-span-2">
-              <span className="text-xs text-ink-400">Fecha y horario</span>
+              <span className="text-xs text-ink-600">Fecha y horario</span>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-xl border border-ink-800/80 bg-ink-950/50 px-3 py-1.5 text-sm">
-                  <CalendarDays className="size-3.5 text-ink-400" />
-                  <span className="font-medium capitalize text-ink-100">
+                <span className="inline-flex items-center gap-1.5 rounded-xl border border-ink-200/80 bg-ink-50/50 px-3 py-1.5 text-sm">
+                  <CalendarDays className="size-3.5 text-ink-600" />
+                  <span className="font-medium capitalize text-ink-900">
                     {formatDate(appointment.startAt, "EEE, d 'de' MMM yyyy")}
                   </span>
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-xl border border-ink-800/80 bg-ink-950/50 px-3 py-1.5 text-sm">
-                  <Clock className="size-3.5 text-ink-400" />
-                  <span className="font-medium tabular-nums text-ink-100">
+                <span className="inline-flex items-center gap-1.5 rounded-xl border border-ink-200/80 bg-ink-50/50 px-3 py-1.5 text-sm">
+                  <Clock className="size-3.5 text-ink-600" />
+                  <span className="font-medium tabular-nums text-ink-900">
                     {formatEventTime(start)} – {formatEventTime(end)}
                   </span>
                 </span>
@@ -186,13 +186,13 @@ export const AppointmentDetailModal = ({
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className="text-xs text-ink-400">Notas</span>
+            <span className="text-xs text-ink-600">Notas</span>
             <div
               className={cn(
-                "max-h-48 overflow-y-auto rounded-xl px-3.5 py-3 text-sm leading-relaxed ring-1 ring-ink-800/80",
+                "max-h-48 overflow-y-auto rounded-xl px-3.5 py-3 text-sm leading-relaxed ring-1 ring-ink-200/80",
                 hasNotes
-                  ? "whitespace-pre-wrap bg-ink-900/50 text-ink-200"
-                  : "bg-ink-900/30 text-ink-400",
+                  ? "whitespace-pre-wrap bg-ink-100/50 text-ink-800"
+                  : "bg-ink-100/30 text-ink-600",
               )}
             >
               {hasNotes ? appointment.notes : "Sin notas registradas."}
@@ -203,8 +203,8 @@ export const AppointmentDetailModal = ({
             <section className="flex flex-col gap-3">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex flex-col gap-1">
-                  <h3 className="text-sm font-medium text-ink-50">Pagos</h3>
-                  <p className="text-xs text-ink-400">
+                  <h3 className="text-sm font-medium text-ink-950">Pagos</h3>
+                  <p className="text-xs text-ink-600">
                     Pagos registrados para esta cita
                   </p>
                 </div>

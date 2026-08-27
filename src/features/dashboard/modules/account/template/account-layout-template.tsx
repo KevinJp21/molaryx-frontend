@@ -8,7 +8,7 @@ type Props = {
 
 export const AccountLayoutTemplate = ({ children }: Props) => {
   return (
-    <div className="flex h-dvh w-full flex-col overflow-hidden bg-ink-950 md:flex-row">
+    <div className="flex h-dvh w-full flex-col overflow-hidden bg-ink-50 md:flex-row">
       <AccountSidebar />
       <div className="min-w-0 flex-1 overflow-y-auto">{children}</div>
     </div>

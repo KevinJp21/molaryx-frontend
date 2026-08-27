@@ -87,7 +87,7 @@ export const DashboardHeader = ({
                     onClick={onToggleSidebar}
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 shrink-0 rounded-lg bg-ink-900 hover:bg-ink-800"
+                    className="h-8 w-8 shrink-0 rounded-lg bg-ink-100 hover:bg-ink-200"
                     aria-label={
                         isSidebarCollapsed ? 'Expandir menú lateral' : 'Colapsar menú lateral'
                     }
@@ -96,7 +96,7 @@ export const DashboardHeader = ({
                 </Button>
 
                 <div className="min-w-0">
-                    <p className="truncate text-[11px] text-ink-300">
+                    <p className="truncate text-[11px] text-ink-700">
                         {greeting}
                         {firstName ? `, ${firstName}` : ''}
                     </p>
@@ -114,7 +114,7 @@ export const DashboardHeader = ({
                             title={fullName}
                         >
                             <Avatar size="lg" className="cursor-pointer">
-                                <AvatarFallback className="bg-linear-to-br from-accent-400 to-coral-500 text-[11px] font-semibold text-ink-950">
+                                <AvatarFallback className="bg-linear-to-br from-accent-400 to-coral-500 text-[11px] font-semibold text-ink-50">
                                     {initials || '—'}
                                 </AvatarFallback>
                             </Avatar>
@@ -123,14 +123,14 @@ export const DashboardHeader = ({
 
                     <DropdownMenuContent align="end" className="w-60">
                         <DropdownMenuItem
-                            className="h-auto items-start justify-between gap-2.5 py-2 text-[13px] text-ink-300 focus:bg-accent-500/10 focus:text-accent-300 focus:ring-1 focus:ring-inset focus:ring-accent-500/20"
+                            className="h-auto items-start justify-between gap-2.5 py-2 text-[13px] text-ink-700 focus:bg-accent-500/10 focus:text-accent-300 focus:ring-1 focus:ring-inset focus:ring-accent-500/20"
                             onSelect={() => router.push('/dashboard/account/settings')}
                         >
                             <div className="min-w-0 flex-1">
                                 <p className="truncate font-medium text-current">
                                     {userData?.username ?? fullName ?? 'Usuario'}
                                 </p>
-                                <p className="truncate text-xs text-ink-400 group-focus/dropdown-menu-item:text-accent-300/70">
+                                <p className="truncate text-xs text-ink-600 group-focus/dropdown-menu-item:text-accent-300/70">
                                     {roleName ?? 'Sin rol'}
                                 </p>
                             </div>
@@ -141,21 +141,21 @@ export const DashboardHeader = ({
 
                         <DropdownMenuGroup>
                             <DropdownMenuItem
-                                className="gap-2.5 text-[13px] text-ink-300 focus:bg-accent-500/10 focus:text-accent-300 focus:ring-1 focus:ring-inset focus:ring-accent-500/20"
+                                className="gap-2.5 text-[13px] text-ink-700 focus:bg-accent-500/10 focus:text-accent-300 focus:ring-1 focus:ring-inset focus:ring-accent-500/20"
                                 onSelect={() => router.push('/dashboard/account/profile')}
                             >
                                 <User className="h-4 w-4" />
                                 Perfil
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                                className="gap-2.5 text-[13px] text-ink-300 focus:bg-accent-500/10 focus:text-accent-300 focus:ring-1 focus:ring-inset focus:ring-accent-500/20"
+                                className="gap-2.5 text-[13px] text-ink-700 focus:bg-accent-500/10 focus:text-accent-300 focus:ring-1 focus:ring-inset focus:ring-accent-500/20"
                                 onSelect={() => router.push('/dashboard/account/billing')}
                             >
                                 <CreditCard className="h-4 w-4" />
                                 Facturación
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                                className="gap-2.5 text-[13px] text-ink-300 focus:bg-accent-500/10 focus:text-accent-300 focus:ring-1 focus:ring-inset focus:ring-accent-500/20"
+                                className="gap-2.5 text-[13px] text-ink-700 focus:bg-accent-500/10 focus:text-accent-300 focus:ring-1 focus:ring-inset focus:ring-accent-500/20"
                                 onSelect={() => router.push('/dashboard/account/settings')}
                             >
                                 <Settings className="h-4 w-4" />

@@ -13,13 +13,13 @@ export const PlatformHomeTemplate = () => {
 
   return (
     <section className="mx-auto flex max-w-lg flex-col items-center px-4 py-16 text-center">
-      <div className="rounded-3xl border border-ink-800 bg-linear-to-br from-ink-900/60 to-ink-900/20 p-5">
+      <div className="rounded-3xl border border-ink-200 bg-linear-to-br from-ink-100/60 to-ink-100/20 p-5">
         <Building2 className="size-12 text-accent-400/80" strokeWidth={1.5} />
       </div>
-      <h1 className="mt-6 text-xl font-medium text-ink-50">
+      <h1 className="mt-6 text-xl font-medium text-ink-950">
         Administración de plataforma
       </h1>
-      <p className="mt-2 text-sm leading-relaxed text-ink-300">
+      <p className="mt-2 text-sm leading-relaxed text-ink-700">
         Gestiona tenants y cuentas desde el panel de Super Admin.
       </p>
       {canViewTenants && (

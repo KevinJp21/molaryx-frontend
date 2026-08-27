@@ -24,7 +24,7 @@ const ProfileField = ({
   value: string;
 }) => (
   <div className="space-y-1.5">
-    <label htmlFor={id} className="text-xs text-ink-400">
+    <label htmlFor={id} className="text-xs text-ink-600">
       {label}
     </label>
     <Input id={id} value={value} readOnly aria-label={label} />
@@ -93,7 +93,7 @@ export const ProfileTemplate = () => {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-5 py-8 sm:px-8 sm:py-10">
-      <h1 className="mb-8 text-center text-2xl font-semibold tracking-tight text-ink-50">
+      <h1 className="mb-8 text-center text-2xl font-semibold tracking-tight text-ink-950">
         Perfil
       </h1>
 
@@ -103,7 +103,7 @@ export const ProfileTemplate = () => {
           description="Información general de tu cuenta en Molaryx."
           action={
             <Avatar className="size-16">
-              <AvatarFallback className="bg-linear-to-br from-accent-400 to-coral-500 text-base font-semibold text-ink-950">
+              <AvatarFallback className="bg-linear-to-br from-accent-400 to-coral-500 text-base font-semibold text-ink-50">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -183,7 +183,7 @@ export const ProfileTemplate = () => {
                 value={tenantDocument}
               />
               <div className="space-y-1.5 sm:col-span-2">
-                <label htmlFor="tenantAddress" className="text-xs text-ink-400">
+                <label htmlFor="tenantAddress" className="text-xs text-ink-600">
                   Dirección
                 </label>
                 <Input

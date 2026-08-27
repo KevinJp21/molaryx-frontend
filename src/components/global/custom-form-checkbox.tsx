@@ -50,14 +50,14 @@ export const CustomFormCheckbox = ({
                 <label
                   htmlFor={id}
                   className={cn(
-                    'cursor-pointer text-sm leading-snug text-ink-200',
+                    'cursor-pointer text-sm leading-snug text-ink-800',
                     disabled && 'cursor-not-allowed opacity-50',
                   )}
                 >
                   {label}
                 </label>
                 {description && (
-                  <p className="mt-1 text-xs leading-relaxed text-ink-400">
+                  <p className="mt-1 text-xs leading-relaxed text-ink-600">
                     {description}
                   </p>
                 )}

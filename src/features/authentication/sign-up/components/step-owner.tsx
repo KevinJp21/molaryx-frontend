@@ -21,8 +21,8 @@ export const StepOwner = () => {
 
     return (
         <div>
-            <h1 className="font-semibold text-3xl tracking-tight text-ink-50">Tu cuenta</h1>
-            <p className="mt-2 text-sm text-ink-300">
+            <h1 className="font-semibold text-3xl tracking-tight text-ink-950">Tu cuenta</h1>
+            <p className="mt-2 text-sm text-ink-700">
                 Serás el administrador principal de este consultorio.
             </p>
             <div className="mt-7 flex flex-col gap-3">
@@ -113,7 +113,7 @@ export const StepOwner = () => {
                     />
                 </div>
 
-                <div className="mt-2 space-y-3 rounded-xl border border-ink-800 bg-ink-900/40 p-4">
+                <div className="mt-2 space-y-3 rounded-xl border border-ink-200 bg-ink-100/40 p-4">
                     <CustomFormCheckbox
                         name="acceptedTermsAndConditions"
                         label={

@@ -62,7 +62,7 @@ const ClinicalRecordProceduresFields = ({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-sm font-medium text-ink-100">
+        <p className="text-sm font-medium text-ink-900">
           Procedimientos {locked ? "" : "(opcional)"}
         </p>
         {!locked && (
@@ -80,7 +80,7 @@ const ClinicalRecordProceduresFields = ({
       </div>
 
       {fields.length === 0 && (
-        <p className="text-xs text-ink-400">
+        <p className="text-xs text-ink-600">
           {locked
             ? "Esta cita no tiene procedimientos asociados."
             : "Agrega uno o más procedimientos, o déjalos vacíos."}
@@ -90,10 +90,10 @@ const ClinicalRecordProceduresFields = ({
       {fields.map((field, index) => (
         <div
           key={field.id}
-          className="space-y-3 rounded-2xl border border-ink-800 bg-ink-900/40 p-3"
+          className="space-y-3 rounded-2xl border border-ink-200 bg-ink-100/40 p-3"
         >
           <div className="flex items-start justify-between gap-2">
-            <p className="text-xs font-medium uppercase tracking-wider text-ink-400">
+            <p className="text-xs font-medium uppercase tracking-wider text-ink-600">
               Procedimiento {index + 1}
             </p>
             {!locked && fields.length > 0 && (
@@ -102,7 +102,7 @@ const ClinicalRecordProceduresFields = ({
                 variant="ghost"
                 size="icon-sm"
                 aria-label={`Quitar procedimiento ${index + 1}`}
-                className="text-ink-400 hover:bg-coral-500/10 hover:text-coral-600"
+                className="text-ink-600 hover:bg-coral-500/10 hover:text-coral-600"
                 onClick={() => remove(index)}
               >
                 <Trash2 className="size-4" />
@@ -137,7 +137,7 @@ const ClinicalRecordProceduresFields = ({
       )}
 
       {locked && fields.length > 0 && (
-        <p className="text-xs text-ink-400">
+        <p className="text-xs text-ink-600">
           Los procedimientos se toman de la cita seleccionada.
         </p>
       )}
@@ -319,7 +319,7 @@ export const ClinicalRecordFormModal = ({
             </div>
           </div>
 
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-ink-800 bg-ink-900/40 px-5 py-3">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-ink-200 bg-ink-100/40 px-5 py-3">
             <Button
               type="button"
               variant="outline"

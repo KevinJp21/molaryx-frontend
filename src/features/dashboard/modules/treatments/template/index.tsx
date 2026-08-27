@@ -69,10 +69,10 @@ export const TreatmentsTemplate = () => {
         <>
             <section className="mb-4 flex items-center justify-between">
                 <div className="flex flex-col gap-1">
-                    <h1 className="text-xl font-medium text-ink-50">
+                    <h1 className="text-xl font-medium text-ink-950">
                         Servicios
                     </h1>
-                    <p className="text-sm text-ink-300">
+                    <p className="text-sm text-ink-700">
                         Gestión de servicios
                     </p>
                 </div>

@@ -65,16 +65,16 @@ export const AppointmentsByStatusChartBar = ({ data, className }: AppointmentsBy
     return (
         <Card className={cn("h-full", className)}>
             <CardHeader>
-                <CardTitle className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+                <CardTitle className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
                     Citas por estado
                 </CardTitle>
-                <CardDescription className="text-2xl font-semibold tracking-tight text-ink-50 tabular-nums">
+                <CardDescription className="text-2xl font-semibold tracking-tight text-ink-950 tabular-nums">
                     {amountFormat(total)}
                 </CardDescription>
 
                 {statuses.length > 0 ? (
                     <CardAction>
-                        <span className="rounded-full bg-ink-900 px-2.5 py-1 text-xs font-medium text-ink-300 ring-1 ring-inset ring-ink-750">
+                        <span className="rounded-full bg-ink-100 px-2.5 py-1 text-xs font-medium text-ink-700 ring-1 ring-inset ring-ink-250">
                             {`${statuses.length} ${statuses.length === 1 ? "estado" : "estados"}`}
                         </span>
                     </CardAction>
@@ -112,7 +112,7 @@ export const AppointmentsByStatusChartBar = ({ data, className }: AppointmentsBy
                             />
 
                             <ChartTooltip
-                                cursor={{ fill: "var(--color-ink-850)", opacity: 0.6 }}
+                                cursor={{ fill: "var(--color-ink-150)", opacity: 0.6 }}
                                 content={
                                     <ChartTooltipContent
                                         label="Estado"
@@ -141,14 +141,14 @@ export const AppointmentsByStatusChartBar = ({ data, className }: AppointmentsBy
                         </BarChart>
                     </ChartContainer>
                 ) : (
-                    <div className="flex min-h-56 flex-1 items-center justify-center px-5 text-center text-xs text-ink-400">
+                    <div className="flex min-h-56 flex-1 items-center justify-center px-5 text-center text-xs text-ink-600">
                         Aún no hay citas registradas para mostrar por estado.
                     </div>
                 )}
             </CardContent>
 
             <CardFooter className="mt-auto">
-                <p className="text-xs text-ink-400">Distribución de citas del mes actual por estado</p>
+                <p className="text-xs text-ink-600">Distribución de citas del mes actual por estado</p>
             </CardFooter>
         </Card>
     );

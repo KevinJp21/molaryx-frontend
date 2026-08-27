@@ -16,11 +16,11 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-coral-500/12 text-coral-600 [a&]:hover:bg-coral-500/18",
         outline:
-          "border-ink-700 bg-transparent text-ink-200 [a&]:hover:bg-ink-900 [a&]:hover:text-ink-100",
+          "border-ink-300 bg-transparent text-ink-800 [a&]:hover:bg-ink-100 [a&]:hover:text-ink-900",
         success:
           "border-transparent bg-accent-500/12 text-accent-600 [a&]:hover:bg-accent-500/18",
         muted:
-          "border-transparent bg-ink-800 text-ink-300 [a&]:hover:bg-ink-750",
+          "border-transparent bg-ink-200 text-ink-700 [a&]:hover:bg-ink-250",
       },
     },
     defaultVariants: {

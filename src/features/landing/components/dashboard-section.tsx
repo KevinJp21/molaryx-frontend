@@ -125,10 +125,10 @@ export const DashboardSection = () => {
                                         <chip.icon className="h-4 w-4" />
                                     </span>
                                     <div>
-                                        <p className="text-[11px] font-semibold text-ink-50">
+                                        <p className="text-[11px] font-semibold text-ink-950">
                                             {chip.title}
                                         </p>
-                                        <p className="text-[10px] text-ink-300">{chip.detail}</p>
+                                        <p className="text-[10px] text-ink-700">{chip.detail}</p>
                                     </div>
                                 </div>
                             </div>

@@ -47,7 +47,7 @@ export type TTenantStatusFilter = TTenantStatusId | "all";
 export const TENANT_STATUS_COLORS: Record<TTenantStatusFilter, string> = {
   all: "var(--color-accent-500)",
   [TENANT_STATUS.ACTIVE]: "var(--color-accent-400)",
-  [TENANT_STATUS.INACTIVE]: "var(--color-ink-400)",
+  [TENANT_STATUS.INACTIVE]: "var(--color-ink-600)",
   [TENANT_STATUS.PENDING]: "#FEE701",
   [TENANT_STATUS.BLOCKED]: "var(--color-coral-500)",
   [TENANT_STATUS.REJECTED]: "var(--color-coral-600)",
@@ -62,7 +62,7 @@ export const TENANT_STATUS_CHIP_CLASS: Record<TTenantStatusId, string> = {
   [TENANT_STATUS.ACTIVE]:
     "bg-accent-500/12 text-accent-600 ring-1 ring-inset ring-accent-500/25",
   [TENANT_STATUS.INACTIVE]:
-    "bg-ink-800 text-ink-300 ring-1 ring-inset ring-ink-700",
+    "bg-ink-200 text-ink-700 ring-1 ring-inset ring-ink-300",
   [TENANT_STATUS.PENDING]:
     "bg-yellow-400/12 text-yellow-400 ring-1 ring-inset ring-yellow-400/30",
   [TENANT_STATUS.BLOCKED]:

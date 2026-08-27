@@ -22,10 +22,10 @@ export const AccountSettingsCard = ({
     <Card className={cn("shadow-none", className)}>
       <CardContent className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
         <div className="min-w-0 flex-1 space-y-1.5">
-          <h2 className="text-base font-semibold tracking-tight text-ink-50">
+          <h2 className="text-base font-semibold tracking-tight text-ink-950">
             {title}
           </h2>
-          <p className="max-w-xl text-sm leading-relaxed text-ink-400">
+          <p className="max-w-xl text-sm leading-relaxed text-ink-600">
             {description}
           </p>
           {children ? <div className="pt-3">{children}</div> : null}
@@ -33,7 +33,7 @@ export const AccountSettingsCard = ({
         {action ? <div className="shrink-0 self-center sm:self-start">{action}</div> : null}
       </CardContent>
       {footer ? (
-        <CardFooter className="justify-between gap-3 text-xs text-ink-400">
+        <CardFooter className="justify-between gap-3 text-xs text-ink-600">
           {footer}
         </CardFooter>
       ) : null}

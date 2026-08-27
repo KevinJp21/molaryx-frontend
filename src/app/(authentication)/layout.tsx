@@ -21,9 +21,9 @@ export default function AuthenticationLayout({
     ];
 
     return (
-        <div className="relative flex min-h-dvh flex-col bg-ink-950 text-ink-100 lg:flex-row">
+        <div className="relative flex min-h-dvh flex-col bg-ink-50 text-ink-900 lg:flex-row">
             {/* Brand panel */}
-            <div className="relative hidden overflow-hidden bg-ink-900 lg:flex lg:w-[44%] lg:flex-col lg:justify-between lg:p-12 xl:w-2/5">
+            <div className="relative hidden overflow-hidden bg-ink-100 lg:flex lg:w-[44%] lg:flex-col lg:justify-between lg:p-12 xl:w-2/5">
                 <div className="pointer-events-none absolute inset-0">
                     <div className="absolute left-1/2 top-0 h-105 w-105 -translate-x-1/2 rounded-full bg-accent-500/25 opacity-50 blur-[130px]" />
                     <div className="absolute bottom-0 right-0 h-70 w-70 rounded-full bg-coral-500/15 opacity-50 blur-[120px]" />
@@ -34,11 +34,11 @@ export default function AuthenticationLayout({
                 </Link>
 
                 <div className="max-w-sm">
-                    <h2 className="text-3xl font-semibold leading-tight text-ink-50">
+                    <h2 className="text-3xl font-semibold leading-tight text-ink-950">
                         Tu consultorio,{" "}
                         <span className="gradient-text">más simple.</span>
                     </h2>
-                    <p className="mt-4 text-sm leading-relaxed text-ink-300">
+                    <p className="mt-4 text-sm leading-relaxed text-ink-700">
                         Organiza pacientes, historia clínica, citas, procedimientos,
                         tratamientos y pagos desde una sola plataforma.
                     </p>
@@ -47,7 +47,7 @@ export default function AuthenticationLayout({
                         {highlights.map((h) => (
                             <li
                                 key={h}
-                                className="flex items-start gap-2.5 text-sm text-ink-200"
+                                className="flex items-start gap-2.5 text-sm text-ink-800"
                             >
                                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-500/15 text-accent-300">
                                     <Check className="h-3 w-3" strokeWidth={2.5} />

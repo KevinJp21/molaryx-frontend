@@ -21,7 +21,7 @@ export const PlatformSidebar = ({ isCollapsed }: Props) => {
 
   return (
     <aside
-      className={`flex h-full shrink-0 flex-col border-r border-white/6 bg-ink-900/60 p-3 transition-all duration-200 ${
+      className={`flex h-full shrink-0 flex-col border-r border-ink-800/6 bg-ink-100/60 p-3 transition-all duration-200 ${
         isCollapsed ? "w-21" : "w-56"
       }`}
     >
@@ -41,7 +41,7 @@ export const PlatformSidebar = ({ isCollapsed }: Props) => {
         {visibleSections.map((section) => (
           <div key={section.title} className="space-y-1">
             {!isCollapsed && section.items.length > 1 && (
-              <p className="px-2.5 text-[11px] font-medium tracking-[0.04em] text-ink-400 uppercase">
+              <p className="px-2.5 text-[11px] font-medium tracking-[0.04em] text-ink-600 uppercase">
                 {section.title}
               </p>
             )}
@@ -59,7 +59,7 @@ export const PlatformSidebar = ({ isCollapsed }: Props) => {
                   } ${
                     isActive
                       ? "bg-accent-500/10 text-accent-300 ring-1 ring-inset ring-accent-500/20"
-                      : "text-ink-300 hover:bg-accent-500/10 hover:text-accent-300 hover:ring-1 hover:ring-inset hover:ring-accent-500/20"
+                      : "text-ink-700 hover:bg-accent-500/10 hover:text-accent-300 hover:ring-1 hover:ring-inset hover:ring-accent-500/20"
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
@@ -72,16 +72,16 @@ export const PlatformSidebar = ({ isCollapsed }: Props) => {
       </nav>
 
       <div
-        className="mt-auto rounded-xl border border-white/6 bg-ink-850 p-3"
+        className="mt-auto rounded-xl border border-ink-800/6 bg-ink-150 p-3"
         title={isCollapsed ? roleName : undefined}
       >
         {userStatus === "loading" || userStatus === "idle" ? (
           isCollapsed ? (
-            <Skeleton className="mx-auto size-8 rounded-full bg-ink-700" />
+            <Skeleton className="mx-auto size-8 rounded-full bg-ink-300" />
           ) : (
             <div className="space-y-2">
-              <Skeleton className="h-3 w-2/3 rounded bg-ink-700" />
-              <Skeleton className="h-2.5 w-1/2 rounded bg-ink-700" />
+              <Skeleton className="h-3 w-2/3 rounded bg-ink-300" />
+              <Skeleton className="h-2.5 w-1/2 rounded bg-ink-300" />
             </div>
           )
         ) : isCollapsed ? (
@@ -90,8 +90,8 @@ export const PlatformSidebar = ({ isCollapsed }: Props) => {
           </div>
         ) : (
           <>
-            <p className="text-[11px] font-medium text-ink-100">Plataforma Molaryx</p>
-            <p className="mt-0.5 text-[10px] text-ink-300">{roleName}</p>
+            <p className="text-[11px] font-medium text-ink-900">Plataforma Molaryx</p>
+            <p className="mt-0.5 text-[10px] text-ink-700">{roleName}</p>
           </>
         )}
       </div>

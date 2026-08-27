@@ -118,7 +118,7 @@ export const PatientTreatmentsTable = ({
   }, [status, items.length, currentPage]);
 
   return (
-    <div className="relative flex min-h-160 w-full flex-1 flex-col overflow-hidden rounded-2xl bg-ink-950 shadow-[0_1px_0_rgba(14,14,23,0.04),0_24px_48px_-28px_rgba(124,77,255,0.45)] ring-1 ring-ink-700/70">
+    <div className="relative flex min-h-160 w-full flex-1 flex-col overflow-hidden rounded-2xl bg-ink-50 shadow-[0_1px_0_rgba(14,14,23,0.04),0_24px_48px_-28px_rgba(124,77,255,0.45)] ring-1 ring-ink-300/70">
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <PatientTreatmentsSidebar
           search={search}
@@ -136,7 +136,7 @@ export const PatientTreatmentsTable = ({
         />
 
         <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
-          <div className="border-b border-ink-800 px-3 py-3 lg:hidden">
+          <div className="border-b border-ink-200 px-3 py-3 lg:hidden">
             {canCreate && onCreate && (
               <Button
                 type="button"
@@ -197,19 +197,19 @@ export const PatientTreatmentsTable = ({
                       <div className="relative mx-auto flex max-w-sm flex-col items-center px-4 text-center">
                         <div className="relative mb-6">
                           <div className="absolute inset-0 scale-150 rounded-full bg-linear-to-br from-accent-500/5 via-transparent to-accent-500/5 blur-3xl" />
-                          <div className="relative rounded-3xl border border-ink-800 bg-linear-to-br from-ink-900/60 to-ink-900/20 p-5">
+                          <div className="relative rounded-3xl border border-ink-200 bg-linear-to-br from-ink-100/60 to-ink-100/20 p-5">
                             <ClipboardList
                               className="size-12 text-ink-500/40"
                               strokeWidth={1.5}
                             />
                           </div>
                         </div>
-                        <p className="text-base font-medium text-ink-50">
+                        <p className="text-base font-medium text-ink-950">
                           {hasActiveFilters
                             ? "Sin resultados"
                             : "Aún no hay planes"}
                         </p>
-                        <p className="mt-1.5 text-sm leading-relaxed text-ink-400">
+                        <p className="mt-1.5 text-sm leading-relaxed text-ink-600">
                           {hasActiveFilters
                             ? "No hay planes con los filtros seleccionados. Ajusta la búsqueda o el estado."
                             : "Asigna el primer tratamiento a un paciente para empezar a hacer seguimiento."}
@@ -246,14 +246,14 @@ export const PatientTreatmentsTable = ({
                               ),
                             }}
                           >
-                            <span className="font-medium text-ink-50">{name}</span>
+                            <span className="font-medium text-ink-950">{name}</span>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="flex min-w-40 flex-col gap-0.5">
-                            <span className="text-ink-100">{item.treatmentName}</span>
+                            <span className="text-ink-900">{item.treatmentName}</span>
                             {item.notes && (
-                              <span className="line-clamp-1 text-xs text-ink-400">
+                              <span className="line-clamp-1 text-xs text-ink-600">
                                 {item.notes}
                               </span>
                             )}
@@ -267,22 +267,22 @@ export const PatientTreatmentsTable = ({
                             )}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-ink-200">
+                        <TableCell className="text-ink-800">
                           {formatDate(item.startAt, "d MMM yyyy", { hour12: true })}
                         </TableCell>
-                        <TableCell className="text-ink-200">
+                        <TableCell className="text-ink-800">
                           {item.endAt
                             ? formatDate(item.endAt, "d MMM yyyy", { hour12: true })
                             : "—"}
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col gap-0.5">
-                            <span className="text-ink-100">
+                            <span className="text-ink-900">
                               {item.agreedPrice != null
                                 ? currencyFormat(item.agreedPrice)
                                 : "—"}
                             </span>
-                            <span className="text-xs text-ink-400">
+                            <span className="text-xs text-ink-600">
                               {item.paymentFrequency ?? "Sin frecuencia"}
                               {item.periodicAmount != null
                                 ? ` · ${currencyFormat(item.periodicAmount)}`
@@ -306,7 +306,7 @@ export const PatientTreatmentsTable = ({
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="justify-start text-xs font-normal text-ink-200"
+                                  className="justify-start text-xs font-normal text-ink-800"
                                   onClick={() => onViewDetails(item)}
                                 >
                                   <Logs className="size-4" strokeWidth={1.75} />
@@ -316,7 +316,7 @@ export const PatientTreatmentsTable = ({
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="justify-start text-xs font-normal text-ink-200"
+                                    className="justify-start text-xs font-normal text-ink-800"
                                     onClick={() => onEdit(item)}
                                   >
                                     <SquarePen

@@ -11,7 +11,7 @@ const navLinkClass = (isActive: boolean) =>
     "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] transition-colors",
     isActive
       ? "bg-accent-500/10 text-accent-300 ring-1 ring-inset ring-accent-500/20"
-      : "text-ink-300 hover:bg-accent-500/10 hover:text-accent-300 hover:ring-1 hover:ring-inset hover:ring-accent-500/20",
+      : "text-ink-700 hover:bg-accent-500/10 hover:text-accent-300 hover:ring-1 hover:ring-inset hover:ring-accent-500/20",
   );
 
 export const AccountSidebar = () => {
@@ -20,7 +20,7 @@ export const AccountSidebar = () => {
   return (
     <>
       {/* Mobile: barra superior */}
-      <div className="flex shrink-0 flex-col gap-3 border-b border-white/6 bg-ink-900/60 px-3 py-3 md:hidden">
+      <div className="flex shrink-0 flex-col gap-3 border-b border-ink-800/6 bg-ink-100/60 px-3 py-3 md:hidden">
         <Link
           href="/dashboard"
           className={navLinkClass(false)}
@@ -49,7 +49,7 @@ export const AccountSidebar = () => {
       </div>
 
       {/* Desktop: sidebar */}
-      <aside className="hidden w-56 shrink-0 flex-col border-r border-white/6 bg-ink-900/60 p-3 md:flex">
+      <aside className="hidden w-56 shrink-0 flex-col border-r border-ink-800/6 bg-ink-100/60 p-3 md:flex">
         <Link href="/dashboard" className={cn(navLinkClass(false), "mb-4")}>
           <ArrowLeft className="h-4 w-4 shrink-0" />
           <span>Volver</span>

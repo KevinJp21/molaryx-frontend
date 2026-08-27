@@ -5,10 +5,10 @@ import { cn } from "@/lib/utils";
 import type { TCalendarView } from "../../types";
 
 const Bone = ({ className, style }: { className?: string; style?: CSSProperties }) => (
-  <div className={cn("animate-pulse rounded bg-ink-800/70", className)} style={style} />
+  <div className={cn("animate-pulse rounded bg-ink-200/70", className)} style={style} />
 );
 
-const shell = "h-full overflow-hidden rounded-2xl bg-ink-950 ring-1 ring-ink-700/60";
+const shell = "h-full overflow-hidden rounded-2xl bg-ink-50 ring-1 ring-ink-300/60";
 
 // Patrones fijos: evitan desajustes de hidratación que causaría Math.random().
 const WEEK_EVENT_PATTERN = [
@@ -25,16 +25,16 @@ const MONTH_EVENT_PATTERN = [true, false, true, true, false, false, true, false]
 
 const MonthSkeleton = () => (
   <div className={shell}>
-    <div className="grid grid-cols-7 border-b border-ink-800 bg-ink-900/40">
+    <div className="grid grid-cols-7 border-b border-ink-200 bg-ink-100/40">
       {Array.from({ length: 7 }).map((_, index) => (
-        <div key={index} className="border-r border-ink-800 px-2 py-3 text-center last:border-r-0">
+        <div key={index} className="border-r border-ink-200 px-2 py-3 text-center last:border-r-0">
           <Bone className="mx-auto h-4 w-8" />
         </div>
       ))}
     </div>
     <div className="grid grid-cols-7">
       {Array.from({ length: 35 }).map((_, index) => (
-        <div key={index} className="min-h-30 border-b border-r border-ink-800 p-2">
+        <div key={index} className="min-h-30 border-b border-r border-ink-200 p-2">
           <Bone className="mb-2 h-4 w-6" />
           <div className="space-y-1">
             {MONTH_EVENT_PATTERN[index % MONTH_EVENT_PATTERN.length] && (
@@ -52,13 +52,13 @@ const MonthSkeleton = () => (
 
 const WeekSkeleton = () => (
   <div className={shell}>
-    <div className="flex border-b border-ink-800 bg-ink-900/40">
-      <div className="w-16 border-r border-ink-800 p-3">
+    <div className="flex border-b border-ink-200 bg-ink-100/40">
+      <div className="w-16 border-r border-ink-200 p-3">
         <Bone className="mx-auto h-8 w-10" />
       </div>
       <div className="grid flex-1 grid-cols-7">
         {Array.from({ length: 7 }).map((_, index) => (
-          <div key={index} className="border-r border-ink-800 px-2 py-3 text-center last:border-r-0">
+          <div key={index} className="border-r border-ink-200 px-2 py-3 text-center last:border-r-0">
             <Bone className="mx-auto mb-1 h-3 w-8" />
             <Bone className="mx-auto size-8 rounded-xl" />
           </div>
@@ -66,7 +66,7 @@ const WeekSkeleton = () => (
       </div>
     </div>
     <div className="flex" style={{ height: 600 }}>
-      <div className="w-16 border-r border-ink-800">
+      <div className="w-16 border-r border-ink-200">
         {Array.from({ length: 10 }).map((_, index) => (
           <div key={index} className="relative h-15">
             <Bone className="absolute right-2 h-4 w-10 -translate-y-1/2" />
@@ -75,9 +75,9 @@ const WeekSkeleton = () => (
       </div>
       <div className="relative grid flex-1 grid-cols-7">
         {WEEK_EVENT_PATTERN.map((event, columnIndex) => (
-          <div key={columnIndex} className="relative border-r border-ink-800 last:border-r-0">
+          <div key={columnIndex} className="relative border-r border-ink-200 last:border-r-0">
             {Array.from({ length: 10 }).map((_, rowIndex) => (
-              <div key={rowIndex} className="h-15 border-b border-dashed border-ink-800" />
+              <div key={rowIndex} className="h-15 border-b border-dashed border-ink-200" />
             ))}
             {event && (
               <Bone
@@ -94,11 +94,11 @@ const WeekSkeleton = () => (
 
 const DaySkeleton = () => (
   <div className={shell}>
-    <div className="border-b border-ink-800 bg-ink-900/40 px-6 py-4 text-center">
+    <div className="border-b border-ink-200 bg-ink-100/40 px-6 py-4 text-center">
       <Bone className="mx-auto h-7 w-64" />
     </div>
     <div className="flex" style={{ height: 600 }}>
-      <div className="w-20 border-r border-ink-800 bg-ink-900/20">
+      <div className="w-20 border-r border-ink-200 bg-ink-100/20">
         {Array.from({ length: 10 }).map((_, index) => (
           <div key={index} className="relative h-20">
             <Bone className="absolute left-1/2 h-4 w-12 -translate-x-1/2 -translate-y-1/2" />
@@ -107,7 +107,7 @@ const DaySkeleton = () => (
       </div>
       <div className="relative flex-1">
         {Array.from({ length: 10 }).map((_, index) => (
-          <div key={index} className="h-20 border-b border-dashed border-ink-800" />
+          <div key={index} className="h-20 border-b border-dashed border-ink-200" />
         ))}
         <Bone className="absolute left-4 right-4 rounded-lg" style={{ top: 160, height: 120 }} />
         <Bone className="absolute left-4 right-4 rounded-lg" style={{ top: 400, height: 80 }} />
@@ -126,7 +126,7 @@ const AgendaSkeleton = () => (
             {Array.from({ length: 2 + (groupIndex % 3) }).map((_, eventIndex) => (
               <div
                 key={eventIndex}
-                className="flex items-center gap-4 rounded-xl bg-ink-900/40 p-3"
+                className="flex items-center gap-4 rounded-xl bg-ink-100/40 p-3"
               >
                 <Bone className="size-10 rounded-lg" />
                 <div className="flex-1 space-y-2">
@@ -144,8 +144,8 @@ const AgendaSkeleton = () => (
 
 const ResourceSkeleton = () => (
   <div className={shell}>
-    <div className="flex border-b border-ink-800 bg-ink-900/40">
-      <div className="w-48 shrink-0 border-r border-ink-800 p-4">
+    <div className="flex border-b border-ink-200 bg-ink-100/40">
+      <div className="w-48 shrink-0 border-r border-ink-200 p-4">
         <Bone className="h-4 w-24" />
       </div>
       <div className="flex flex-1 gap-6 p-4">
@@ -155,8 +155,8 @@ const ResourceSkeleton = () => (
       </div>
     </div>
     {Array.from({ length: 4 }).map((_, rowIndex) => (
-      <div key={rowIndex} className="flex min-h-25 border-b border-ink-800">
-        <div className="flex w-48 shrink-0 items-center gap-3 border-r border-ink-800 p-4">
+      <div key={rowIndex} className="flex min-h-25 border-b border-ink-200">
+        <div className="flex w-48 shrink-0 items-center gap-3 border-r border-ink-200 p-4">
           <Bone className="size-8 rounded-full" />
           <div className="flex-1 space-y-2">
             <Bone className="h-4 w-24" />
@@ -199,7 +199,7 @@ export const CalendarSidebarSkeleton = () => (
         ))}
       </div>
     </div>
-    <div className="rounded-2xl bg-ink-900/60 p-3">
+    <div className="rounded-2xl bg-ink-100/60 p-3">
       <Bone className="mb-3 h-4 w-20" />
       <div className="space-y-2">
         {Array.from({ length: 4 }).map((_, index) => (

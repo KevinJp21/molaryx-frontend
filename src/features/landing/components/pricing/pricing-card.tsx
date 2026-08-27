@@ -25,20 +25,20 @@ export const PricingCard = ({ plan, meta }: IPricingCardProps) => {
     <div
       className={`relative flex h-full w-full min-w-0 max-w-full flex-col rounded-2xl border p-5 transition-all duration-300 sm:p-8 ${
         meta.featured
-          ? "border-accent-500/50 bg-ink-900/70 shadow-[0_20px_60px_-20px_rgba(124,77,255,0.35)]"
-          : "border-ink-200/8 bg-ink-900/40 hover:border-white/12 hover:bg-ink-850/60"
+          ? "border-accent-500/50 bg-ink-100/70 shadow-[0_20px_60px_-20px_rgba(124,77,255,0.35)]"
+          : "border-ink-800/8 bg-ink-100/40 hover:border-ink-800/12 hover:bg-ink-150/60"
       }`}
     >
       {meta.featured && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-accent-500 px-3.5 py-1 text-[11px] font-semibold text-ink-950 shadow-lg">
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-accent-500 px-3.5 py-1 text-[11px] font-semibold text-ink-50 shadow-lg">
           Más popular
         </span>
       )}
 
       <div className="flex min-w-0 items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <h3 className="text-lg font-semibold text-ink-50">{plan.name}</h3>
-          <p className="mt-2 text-sm text-ink-300">{plan.description}</p>
+          <h3 className="text-lg font-semibold text-ink-950">{plan.name}</h3>
+          <p className="mt-2 text-sm text-ink-700">{plan.description}</p>
         </div>
         {hasPromotion && (
           <span className="shrink-0 rounded-full border border-accent-500/30 bg-accent-500/15 px-2.5 py-1 text-[11px] font-semibold text-accent-300">
@@ -49,14 +49,14 @@ export const PricingCard = ({ plan, meta }: IPricingCardProps) => {
 
       <div className="mt-6 min-w-0">
         {price == null ? (
-          <span className="text-2xl font-semibold tracking-tight text-ink-50 sm:text-3xl md:text-4xl">
+          <span className="text-2xl font-semibold tracking-tight text-ink-950 sm:text-3xl md:text-4xl">
             Personalizado
           </span>
         ) : (
           <>
             {hasPromotion && (
               <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                <span className="text-sm text-ink-400 line-through">
+                <span className="text-sm text-ink-600 line-through">
                   {formatPlanPrice(price)}
                 </span>
                 {discount !== undefined && (
@@ -67,10 +67,10 @@ export const PricingCard = ({ plan, meta }: IPricingCardProps) => {
               </div>
             )}
             <div className="flex min-w-0 flex-wrap items-baseline gap-x-1 gap-y-0.5">
-              <span className="text-2xl font-semibold tracking-tight wrap-break-word text-ink-50 sm:text-3xl md:text-4xl">
+              <span className="text-2xl font-semibold tracking-tight wrap-break-word text-ink-950 sm:text-3xl md:text-4xl">
                 {formatPlanPrice(promoPrice ?? price)}
               </span>
-              <span className="text-sm text-ink-300">/ mes</span>
+              <span className="text-sm text-ink-700">/ mes</span>
             </div>
             {hasPromotion && (
               <p className="mt-2 text-xs font-medium text-accent-300">
@@ -83,7 +83,7 @@ export const PricingCard = ({ plan, meta }: IPricingCardProps) => {
 
       <ul className="mt-8 flex min-w-0 flex-1 flex-col gap-3">
         {features.map((feature) => (
-          <li key={feature} className="flex min-w-0 items-start gap-2.5 text-sm text-ink-200">
+          <li key={feature} className="flex min-w-0 items-start gap-2.5 text-sm text-ink-800">
             <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-400" strokeWidth={2} />
             <span className="min-w-0 wrap-break-word">{feature}</span>
           </li>
