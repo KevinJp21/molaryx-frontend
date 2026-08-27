@@ -5,6 +5,7 @@ import { Providers } from "@/store/providers";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components";
 import { AuthGuard } from "@/guard";
+import { buildRootMetadata } from "@/lib/seo";
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -15,14 +16,7 @@ const inter = Inter({
   preload: true
 });
 
-export const metadata: Metadata = {
-  title: "Molaryx | Gestión de consultorios",
-  description:
-    "Plataforma para gestionar pacientes, historia clínica, citas, procedimientos, tratamientos y pagos de tu consultorio. Para cualquier especialidad.",
-  appleWebApp: {
-    title: "Molaryx",
-  },
-};
+export const metadata: Metadata = buildRootMetadata();
 
 export default function RootLayout({
   children,

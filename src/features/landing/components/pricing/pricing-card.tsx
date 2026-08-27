@@ -26,7 +26,7 @@ export const PricingCard = ({ plan, meta }: IPricingCardProps) => {
       className={`relative flex h-full w-full min-w-0 max-w-full flex-col rounded-2xl border p-5 transition-all duration-300 sm:p-8 ${
         meta.featured
           ? "border-accent-500/50 bg-ink-900/70 shadow-[0_20px_60px_-20px_rgba(124,77,255,0.35)]"
-          : "border-white/8 bg-ink-900/40 hover:border-white/12 hover:bg-ink-850/60"
+          : "border-ink-200/8 bg-ink-900/40 hover:border-white/12 hover:bg-ink-850/60"
       }`}
     >
       {meta.featured && (

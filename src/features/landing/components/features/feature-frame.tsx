@@ -9,7 +9,7 @@ export const FeatureFrame = ({ children, label }: IFeatureFrameProps) => {
   return (
     <div className="relative w-full min-w-0 max-w-full">
       <div className="pointer-events-none absolute -inset-3 -z-10 rounded-3xl bg-linear-to-br from-accent-500/10 via-transparent to-coral-500/10 blur-2xl" />
-      <div className="w-full max-w-full overflow-hidden rounded-2xl border border-white/8 bg-ink-900 shadow-2xl">
+      <div className="w-full max-w-full overflow-hidden rounded-2xl border border-ink-200/8 bg-ink-900 shadow-2xl">
         <div className="flex items-center gap-2 border-b border-white/6 bg-ink-850/80 px-4 py-2.5">
           <div className="flex gap-1.5">
             <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]/80" />

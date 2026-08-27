@@ -40,9 +40,9 @@ type Props = {
 export const TenantSubscriptionSection = ({ subscription }: Props) => {
   if (!subscription) {
     return (
-      <Card className="overflow-hidden border-white/8 bg-ink-900/80 shadow-none">
+      <Card className="overflow-hidden border-ink-200/8 bg-ink-900/80 shadow-none">
         <CardContent className="flex items-start gap-4 p-6">
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-white/8 bg-ink-900">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-ink-200/8 bg-ink-900">
             <CreditCard className="size-5 text-ink-400" />
           </div>
           <div className="space-y-1">
@@ -75,7 +75,7 @@ export const TenantSubscriptionSection = ({ subscription }: Props) => {
     value != null ? String(value) : "—";
 
   return (
-    <Card className="overflow-hidden border-white/8 bg-linear-to-br from-ink-900 via-ink-900 to-accent-500/10 shadow-none">
+    <Card className="overflow-hidden border-ink-200/8 bg-linear-to-br from-ink-900 via-ink-900 to-accent-500/10 shadow-none">
       <CardContent className="space-y-6 p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-3">

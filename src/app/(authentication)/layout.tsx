@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Logo } from "@/components";
 import { Check } from "lucide-react";
 import { COMPANY_NAME } from "@/consts";
+import { noIndexRobots } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  robots: noIndexRobots,
+};
 
 export default function AuthenticationLayout({
     children,

@@ -22,7 +22,7 @@ const STATUS_BADGE = {
 
 const BillingSkeleton = () => (
   <div className="flex flex-col gap-4">
-    <Card className="overflow-hidden border-white/8 bg-ink-900/80 shadow-none">
+    <Card className="overflow-hidden border-ink-200/8 bg-ink-900/80 shadow-none">
       <CardContent className="space-y-5 p-6">
         <Skeleton className="h-4 w-28 rounded bg-ink-700" />
         <Skeleton className="h-10 w-2/3 rounded bg-ink-700" />
@@ -91,7 +91,7 @@ export const BillingTemplate = () => {
           title="Sin suscripción"
           description="No encontramos una suscripción asociada a tu consultorio."
           action={
-            <div className="flex size-12 items-center justify-center rounded-2xl border border-white/8 bg-ink-900">
+            <div className="flex size-12 items-center justify-center rounded-2xl border border-ink-200/8 bg-ink-900">
               <CreditCard className="size-5 text-ink-400" />
             </div>
           }
@@ -103,7 +103,7 @@ export const BillingTemplate = () => {
           }
         />
       ) : (
-        <Card className="overflow-hidden border-white/8 bg-linear-to-br from-ink-900 via-ink-900 to-accent-500/10 shadow-none">
+        <Card className="overflow-hidden border-ink-200/8 bg-linear-to-br from-ink-900 via-ink-900 to-accent-500/10 shadow-none">
           <CardContent className="space-y-6 p-6">
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-3">

@@ -16,7 +16,7 @@ const PricingCardsSkeleton = () => (
     {Array.from({ length: 3 }).map((_, index) => (
       <div
         key={index}
-        className="flex h-full w-full flex-col rounded-2xl border border-white/8 bg-ink-900/40 p-5 sm:p-8"
+        className="flex h-full w-full flex-col rounded-2xl border border-ink-200/8 bg-ink-900/40 p-5 sm:p-8"
       >
         <Skeleton className="h-5 w-28 bg-ink-700" />
         <Skeleton className="mt-3 h-4 w-full max-w-64 bg-ink-800" />
