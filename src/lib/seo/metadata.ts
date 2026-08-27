@@ -12,7 +12,7 @@ import {
 export const defaultTitle = `${siteName} | Gestión de consultorios`;
 
 export const defaultDescription =
-  "Gestiona pacientes, historial clínico, citas, procedimientos y pagos desde un solo lugar. Molaryx te ayuda a mantener la información de tu consultorio organizada y fácil de consultar.";
+  "Pacientes, historia clínica, citas y pagos en una sola plataforma. Molaryx organiza la gestión de tu consultorio.";
 
 export const siteRobots: Metadata["robots"] = {
   index: true,

@@ -14,7 +14,6 @@ function buildPlanOfferJsonLd(plan: IGetPublicPlans) {
   const base = {
     "@type": "Offer" as const,
     name: plan.name,
-    description: plan.description,
     availability: IN_STOCK,
     url: PRICING_URL,
   };
@@ -55,44 +54,32 @@ function buildPlanOfferJsonLd(plan: IGetPublicPlans) {
 }
 
 export function buildLandingJsonLd(plans: IGetPublicPlans[] = []) {
-  const schemas: Record<string, unknown>[] = [
+  const graph: Record<string, unknown>[] = [
     {
-      "@context": "https://schema.org",
       "@type": "Organization",
       name: siteName,
       url: siteUrl,
       logo: absoluteUrl("/images/molaryx_logo.svg"),
     },
     {
-      "@context": "https://schema.org",
       "@type": "WebSite",
       name: siteName,
       url: siteUrl,
       inLanguage: "es-CO",
-      publisher: {
-        "@type": "Organization",
-        name: siteName,
-        url: siteUrl,
-      },
+      publisher: { "@type": "Organization", name: siteName, url: siteUrl },
     },
     {
-      "@context": "https://schema.org",
       "@type": "WebPage",
       name: defaultTitle,
       description: defaultDescription,
       url: siteUrl,
       inLanguage: "es-CO",
-      isPartOf: {
-        "@type": "WebSite",
-        name: siteName,
-        url: siteUrl,
-      },
+      isPartOf: { "@type": "WebSite", name: siteName, url: siteUrl },
     },
   ];
 
   if (plans.length > 0) {
-    schemas.push({
-      "@context": "https://schema.org",
+    graph.push({
       "@type": "SoftwareApplication",
       name: siteName,
       applicationCategory: "BusinessApplication",
@@ -104,5 +91,8 @@ export function buildLandingJsonLd(plans: IGetPublicPlans[] = []) {
     });
   }
 
-  return schemas;
+  return {
+    "@context": "https://schema.org",
+    "@graph": graph,
+  };
 }
