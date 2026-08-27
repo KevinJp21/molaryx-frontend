@@ -5,7 +5,10 @@ import { handleApiError } from "@/lib/api/error-handler";
 import { TPaginationParams } from "@/types";
 import { IGetTenantsResponse } from "../interfaces";
 
-export type TGetTenantsParams = TPaginationParams;
+export type TGetTenantsParams = TPaginationParams & {
+  Search?: string;
+  IdTenantStatus?: number;
+};
 
 export const apiGetTenantsAction = async (
   params?: TGetTenantsParams,
@@ -13,11 +16,15 @@ export const apiGetTenantsAction = async (
   const PLATFORM_TENANT = process.env.PLATFORM_TENANT;
   const GET_TENANTS = process.env.GET_TENANTS;
 
-  const { Page, Size } = params ?? {};
+  const { Page, Size, Search, IdTenantStatus } = params ?? {};
   const query = new URLSearchParams();
 
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
+  if (Search) query.append("Search", Search);
+  if (IdTenantStatus !== undefined) {
+    query.append("IdTenantStatus", IdTenantStatus.toString());
+  }
 
   const url = `${PLATFORM_TENANT}${GET_TENANTS}?${query.toString()}`;
 
