@@ -5,7 +5,7 @@ import {
   IGetNotificationsResponseData,
   INotificationItems,
   TGetNotificationsParams,
-} from "@/features/dashboard";
+} from "@/features/notifications";
 import { TStatus } from "@/types";
 
 type TNotificationsState = {
@@ -13,6 +13,8 @@ type TNotificationsState = {
     status: TStatus;
     message?: string;
     data?: IGetNotificationsResponseData;
+    /** Usuario para el que ya se pidió el listado (evita datos de otra sesión). */
+    sessionKey?: string;
   };
 };
 
@@ -21,6 +23,7 @@ const initialState: TNotificationsState = {
     status: "idle",
     message: undefined,
     data: undefined,
+    sessionKey: undefined,
   },
 };
 
@@ -29,11 +32,17 @@ const notificationsSlice = createAppSlice({
   initialState,
   reducers: (create) => ({
     getNotifications: create.asyncThunk(
-      async (params?: TGetNotificationsParams) =>
-        await apiGetNotificationsAction(params),
+      async (params?: TGetNotificationsParams & { sessionKey?: string }) => {
+        const { sessionKey: _sessionKey, ...apiParams } = params ?? {};
+        return apiGetNotificationsAction(apiParams);
+      },
       {
-        pending: (state) => {
+        pending: (state, action) => {
           state.getNotifications.status = "loading";
+          const sessionKey = action.meta.arg?.sessionKey;
+          if (sessionKey) {
+            state.getNotifications.sessionKey = sessionKey;
+          }
         },
         fulfilled: (state, action) => {
           if (!action.payload.success || !action.payload.data) {
@@ -69,6 +78,9 @@ const notificationsSlice = createAppSlice({
         },
       },
     ),
+    resetGetNotifications: create.reducer((state) => {
+      state.getNotifications = initialState.getNotifications;
+    }),
     prependNotification: create.reducer(
       (state, action: PayloadAction<INotificationItems>) => {
         const incoming = action.payload;
@@ -121,6 +133,7 @@ const notificationsSlice = createAppSlice({
 
 export const {
   getNotifications,
+  resetGetNotifications,
   prependNotification,
   markNotificationAsViewed,
   markAllNotificationsAsViewed,

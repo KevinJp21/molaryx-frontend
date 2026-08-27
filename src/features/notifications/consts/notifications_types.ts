@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Bell, CalendarCheck2, CalendarClock } from "lucide-react";
+import { Bell, Building2, CalendarCheck2, CalendarClock } from "lucide-react";
 
 export type TNotificationTypeMeta = {
   id: number;
@@ -25,13 +25,19 @@ export const NOTIFICATIONS_TYPES = {
     icon: CalendarClock,
     label: "Recordatorio",
   },
+  TENANT_REGISTERED: {
+    id: 3,
+    href: "/platform/tenants",
+    icon: Building2,
+    label: "Tenant registrado",
+  },
 } as const satisfies Record<string, TNotificationTypeMeta>;
 
 export type TNotificationTypeKey = keyof typeof NOTIFICATIONS_TYPES;
 
 const FALLBACK_NOTIFICATION_TYPE: TNotificationTypeMeta = {
   id: 0,
-  href: "/dashboard",
+  href: "/",
   icon: Bell,
   label: "Notificación",
 };

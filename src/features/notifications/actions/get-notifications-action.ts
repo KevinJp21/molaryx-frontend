@@ -3,7 +3,7 @@
 import { serverApi } from "@/lib/api/server";
 import { handleApiError } from "@/lib/api/error-handler";
 import { TPaginationParams } from "@/types";
-import { IGetNotificationsResponse } from "../interfaces/get-notifications-response";
+import { IGetNotificationsResponse } from "../interfaces";
 
 export type TGetNotificationsParams = TPaginationParams;
 
@@ -18,7 +18,6 @@ export const apiGetNotificationsAction = async (
 
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
-
 
   const url = `${NOTIFICATION}${GET_NOTIFICATIONS}?${query.toString()}`;
 

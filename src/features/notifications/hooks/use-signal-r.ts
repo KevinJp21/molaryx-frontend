@@ -7,7 +7,7 @@ import {
   HubConnectionState,
   LogLevel,
 } from "@microsoft/signalr";
-import { apiGetNotificationHubConnectionAction } from "../actions/get-notification-hub-connection-action";
+import { apiGetNotificationHubConnectionAction } from "../actions";
 
 type TUseSignalROptions = {
   autoConnect?: boolean;
@@ -73,8 +73,7 @@ export const useSignalR = (options: TUseSignalROptions = {}) => {
             const refreshed = await apiGetNotificationHubConnectionAction();
             if (!refreshed.success || !refreshed.accessToken) {
               throw new Error(
-                refreshed.message ??
-                  "No se pudo renovar el token del hub.",
+                refreshed.message ?? "No se pudo renovar el token del hub.",
               );
             }
             return refreshed.accessToken;

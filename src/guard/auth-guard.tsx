@@ -11,6 +11,7 @@ import {
   selectGetUserData,
   selectPostLogout,
 } from "@/store/authentication/authentication-slice";
+import { resetGetNotifications } from "@/store/notifications/notifications-slice";
 import { PUBLIC_AUTH_ROUTES, PROTECTED_ROUTE_PREFIXES } from "@/consts";
 import { resolveAppHomeRoute } from "@/utils/resolve-app-home-route";
 import { Button, ErrorMessage } from "@/components";
@@ -27,6 +28,7 @@ const SessionExpiredHandler = () => {
     if (!session && !unauthenticated) return;
 
     dispatch(logout());
+    dispatch(resetGetNotifications());
 
     if (session) {
       toast.error(

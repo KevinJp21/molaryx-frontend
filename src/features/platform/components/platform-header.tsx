@@ -10,6 +10,7 @@ import {
   selectGetUserData,
   selectPostLogout,
 } from "@/store/authentication/authentication-slice";
+import { resetGetNotifications } from "@/store/notifications/notifications-slice";
 import {
   Avatar,
   AvatarFallback,
@@ -21,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components";
+import { Notification } from "@/features/notifications";
 
 type Props = {
   isSidebarCollapsed: boolean;
@@ -55,6 +57,7 @@ export const PlatformHeader = ({
     toast.loading("Cerrando sesión...", { id: LOGOUT_TOAST_ID });
 
     const result = await dispatch(postLogout());
+    dispatch(resetGetNotifications());
 
     if (postLogout.fulfilled.match(result) && result.payload.success) {
       toast.success("Sesión cerrada correctamente.", { id: LOGOUT_TOAST_ID });
@@ -97,47 +100,50 @@ export const PlatformHeader = ({
         </div>
       </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button
-            type="button"
-            className="rounded-full outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-accent-500/40"
-            aria-label="Menú de cuenta"
-            title={fullName}
-          >
-            <Avatar size="lg" className="cursor-pointer">
-              <AvatarFallback className="bg-linear-to-br from-accent-400 to-coral-500 text-[11px] font-semibold text-ink-950">
-                {initials || "—"}
-              </AvatarFallback>
-            </Avatar>
-          </button>
-        </DropdownMenuTrigger>
-
-        <DropdownMenuContent align="end" className="w-60">
-          <div className="px-2 py-2">
-            <p className="truncate text-[13px] font-medium text-ink-100">
-              {userData?.username ?? fullName ?? "Usuario"}
-            </p>
-            <p className="truncate text-xs text-ink-400">{roleName}</p>
-          </div>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              variant="destructive"
-              className="gap-2.5 text-[13px]"
-              disabled={logoutStatus === "loading"}
-              onSelect={() => {
-                void handleLogout();
-              }}
+      <div className="flex items-center gap-2">
+        <Notification />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className="rounded-full outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-accent-500/40"
+              aria-label="Menú de cuenta"
+              title={fullName}
             >
-              <LogOut className="h-4 w-4" />
-              Cerrar sesión
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+              <Avatar size="lg" className="cursor-pointer">
+                <AvatarFallback className="bg-linear-to-br from-accent-400 to-coral-500 text-[11px] font-semibold text-ink-950">
+                  {initials || "—"}
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end" className="w-60">
+            <div className="px-2 py-2">
+              <p className="truncate text-[13px] font-medium text-ink-100">
+                {userData?.username ?? fullName ?? "Usuario"}
+              </p>
+              <p className="truncate text-xs text-ink-400">{roleName}</p>
+            </div>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                variant="destructive"
+                className="gap-2.5 text-[13px]"
+                disabled={logoutStatus === "loading"}
+                onSelect={() => {
+                  void handleLogout();
+                }}
+              >
+                <LogOut className="h-4 w-4" />
+                Cerrar sesión
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </header>
   );
 };

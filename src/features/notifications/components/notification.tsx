@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { Bell, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import {
   Button,
   Popover,
@@ -21,12 +22,10 @@ import {
   selectGetNotifications,
 } from "@/store/notifications/notifications-slice";
 import { parseUtcDate } from "@/utils";
-import {
-  getNotificationTypeMeta
-} from "../consts";
-import { useSignalRContext } from "../hooks/signal-r-provider";
-import type { INotificationItems } from "../interfaces";
 import { cn } from "@/lib/utils";
+import { getNotificationTypeMeta } from "../consts";
+import { useSignalRContext } from "../hooks";
+import type { INotificationItems } from "../interfaces";
 
 const CLIENT_NEW_NOTIFICATION = "client_new_notification";
 
@@ -61,7 +60,6 @@ export const Notification = () => {
     if (!isConnected) return;
 
     const handleNewNotification = (...args: unknown[]) => {
-      // Payload = NotificationRealtimePayload (camelCase JSON)
       dispatch(prependNotification(args[0] as INotificationItems));
     };
 
@@ -78,7 +76,8 @@ export const Notification = () => {
     try {
       await dispatch(
         getNotifications({
-          Page: currentPage + 1}),
+          Page: currentPage + 1,
+        }),
       );
     } finally {
       setLoadingMore(false);
@@ -95,6 +94,7 @@ export const Notification = () => {
       if (process.env.NODE_ENV === "development") {
         console.error("[SignalR] mark_all_as_viewed", error);
       }
+      toast.error("No se pudieron marcar todas las notificaciones como leídas.");
     } finally {
       setMarkingAll(false);
     }
@@ -112,6 +112,7 @@ export const Notification = () => {
           if (process.env.NODE_ENV === "development") {
             console.error("[SignalR] mark_as_viewed", error);
           }
+          toast.error("No se pudo marcar la notificación como leída.");
         }
       }
 
@@ -133,8 +134,8 @@ export const Notification = () => {
         >
           <Bell className="h-4 w-4" strokeWidth={1.75} />
           {unreadCount > 0 && (
-            <span className="absolute -top-1.5 right-0 px-2 h-5 min-w-5 rounded-full bg-accent-500 text-xs text-white flex items-center justify-center" >
-                {unreadCount}
+            <span className="absolute -top-1.5 right-0 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent-500 px-2 text-xs text-white">
+              {unreadCount}
             </span>
           )}
         </Button>
@@ -149,9 +150,7 @@ export const Notification = () => {
           <div className="min-w-0">
             <p className="text-sm font-semibold text-ink-50">Notificaciones</p>
             <p className="mt-0.5 text-xs text-ink-400">
-              {unreadCount > 0
-                ? `${unreadCount} sin leer`
-                : "Estás al día"}
+              {unreadCount > 0 ? `${unreadCount} sin leer` : "Estás al día"}
             </p>
           </div>
           {unreadCount > 0 && (
@@ -159,7 +158,7 @@ export const Notification = () => {
               type="button"
               variant="ghost"
               size="sm"
-              className="h-7 shrink-0 px-2 text-xs text-accent-300 hover:bg-accent-500/10 hover:text-accent-200"
+              className="h-7 shrink-0 px-2 text-xs text-accent-500 hover:bg-accent-500/10 hover:text-accent-400 cursor-pointer"
               disabled={markingAll || !isConnected}
               onClick={() => {
                 void handleMarkAllAsViewed();

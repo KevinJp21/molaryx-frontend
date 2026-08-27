@@ -37,7 +37,10 @@ export const RouteGuard = ({ children }: Props) => {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const { data: userData, status } = useAppSelector(selectGetUserData);
-  const { status: notificationsStatus } = useAppSelector(selectGetNotifications);
+  const {
+    status: notificationsStatus,
+    sessionKey: notificationsSessionKey,
+  } = useAppSelector(selectGetNotifications);
 
   const isUserReady = status === 'success' && !!userData;
   const isPlatformUser = isPlatformOnlyUser(userData?.permissions);
@@ -59,11 +62,20 @@ export const RouteGuard = ({ children }: Props) => {
   }, [isUserReady, isPlatformUser, pathname, userData, router]);
 
   useEffect(() => {
-    if (!isUserReady) return;
-    if (isPlatformOnlyUser(userData?.permissions)) return;
-    if (notificationsStatus !== 'idle') return;
-    dispatch(getNotifications());
-  }, [dispatch, isUserReady, notificationsStatus, userData?.permissions]);
+    if (!isUserReady || !userData?.username) return;
+    if (isPlatformOnlyUser(userData.permissions)) return;
+    if (notificationsStatus === 'loading') return;
+    if (notificationsSessionKey === userData.username) return;
+
+    dispatch(getNotifications({ sessionKey: userData.username }));
+  }, [
+    dispatch,
+    isUserReady,
+    notificationsSessionKey,
+    notificationsStatus,
+    userData?.permissions,
+    userData?.username,
+  ]);
 
   // No renderizar la ruta hasta confirmar permisos (AuthGuard cubre error de sesión).
   if (!isUserReady || !isAllowed) {

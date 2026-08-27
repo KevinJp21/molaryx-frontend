@@ -10,6 +10,7 @@ import {
     selectGetUserData,
     selectPostLogout,
 } from '@/store/authentication/authentication-slice';
+import { resetGetNotifications } from '@/store/notifications/notifications-slice';
 import { ROLES } from '@/consts';
 import {
     Avatar,
@@ -22,7 +23,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components';
-import { Notification } from './notification';
+import { Notification } from '@/features/notifications';
 
 type Props = {
     isSidebarCollapsed: boolean;
@@ -59,6 +60,7 @@ export const DashboardHeader = ({
         toast.loading('Cerrando sesión...', { id: LOGOUT_TOAST_ID });
 
         const result = await dispatch(postLogout());
+        dispatch(resetGetNotifications());
 
         if (postLogout.fulfilled.match(result) && result.payload.success) {
             toast.success('Sesión cerrada correctamente.', { id: LOGOUT_TOAST_ID });

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { RouteGuard } from '../guards';
 import { DashboardHeader, DashboardSidebar } from '../components';
-import { SignalRProvider } from '../hooks';
+import { SignalRProvider } from '@/features/notifications';
 import { ACCOUNT_BASE_PATH } from '../modules/account';
 
 type Props = {
