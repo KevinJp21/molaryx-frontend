@@ -1,10 +1,3 @@
-import {
-  APPOINTMENT_STATUS,
-  APPOINTMENT_STATUS_CHIP_CLASS,
-  APPOINTMENT_STATUS_COLOR,
-  type TAppointmentStatusId,
-} from "@/features/dashboard/modules/appointments/consts/appointment-status";
-
 export const TENANT_STATUS = {
   ACTIVE: 1,
   INACTIVE: 2,
@@ -13,37 +6,92 @@ export const TENANT_STATUS = {
   REJECTED: 5,
 } as const;
 
-export type TTenantStatus =
+export type TTenantStatusId =
   (typeof TENANT_STATUS)[keyof typeof TENANT_STATUS];
 
-const DEFAULT_STATUS_COLOR = "#7c4dff";
-const DEFAULT_STATUS_CHIP_CLASS =
-  "bg-accent-100 text-accent-700 ring-1 ring-inset ring-accent-200";
-
-const TENANT_TO_APPOINTMENT_STATUS: Record<
-  TTenantStatus,
-  TAppointmentStatusId
-> = {
-  [TENANT_STATUS.ACTIVE]: APPOINTMENT_STATUS.CONFIRMED,
-  [TENANT_STATUS.INACTIVE]: APPOINTMENT_STATUS.COMPLETED,
-  [TENANT_STATUS.PENDING]: APPOINTMENT_STATUS.PENDING,
-  [TENANT_STATUS.BLOCKED]: APPOINTMENT_STATUS.CANCELLED,
-  [TENANT_STATUS.REJECTED]: APPOINTMENT_STATUS.NO_SHOW,
-};
-
-export const isTenantStatusId = (id: number): id is TTenantStatus =>
+export const isTenantStatusId = (
+  id: number | null | undefined,
+): id is TTenantStatusId =>
   id === TENANT_STATUS.ACTIVE ||
   id === TENANT_STATUS.INACTIVE ||
   id === TENANT_STATUS.PENDING ||
   id === TENANT_STATUS.BLOCKED ||
   id === TENANT_STATUS.REJECTED;
 
-export const getTenantStatusColor = (id: number | null | undefined) => {
-  if (!isTenantStatusId(Number(id))) return DEFAULT_STATUS_COLOR;
-  return APPOINTMENT_STATUS_COLOR[TENANT_TO_APPOINTMENT_STATUS[id as TTenantStatus]];
+export const TENANT_STATUS_LABEL: Record<TTenantStatusId, string> = {
+  [TENANT_STATUS.ACTIVE]: "Activo",
+  [TENANT_STATUS.INACTIVE]: "Inactivo",
+  [TENANT_STATUS.PENDING]: "Pendiente",
+  [TENANT_STATUS.BLOCKED]: "Bloqueado",
+  [TENANT_STATUS.REJECTED]: "Rechazado",
 };
 
-export const getTenantStatusChipClass = (id: number | null | undefined) => {
-  if (!isTenantStatusId(Number(id))) return DEFAULT_STATUS_CHIP_CLASS;
-  return APPOINTMENT_STATUS_CHIP_CLASS[TENANT_TO_APPOINTMENT_STATUS[id as TTenantStatus]];
+export const TENANT_STATUS_OPTION = (
+  Object.values(TENANT_STATUS) as TTenantStatusId[]
+).map((id) => ({
+  value: id,
+  name: TENANT_STATUS_LABEL[id],
+}));
+
+export const getTenantStatusLabel = (
+  id: number | null | undefined,
+  fallback?: string | null,
+) => {
+  if (fallback?.trim()) return fallback.trim();
+  if (isTenantStatusId(id)) return TENANT_STATUS_LABEL[id];
+  return "Sin estado";
 };
+
+export type TTenantStatusFilter = TTenantStatusId | "all";
+
+export const TENANT_STATUS_COLORS: Record<TTenantStatusFilter, string> = {
+  all: "var(--color-accent-500)",
+  [TENANT_STATUS.ACTIVE]: "var(--color-accent-400)",
+  [TENANT_STATUS.INACTIVE]: "var(--color-ink-400)",
+  [TENANT_STATUS.PENDING]: "#FEE701",
+  [TENANT_STATUS.BLOCKED]: "var(--color-coral-500)",
+  [TENANT_STATUS.REJECTED]: "var(--color-coral-600)",
+};
+
+const DEFAULT_STATUS_COLOR = "var(--color-accent-500)";
+
+export const getTenantStatusColor = (id: number | null | undefined) =>
+  isTenantStatusId(id) ? TENANT_STATUS_COLORS[id] : DEFAULT_STATUS_COLOR;
+
+export const TENANT_STATUS_CHIP_CLASS: Record<TTenantStatusId, string> = {
+  [TENANT_STATUS.ACTIVE]:
+    "bg-accent-500/12 text-accent-600 ring-1 ring-inset ring-accent-500/25",
+  [TENANT_STATUS.INACTIVE]:
+    "bg-ink-800 text-ink-300 ring-1 ring-inset ring-ink-700",
+  [TENANT_STATUS.PENDING]:
+    "bg-yellow-400/12 text-yellow-400 ring-1 ring-inset ring-yellow-400/30",
+  [TENANT_STATUS.BLOCKED]:
+    "bg-coral-500/12 text-coral-600 ring-1 ring-inset ring-coral-500/25",
+  [TENANT_STATUS.REJECTED]:
+    "bg-coral-600/12 text-coral-600 ring-1 ring-inset ring-coral-600/25",
+};
+
+const DEFAULT_STATUS_CHIP_CLASS =
+  "bg-accent-100 text-accent-700 ring-1 ring-inset ring-accent-200";
+
+export const getTenantStatusChipClass = (id: number | null | undefined) =>
+  isTenantStatusId(id)
+    ? TENANT_STATUS_CHIP_CLASS[id]
+    : DEFAULT_STATUS_CHIP_CLASS;
+
+export const TENANT_STATUS_FILTER_OPTIONS: {
+  value: TTenantStatusFilter;
+  label: string;
+  color: string;
+}[] = [
+  {
+    value: "all",
+    label: "Todos",
+    color: TENANT_STATUS_COLORS.all,
+  },
+  ...(Object.values(TENANT_STATUS) as TTenantStatusId[]).map((id) => ({
+    value: id,
+    label: TENANT_STATUS_LABEL[id],
+    color: TENANT_STATUS_COLORS[id],
+  })),
+];

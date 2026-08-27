@@ -2,7 +2,9 @@ import { createAppSlice } from "../slice";
 import { TStatus } from "@/types";
 import {
   apiGetTenantsAction,
+  apiPostActivateTenantAction,
   IGetTenantsResponseData,
+  IPostActivateTenantRequest,
   TGetTenantsParams,
 } from "@/features/platform/modules/tenants";
 
@@ -13,12 +15,22 @@ type TTenantsState = {
     message?: string;
     error?: string;
   };
+  postActivateTenant: {
+    status: TStatus;
+    message?: string;
+    error?: string;
+  };
 };
 
 const initialState: TTenantsState = {
   getTenants: {
     status: "idle",
     data: undefined,
+    message: undefined,
+    error: undefined,
+  },
+  postActivateTenant: {
+    status: "idle",
     message: undefined,
     error: undefined,
   },
@@ -55,12 +67,46 @@ const tenantsSlice = createAppSlice({
         },
       },
     ),
+    postActivateTenant: create.asyncThunk(
+      async (data: IPostActivateTenantRequest) =>
+        await apiPostActivateTenantAction(data),
+      {
+        pending: (state) => {
+          state.postActivateTenant.status = "loading";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.postActivateTenant.status = "error";
+            state.postActivateTenant.message = action.payload.message;
+            state.postActivateTenant.error = action.payload.error ?? undefined;
+            return;
+          }
+          state.postActivateTenant.status = "success";
+          state.postActivateTenant.message = action.payload.message;
+          state.postActivateTenant.error = undefined;
+        },
+        rejected: (state, action) => {
+          state.postActivateTenant.status = "error";
+          state.postActivateTenant.message = action.error.message;
+          state.postActivateTenant.error = undefined;
+        },
+      },
+    ),
+    resetPostActivateTenant: create.reducer((state) => {
+      state.postActivateTenant = initialState.postActivateTenant;
+    }),
   }),
   selectors: {
     selectGetTenants: (state) => state.getTenants,
+    selectPostActivateTenant: (state) => state.postActivateTenant,
   },
 });
 
-export const { getTenants } = tenantsSlice.actions;
-export const { selectGetTenants } = tenantsSlice.selectors;
+export const {
+  getTenants,
+  postActivateTenant,
+  resetPostActivateTenant,
+} = tenantsSlice.actions;
+export const { selectGetTenants, selectPostActivateTenant } =
+  tenantsSlice.selectors;
 export default tenantsSlice.reducer;

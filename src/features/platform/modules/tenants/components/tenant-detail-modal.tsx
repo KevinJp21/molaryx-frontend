@@ -1,13 +1,24 @@
 "use client";
 
-import { Building2, Mail, Phone, UserRound } from "lucide-react";
-import { Badge, BaseModal } from "@/components";
+import { useEffect } from "react";
+import { Building2, CheckCircle2, Mail, Phone, UserRound } from "lucide-react";
+import { toast } from "sonner";
+import { Badge, BaseModal, Button, Spinner } from "@/components";
 import { cn } from "@/lib/utils";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { selectGetUserData } from "@/store/authentication/authentication-slice";
+import {
+  postActivateTenant,
+  resetPostActivateTenant,
+  selectPostActivateTenant,
+} from "@/store/tenants/tenants-slice";
+import { checkCanActivateTenant } from "@/features/platform/utils";
 import { TenantSubscriptionSection } from "./tenant-subscription-section";
 import {
   getTenantStatusChipClass,
   getTenantStatusColor,
   getTenantTypeBadgeVariant,
+  TENANT_STATUS,
 } from "../consts";
 import type { ITenantsItems } from "../interfaces";
 
@@ -15,6 +26,7 @@ type Props = {
   open: boolean;
   onOpenChange: (next: boolean) => void;
   tenant: ITenantsItems | null;
+  onSuccess?: () => void;
 };
 
 const Field = ({
@@ -70,7 +82,63 @@ const InfoTile = ({
   </div>
 );
 
-export const TenantDetailModal = ({ open, onOpenChange, tenant }: Props) => {
+export const TenantDetailModal = ({
+  open,
+  onOpenChange,
+  tenant,
+  onSuccess,
+}: Props) => {
+  const dispatch = useAppDispatch();
+  const { data: userData } = useAppSelector(selectGetUserData);
+  const { status, message } = useAppSelector(selectPostActivateTenant);
+  const isActivating = status === "loading";
+
+  const canActivate = checkCanActivateTenant(userData?.permissions);
+  const isPending =
+    tenant?.idTenantStatus === TENANT_STATUS.PENDING;
+  const canSubmitActivate = Boolean(
+    tenant?.owner?.idUser && tenant?.subscription?.idTenantSubscription,
+  );
+  const showActivateButton = Boolean(tenant && isPending && canActivate);
+
+  const handleDialogOpenChange = (next: boolean) => {
+    if (!next && status !== "idle") {
+      dispatch(resetPostActivateTenant());
+    }
+    onOpenChange(next);
+  };
+
+  const handleActivate = () => {
+    if (!tenant?.owner || !tenant.subscription) {
+      toast.error(
+        "No se puede activar: faltan datos del propietario o de la suscripción.",
+      );
+      return;
+    }
+
+    dispatch(
+      postActivateTenant({
+        idUser: tenant.owner.idUser,
+        idTenant: tenant.idTenant,
+        idTenantSubscription: tenant.subscription.idTenantSubscription,
+      }),
+    );
+  };
+
+  useEffect(() => {
+    if (status === "error") {
+      toast.error(message ?? "No se pudo activar la cuenta.");
+      dispatch(resetPostActivateTenant());
+    }
+    if (status === "success") {
+      toast.success(message ?? "Cuenta activada de manera exitosa.");
+      dispatch(resetPostActivateTenant());
+      handleDialogOpenChange(false);
+      onSuccess?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync con status de activación
+  }, [status, dispatch, message]);
+
   if (!tenant) return null;
 
   const { owner, subscription } = tenant;
@@ -83,7 +151,7 @@ export const TenantDetailModal = ({ open, onOpenChange, tenant }: Props) => {
   return (
     <BaseModal
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={handleDialogOpenChange}
       icon={<Building2 className="size-3.5" strokeWidth={2} />}
       title={tenant.consultoryName}
       description="Detalle del consultorio"
@@ -110,6 +178,28 @@ export const TenantDetailModal = ({ open, onOpenChange, tenant }: Props) => {
             <span className="inline-flex items-center rounded-full bg-ink-800 px-2.5 py-1 font-mono text-[11px] tabular-nums text-ink-200 ring-1 ring-inset ring-ink-700">
               #{tenant.idTenant}
             </span>
+
+            {showActivateButton && (
+              <Button
+                type="button"
+                size="sm"
+                className="ml-auto"
+                disabled={isActivating || !canSubmitActivate}
+                onClick={handleActivate}
+              >
+                {isActivating ? (
+                  <>
+                    <Spinner className="size-3.5" />
+                    Activando...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="size-3.5" strokeWidth={2} />
+                    Activar
+                  </>
+                )}
+              </Button>
+            )}
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

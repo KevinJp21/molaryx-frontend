@@ -26,3 +26,12 @@ export const checkCanViewTenants = (
     PERMISSION_MODULES.TENANTS,
     PERMISSION_CODES.GET_PF_TENANTS,
   );
+
+export const checkCanActivateTenant = (
+  userPermissions: TUserPermission[] | undefined,
+) =>
+  hasPermissionCode(
+    userPermissions,
+    PERMISSION_MODULES.TENANTS,
+    PERMISSION_CODES.ACTIVATE_PF_TENANT,
+  );

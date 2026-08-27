@@ -35,12 +35,13 @@ type Props = {
 };
 
 export const TenantsTable = ({
-  refreshKey = 0,
+  refreshKey: refreshKeyProp = 0,
   emptyMessage = "No hay tenants registrados.",
 }: Props) => {
   const dispatch = useAppDispatch();
   const { data, status, message, error } = useAppSelector(selectGetTenants);
   const [currentPage, setCurrentPage] = useState(1);
+  const [refreshKey, setRefreshKey] = useState(0);
   const {
     open: detailOpen,
     selected: selectedTenant,
@@ -55,7 +56,7 @@ export const TenantsTable = ({
         Page: currentPage,
       }),
     );
-  }, [dispatch, currentPage, refreshKey]);
+  }, [dispatch, currentPage, refreshKey, refreshKeyProp]);
 
   const items = data?.items ?? [];
   const totalPages = data?.totalPages ?? 0;
@@ -214,6 +215,7 @@ export const TenantsTable = ({
         open={detailOpen}
         onOpenChange={handleDetailOpenChange}
         tenant={selectedTenant}
+        onSuccess={() => setRefreshKey((key) => key + 1)}
       />
     </>
   );
