@@ -7,4 +7,5 @@ export const PUBLIC_AUTH_ROUTES = [
 
 export const PROTECTED_ROUTE_PREFIXES = [
   '/dashboard',
+  '/platform',
 ] as const;

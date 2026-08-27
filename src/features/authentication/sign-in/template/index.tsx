@@ -12,6 +12,7 @@ import { Button, Spinner } from "@/components";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { postSignIn, selectPostSignIn, getUserData } from "@/store/authentication/authentication-slice";
+import { resolveAppHomeRoute } from "@/utils/resolve-app-home-route";
 import { toast } from "sonner";
 
 export const SignInTemplate = () => {
@@ -41,8 +42,13 @@ export const SignInTemplate = () => {
 
         if (status === 'success') {
             toast.success(message);
-            dispatch(getUserData());
-            router.push('/dashboard');
+            void dispatch(getUserData()).then((result) => {
+                if (getUserData.fulfilled.match(result) && result.payload.success) {
+                    router.push(resolveAppHomeRoute(result.payload.data?.permissions));
+                    return;
+                }
+                router.push('/dashboard');
+            });
         }
         
     }, [status, dispatch, message, error, router]);

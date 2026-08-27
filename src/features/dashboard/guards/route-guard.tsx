@@ -10,6 +10,10 @@ import {
   selectGetNotifications,
 } from '@/store/notifications/notifications-slice';
 import { DASHBOARD_HOME_ROUTE, hasRouteAccess } from '../utils/route-permissions';
+import {
+  isPlatformOnlyUser,
+  PLATFORM_HOME_ROUTE,
+} from '@/utils/resolve-app-home-route';
 
 type Props = {
   children: React.ReactNode;
@@ -36,20 +40,30 @@ export const RouteGuard = ({ children }: Props) => {
   const { status: notificationsStatus } = useAppSelector(selectGetNotifications);
 
   const isUserReady = status === 'success' && !!userData;
+  const isPlatformUser = isPlatformOnlyUser(userData?.permissions);
   const isAllowed =
-    isUserReady && hasRouteAccess(pathname, userData.permissions);
+    isUserReady &&
+    !isPlatformUser &&
+    hasRouteAccess(pathname, userData.permissions);
 
   useEffect(() => {
     if (!isUserReady || !userData) return;
+
+    if (isPlatformUser) {
+      router.replace(PLATFORM_HOME_ROUTE);
+      return;
+    }
+
     if (hasRouteAccess(pathname, userData.permissions)) return;
     router.replace(DASHBOARD_HOME_ROUTE);
-  }, [isUserReady, pathname, userData, router]);
+  }, [isUserReady, isPlatformUser, pathname, userData, router]);
 
   useEffect(() => {
     if (!isUserReady) return;
+    if (isPlatformOnlyUser(userData?.permissions)) return;
     if (notificationsStatus !== 'idle') return;
     dispatch(getNotifications());
-  }, [dispatch, isUserReady, notificationsStatus]);
+  }, [dispatch, isUserReady, notificationsStatus, userData?.permissions]);
 
   // No renderizar la ruta hasta confirmar permisos (AuthGuard cubre error de sesión).
   if (!isUserReady || !isAllowed) {

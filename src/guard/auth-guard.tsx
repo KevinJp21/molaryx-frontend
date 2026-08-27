@@ -12,6 +12,7 @@ import {
   selectPostLogout,
 } from "@/store/authentication/authentication-slice";
 import { PUBLIC_AUTH_ROUTES, PROTECTED_ROUTE_PREFIXES } from "@/consts";
+import { resolveAppHomeRoute } from "@/utils/resolve-app-home-route";
 import { Button, ErrorMessage } from "@/components";
 import Image from "next/image";
 
@@ -54,7 +55,7 @@ const AuthLoading = () => (
 
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
-  const { status, userState, message } = useAppSelector(selectGetUserData);
+  const { status, userState, message, data: userData } = useAppSelector(selectGetUserData);
   const { status: logoutStatus } = useAppSelector(selectPostLogout);
   const pathname = usePathname();
   const router = useRouter();
@@ -85,13 +86,14 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     }
 
     if (userState === "authenticated" && isPublicAuthRoute) {
-      router.replace("/dashboard");
+      router.replace(resolveAppHomeRoute(userData?.permissions));
     }
   }, [
     pathname,
     router,
     status,
     userState,
+    userData?.permissions,
     isProtectedRoute,
     isPublicAuthRoute,
     isIntentionalLogout,
