@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import { PlatformTemplate } from "@/features/platform/template";
 import { noIndexRobots } from "@/lib/seo";
+import { siteName } from "@/consts/site";
 
 export const metadata: Metadata = {
+  title: {
+    default: "Plataforma",
+    template: `%s | ${siteName}`,
+  },
   robots: noIndexRobots,
 };
 

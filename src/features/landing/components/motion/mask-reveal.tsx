@@ -11,6 +11,7 @@ interface IMaskRevealProps {
   className?: string;
   lineClassName?: string;
   delay?: number;
+  duration?: number;
   stagger?: number;
   start?: string;
   /** "mount" para el hero, "scroll" para el resto de secciones. */
@@ -23,6 +24,7 @@ export const MaskReveal = ({
   className,
   lineClassName,
   delay = 0,
+  duration = 1.1,
   stagger = 0.09,
   start = "top 85%",
   trigger = "scroll",
@@ -37,7 +39,7 @@ export const MaskReveal = ({
       gsap.set("[data-mask-line]", { yPercent: 118 });
       gsap.to("[data-mask-line]", {
         yPercent: 0,
-        duration: 1.1,
+        duration,
         delay,
         stagger,
         ease: "expo.out",
@@ -48,7 +50,7 @@ export const MaskReveal = ({
     }, element);
 
     return () => context.revert();
-  }, [delay, stagger, start, trigger]);
+  }, [delay, duration, stagger, start, trigger]);
 
   return (
     <Tag ref={ref} className={className}>

@@ -3,9 +3,14 @@ import Link from "next/link";
 import { Logo } from "@/components";
 import { Check } from "lucide-react";
 import { COMPANY_NAME } from "@/consts";
+import { siteName } from "@/consts/site";
 import { noIndexRobots } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  title: {
+    default: "Acceso",
+    template: `%s | ${siteName}`,
+  },
   robots: noIndexRobots,
 };
 

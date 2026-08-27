@@ -1,50 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
-import { ErrorMessage, Skeleton } from "@/components";
-import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  getPublicPlans,
-  selectGetPublicPlans,
-} from "@/store/plans/plans-slice";
+import { ErrorMessage } from "@/components";
+import type { IGetPublicPlans } from "@/features/public-plans";
 import { PLAN_UI_META } from "../const";
 import { Reveal, SectionHeading } from "./motion";
 import { PricingCard, PricingFounderCallout } from "./pricing";
 
-const PricingCardsSkeleton = () => (
-  <div className="mx-auto mt-10 grid w-full min-w-0 max-w-6xl gap-6 md:grid-cols-2 md:items-start lg:grid-cols-3">
-    {Array.from({ length: 3 }).map((_, index) => (
-      <div
-        key={index}
-        className="flex h-full w-full flex-col rounded-2xl border border-ink-800/8 bg-ink-100/40 p-5 sm:p-8"
-      >
-        <Skeleton className="h-5 w-28 bg-ink-300" />
-        <Skeleton className="mt-3 h-4 w-full max-w-64 bg-ink-200" />
-        <Skeleton className="mt-6 h-9 w-36 bg-ink-300" />
-        <div className="mt-8 flex flex-col gap-3">
-          {Array.from({ length: 5 }).map((__, featureIndex) => (
-            <Skeleton
-              key={featureIndex}
-              className="h-4 w-full max-w-52 bg-ink-200"
-            />
-          ))}
-        </div>
-        <Skeleton className="mt-8 h-10 w-full rounded-full bg-ink-300" />
-      </div>
-    ))}
-  </div>
-);
+interface IPricingSectionProps {
+  plans: IGetPublicPlans[];
+  plansError?: string;
+}
 
-export const PricingSection = () => {
-  const dispatch = useAppDispatch();
-  const { status, data, message } = useAppSelector(selectGetPublicPlans);
-  const isLoading = status === "idle" || status === "loading";
-
-  useEffect(() => {
-    if (status !== "success") {
-      dispatch(getPublicPlans());
-    }
-  }, [dispatch]);
+export const PricingSection = ({ plans, plansError }: IPricingSectionProps) => {
+  const hasError = plans.length === 0 && plansError != null;
 
   return (
     <section id="pricing" className="container-py relative">
@@ -60,27 +28,30 @@ export const PricingSection = () => {
             </span>,
           ]}
           description="Elige el plan que se ajuste al tamaño de tu equipo. Precio Founder disponible durante el lanzamiento, para consultorios de cualquier especialidad."
+          eyebrowDuration={0.5}
+          titleStagger={0.05}
+          titleDuration={0.75}
+          descriptionDelay={0.05}
+          descriptionDuration={0.55}
+          scrollStart="top 90%"
         />
 
-        <Reveal variant="up" delay={0.1}>
+        <Reveal variant="up" duration={0.55} start="top 90%">
           <PricingFounderCallout />
         </Reveal>
 
-        {isLoading ? (
-          <PricingCardsSkeleton />
-        ) : status === "error" ? (
+        {hasError ? (
           <div className="mx-auto mt-10 max-w-md">
-            <ErrorMessage
-              message={message ?? "No se pudieron cargar los planes."}
-            />
+            <ErrorMessage message={plansError} />
           </div>
         ) : (
           <Reveal
-            className="mx-auto mt-10 grid w-full min-w-0 max-w-6xl gap-6 md:grid-cols-2 md:items-start lg:grid-cols-3"
-            stagger={0.12}
-            duration={0.9}
+            className="mx-auto mt-10 grid w-full min-w-0 max-w-6xl gap-6 md:grid-cols-2 md:items-stretch lg:grid-cols-3"
+            stagger={0.06}
+            duration={0.55}
+            start="top 90%"
           >
-            {data?.map((plan) => {
+            {plans.map((plan) => {
               const meta = PLAN_UI_META[plan.idPlan] ?? {
                 featured: false,
                 ctaLabel: `Comenzar con ${plan.name}`,
@@ -93,7 +64,7 @@ export const PricingSection = () => {
           </Reveal>
         )}
 
-        <Reveal variant="fade" delay={0.1}>
+        <Reveal variant="fade" duration={0.5} start="top 92%">
           <p className="mt-10 text-center text-xs text-ink-600">
             Precios en pesos colombianos (COP). El precio Founder aplica a los planes con la
             promoción activa.

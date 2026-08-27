@@ -1,3 +1,6 @@
+"use client";
+
+import type { IGetPublicPlans } from "@/features/public-plans";
 import {
   Navbar,
   HeroSection,
@@ -10,7 +13,12 @@ import {
   SmoothScroll,
 } from "../components";
 
-export const LandingTemplate = () => {
+type Props = {
+  plans: IGetPublicPlans[];
+  plansError?: string;
+};
+
+export const LandingTemplate = ({ plans, plansError }: Props) => {
   return (
     <SmoothScroll>
       <div id="top">
@@ -19,7 +27,7 @@ export const LandingTemplate = () => {
         <HeroSection />
         <DashboardSection />
         <FeaturesSection />
-        <PricingSection />
+        <PricingSection plans={plans} plansError={plansError} />
         <CtaSection />
         <FooterSection />
       </div>

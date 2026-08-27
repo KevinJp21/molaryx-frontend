@@ -54,6 +54,10 @@ export const DashboardHomeTemplate = () => {
 
     return (
         <>
+            <section className="mb-4">
+                <h1 className="text-xl font-medium text-ink-950">Inicio</h1>
+            </section>
+
             {isLoading ? (
                 <>
                     <section

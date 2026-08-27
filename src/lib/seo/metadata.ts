@@ -12,7 +12,7 @@ import {
 export const defaultTitle = `${siteName} | Gestión de consultorios`;
 
 export const defaultDescription =
-  "Plataforma para gestionar pacientes, historia clínica, citas, procedimientos, tratamientos y pagos de tu consultorio. Para cualquier especialidad.";
+  "Gestiona pacientes, historial clínico, citas, procedimientos y pagos desde un solo lugar. Molaryx te ayuda a mantener la información de tu consultorio organizada y fácil de consultar.";
 
 export const siteRobots: Metadata["robots"] = {
   index: true,
@@ -57,6 +57,14 @@ type PageMetadataOptions = {
   ogImageAlt?: string;
   keywords?: string[];
 };
+
+/** Títulos de documento para rutas privadas (dashboard / platform). */
+export function buildAppPageMetadata(title: string): Metadata {
+  return {
+    title,
+    robots: noIndexRobots,
+  };
+}
 
 export function buildPageMetadata(options: PageMetadataOptions): Metadata {
   const { title, description, path, ogImageAlt = title, keywords } = options;
@@ -135,56 +143,4 @@ export function buildRootMetadata(): Metadata {
       "theme-color": siteThemeColor,
     },
   };
-}
-
-export function buildLandingJsonLd() {
-  return [
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: siteName,
-      url: siteUrl,
-      logo: absoluteUrl("/images/molaryx_logo.svg"),
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      name: siteName,
-      url: siteUrl,
-      inLanguage: "es-CO",
-      publisher: {
-        "@type": "Organization",
-        name: siteName,
-        url: siteUrl,
-      },
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      name: defaultTitle,
-      description: defaultDescription,
-      url: siteUrl,
-      inLanguage: "es-CO",
-      isPartOf: {
-        "@type": "WebSite",
-        name: siteName,
-        url: siteUrl,
-      },
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      name: siteName,
-      applicationCategory: "BusinessApplication",
-      operatingSystem: "Web",
-      url: siteUrl,
-      description: defaultDescription,
-      offers: {
-        "@type": "Offer",
-        price: "0",
-        priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
-      },
-    },
-  ];
 }
