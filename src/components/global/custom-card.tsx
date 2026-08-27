@@ -25,25 +25,25 @@ const colorVariants: Record<
 > = {
   accent: {
     borderTopClass: "border-t-accent-500",
-    iconBackgroundClass: "bg-ink-900",
+    iconBackgroundClass: "bg-ink-100",
     iconTextClass: "text-accent-500",
     iconRingClass: "ring-accent-500/20",
   },
   coral: {
     borderTopClass: "border-t-coral-500",
-    iconBackgroundClass: "bg-ink-900",
+    iconBackgroundClass: "bg-ink-100",
     iconTextClass: "text-coral-500",
     iconRingClass: "ring-coral-500/20",
   },
   green: {
     borderTopClass: "border-t-emerald-500",
-    iconBackgroundClass: "bg-ink-900",
+    iconBackgroundClass: "bg-ink-100",
     iconTextClass: "text-emerald-600",
     iconRingClass: "ring-emerald-500/20",
   },
   yellow: {
     borderTopClass: "border-t-amber-500",
-    iconBackgroundClass: "bg-ink-900",
+    iconBackgroundClass: "bg-ink-100",
     iconTextClass: "text-amber-600",
     iconRingClass: "ring-amber-500/20",
   },
@@ -62,7 +62,7 @@ export const CustomCard = ({
   return (
     <article
       className={cn(
-        "relative overflow-hidden rounded-2xl border border-ink-750 bg-ink-950 text-ink-100",
+        "relative overflow-hidden rounded-2xl border border-ink-250 bg-ink-50 text-ink-900",
         "shadow-[0_1px_0_rgba(14,14,23,0.04),0_12px_40px_-28px_rgba(124,77,255,0.35)]",
         "border-t-4",
         tone.borderTopClass,
@@ -70,7 +70,7 @@ export const CustomCard = ({
       )}
     >
       <header className="flex items-start justify-between gap-3 px-5 pt-4 pb-2">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
           {title}
         </span>
 
@@ -87,12 +87,12 @@ export const CustomCard = ({
       </header>
 
       <div className="px-5 pb-5">
-        <p className="text-3xl font-semibold tracking-tight text-ink-50 tabular-nums leading-none">
+        <p className="text-3xl font-semibold tracking-tight text-ink-950 tabular-nums leading-none">
           {mainValue}
         </p>
 
         {footerText !== undefined && footerText !== null && footerText !== "" ? (
-          <p className="mt-3 text-xs leading-relaxed text-ink-400">{footerText}</p>
+          <p className="mt-3 text-xs leading-relaxed text-ink-600">{footerText}</p>
         ) : null}
       </div>
     </article>

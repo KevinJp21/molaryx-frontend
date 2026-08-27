@@ -35,11 +35,13 @@ export const DashboardHomeTemplate = () => {
     const hasError = paymentsFailed || appointmentsFailed;
 
     const errorDetail = [
-        paymentsFailed ? payments.message : null,
-        appointmentsFailed ? appointments.message : null,
-    ]
-        .filter(Boolean)
-        .join(" · ");
+        ...new Set(
+            [
+                paymentsFailed ? payments.message : null,
+                appointmentsFailed ? appointments.message : null,
+            ].filter(Boolean),
+        ),
+    ].join(" · ");
 
     useEffect(() => {
         if (canViewPayments) {
@@ -52,6 +54,10 @@ export const DashboardHomeTemplate = () => {
 
     return (
         <>
+            <section className="mb-4">
+                <h1 className="text-xl font-medium text-ink-950">Inicio</h1>
+            </section>
+
             {isLoading ? (
                 <>
                     <section

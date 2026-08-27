@@ -3,9 +3,17 @@
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useAppSelector } from '@/store';
+import { useAppDispatch, useAppSelector } from '@/store';
 import { selectGetUserData } from '@/store/authentication/authentication-slice';
+import {
+  getNotifications,
+  selectGetNotifications,
+} from '@/store/notifications/notifications-slice';
 import { DASHBOARD_HOME_ROUTE, hasRouteAccess } from '../utils/route-permissions';
+import {
+  isPlatformOnlyUser,
+  PLATFORM_HOME_ROUTE,
+} from '@/utils/resolve-app-home-route';
 
 type Props = {
   children: React.ReactNode;
@@ -27,21 +35,49 @@ const RouteLoading = () => (
 export const RouteGuard = ({ children }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
   const { data: userData, status } = useAppSelector(selectGetUserData);
+  const {
+    status: notificationsStatus,
+    sessionKey: notificationsSessionKey,
+  } = useAppSelector(selectGetNotifications);
 
   const isUserReady = status === 'success' && !!userData;
+  const isPlatformUser = isPlatformOnlyUser(userData?.permissions);
   const isAllowed =
-    isUserReady && hasRouteAccess(pathname, userData.permissions);
+    isUserReady &&
+    !isPlatformUser &&
+    hasRouteAccess(pathname, userData.permissions);
 
   useEffect(() => {
     if (!isUserReady || !userData) return;
+
+    if (isPlatformUser) {
+      router.replace(PLATFORM_HOME_ROUTE);
+      return;
+    }
+
     if (hasRouteAccess(pathname, userData.permissions)) return;
     router.replace(DASHBOARD_HOME_ROUTE);
-  }, [isUserReady, pathname, userData, router]);
+  }, [isUserReady, isPlatformUser, pathname, userData, router]);
 
-  if (status === 'error') return null;
+  useEffect(() => {
+    if (!isUserReady || !userData?.username) return;
+    if (isPlatformOnlyUser(userData.permissions)) return;
+    if (notificationsStatus === 'loading') return;
+    if (notificationsSessionKey === userData.username) return;
 
-  // No renderizar la ruta hasta confirmar permisos
+    dispatch(getNotifications({ sessionKey: userData.username }));
+  }, [
+    dispatch,
+    isUserReady,
+    notificationsSessionKey,
+    notificationsStatus,
+    userData?.permissions,
+    userData?.username,
+  ]);
+
+  // No renderizar la ruta hasta confirmar permisos (AuthGuard cubre error de sesión).
   if (!isUserReady || !isAllowed) {
     return <RouteLoading />;
   }

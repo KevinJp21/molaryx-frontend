@@ -58,11 +58,11 @@ export const ForgotPasswordTemplate = () => {
                         Correo enviado
                     </p>
 
-                    <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink-50 md:text-3xl">
+                    <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink-950 md:text-3xl">
                         Revisa tu bandeja
                     </h1>
 
-                    <p className="mt-3 text-sm leading-relaxed text-ink-300">
+                    <p className="mt-3 text-sm leading-relaxed text-ink-700">
                         Si existe una cuenta asociada, te enviamos un enlace para
                         restablecer la contraseña.
                     </p>
@@ -77,13 +77,13 @@ export const ForgotPasswordTemplate = () => {
                             <p className="text-[11px] font-medium uppercase tracking-wide text-ink-500">
                                 Destinatario
                             </p>
-                            <p className="mt-0.5 truncate text-sm font-medium text-ink-100">
+                            <p className="mt-0.5 truncate text-sm font-medium text-ink-900">
                                 {submittedEmail || "tu correo"}
                             </p>
                         </div>
                     </div>
 
-                    <p className="mt-5 text-[13px] leading-relaxed text-ink-400">
+                    <p className="mt-5 text-[13px] leading-relaxed text-ink-600">
                         Puede tardar unos minutos. Si no lo ves, revisa spam o correo
                         no deseado.
                     </p>
@@ -97,10 +97,10 @@ export const ForgotPasswordTemplate = () => {
                 </div>
             ) : (
                 <>
-                    <h1 className="text-2xl font-semibold text-ink-50 md:text-3xl">
+                    <h1 className="text-2xl font-semibold text-ink-950 md:text-3xl">
                         Recuperación de contraseña
                     </h1>
-                    <p className="mt-2 text-sm text-ink-300">
+                    <p className="mt-2 text-sm text-ink-700">
                         Ingresa tu correo electrónico para recibir un enlace para
                         restablecer tu contraseña.
                     </p>

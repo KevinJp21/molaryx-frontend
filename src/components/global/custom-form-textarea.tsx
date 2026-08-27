@@ -29,7 +29,7 @@ export const CustomFormTextarea = ({
             control={control}
             render={({ field, fieldState }) => (
                 <div className="flex flex-col gap-1.5">
-                    <label htmlFor={name} className="text-[13px] font-medium text-ink-200">
+                    <label htmlFor={name} className="text-[13px] font-medium text-ink-800">
                         {label}
                     </label>
                     <Textarea
@@ -38,14 +38,14 @@ export const CustomFormTextarea = ({
                         rows={rows}
                         placeholder={placeholder}
                         disabled={disabled}
-                        aria-invalid={!!fieldState.error && fieldState.isTouched}
+                        aria-invalid={!!fieldState.error}
                         className={className}
                         value={field.value ?? ''}
                         onChange={(event) => {
                             field.onChange(event.target.value)
                         }}
                     />
-                    {fieldState.error && fieldState.isTouched && (
+                    {fieldState.error && (
                         <InputErrorMessage message={fieldState.error.message} />
                     )}
                 </div>

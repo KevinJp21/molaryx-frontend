@@ -149,7 +149,7 @@ export const PaymentFormModal = ({
                                 appointmentsStatus === "success" &&
                                 !appointmentsPagination.hasMore &&
                                 appointmentItems.length === 0 && (
-                                    <p className="text-xs text-ink-400">
+                                    <p className="text-xs text-ink-600">
                                         Este paciente no tiene citas disponibles para registrar
                                         un pago.
                                     </p>
@@ -180,7 +180,7 @@ export const PaymentFormModal = ({
                                 treatmentsStatus === "success" &&
                                 !treatmentsPagination.hasMore &&
                                 treatmentItems.length === 0 && (
-                                    <p className="text-xs text-ink-400">
+                                    <p className="text-xs text-ink-600">
                                         Este paciente no tiene planes de tratamiento activos
                                         para abonar.
                                     </p>
@@ -188,7 +188,7 @@ export const PaymentFormModal = ({
 
                             {showTreatmentSelect &&
                                 selectedTreatment?.periodicAmount != null && (
-                                    <p className="text-xs text-ink-400">
+                                    <p className="text-xs text-ink-600">
                                         Monto periódico acordado:{" "}
                                         {currencyFormat(selectedTreatment.periodicAmount)}
                                     </p>
@@ -224,7 +224,7 @@ export const PaymentFormModal = ({
                         </div>
                     </div>
 
-                    <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-ink-800 bg-ink-900/40 px-5 py-3">
+                    <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-ink-200 bg-ink-100/40 px-5 py-3">
                         <Button
                             type="button"
                             variant="outline"

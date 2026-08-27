@@ -45,14 +45,14 @@ export const CalendarHeader = ({
   onMenuClick,
 }: Props) => {
   return (
-    <div className="flex min-h-16 flex-col items-center justify-between gap-3 border-b border-ink-800 bg-linear-to-r from-ink-950 via-ink-950 to-ink-900/60 px-3 py-3 md:flex-row md:gap-0 md:px-5">
+    <div className="flex min-h-16 flex-col items-center justify-between gap-3 border-b border-ink-200 bg-linear-to-r from-ink-50 via-ink-50 to-ink-100/60 px-3 py-3 md:flex-row md:gap-0 md:px-5">
       <div className="flex w-full items-center justify-between gap-2 md:w-auto md:justify-start">
         <div className="flex items-center gap-2 md:gap-3">
           <Button
             type="button"
             variant="ghost"
             size="icon"
-            className="hidden size-10 rounded-xl text-ink-400 hover:text-ink-50 lg:inline-flex"
+            className="hidden size-10 rounded-xl text-ink-600 hover:text-ink-950 lg:inline-flex"
             onClick={onMenuClick}
             aria-label="Mostrar u ocultar el panel lateral"
           >
@@ -69,37 +69,37 @@ export const CalendarHeader = ({
             Hoy
           </Button>
 
-          <div className="flex items-center rounded-xl bg-ink-900 p-0.5">
+          <div className="flex items-center rounded-xl bg-ink-100 p-0.5">
             <Button
               type="button"
               variant="ghost"
               size="icon"
               onClick={onPrev}
-              className="size-8 rounded-lg hover:bg-ink-950"
+              className="size-8 rounded-lg hover:bg-ink-50"
               aria-label="Periodo anterior"
             >
-              <ChevronLeft className="size-4 text-ink-400" />
+              <ChevronLeft className="size-4 text-ink-600" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="icon"
               onClick={onNext}
-              className="size-8 rounded-lg hover:bg-ink-950"
+              className="size-8 rounded-lg hover:bg-ink-50"
               aria-label="Periodo siguiente"
             >
-              <ChevronRight className="size-4 text-ink-400" />
+              <ChevronRight className="size-4 text-ink-600" />
             </Button>
           </div>
 
-          <h2 className="ml-1 whitespace-nowrap text-lg font-semibold capitalize tracking-tight text-ink-50 md:ml-3 md:text-xl">
+          <h2 className="ml-1 whitespace-nowrap text-lg font-semibold capitalize tracking-tight text-ink-950 md:ml-3 md:text-xl">
             {format(currentDate, "MMMM yyyy", { locale: es })}
           </h2>
         </div>
       </div>
 
       <div className="flex w-full items-center justify-end md:w-auto">
-        <div className="flex items-center rounded-xl bg-ink-900 p-1">
+        <div className="flex items-center rounded-xl bg-ink-100 p-1">
           {VIEWS.map(({ key, label, icon: Icon }) => (
             <Button
               key={key}
@@ -111,8 +111,8 @@ export const CalendarHeader = ({
               className={cn(
                 "h-8 gap-1.5 rounded-lg px-3 text-xs transition-all duration-200",
                 view === key
-                  ? "bg-ink-950 font-medium text-ink-50 shadow-sm ring-1 ring-ink-700/70"
-                  : "text-ink-300 hover:bg-ink-950/50 hover:text-ink-50",
+                  ? "bg-ink-50 font-medium text-ink-950 shadow-sm ring-1 ring-ink-300/70"
+                  : "text-ink-700 hover:bg-ink-50/50 hover:text-ink-950",
               )}
             >
               <Icon className="size-3.5" />

@@ -7,8 +7,8 @@ export const PaymentsVisual = () => {
     <FeatureFrame label="Pagos · Octubre">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs text-ink-300">Ingresos del mes</p>
-          <p className="mt-1 text-2xl font-semibold text-ink-50">$8.450.000</p>
+          <p className="text-xs text-ink-700">Ingresos del mes</p>
+          <p className="mt-1 text-2xl font-semibold text-ink-950">$8.450.000</p>
         </div>
         <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-300">
           <TrendingUp className="h-3 w-3" /> +14%
@@ -27,14 +27,14 @@ export const PaymentsVisual = () => {
         {PAYMENT_ROWS.map((row) => (
           <div
             key={row.name}
-            className="flex items-center gap-3 rounded-lg border border-white/4 bg-ink-850/60 px-3 py-2.5"
+            className="flex items-center gap-3 rounded-lg border border-ink-800/4 bg-ink-150/60 px-3 py-2.5"
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/4 text-ink-200">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/4 text-ink-800">
               <DollarSign className="h-4 w-4" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-medium text-ink-50">{row.name}</p>
-              <p className="truncate text-[10px] text-ink-300">{row.svc}</p>
+              <p className="truncate text-xs font-medium text-ink-950">{row.name}</p>
+              <p className="truncate text-[10px] text-ink-700">{row.svc}</p>
             </div>
             <span className={`text-xs font-semibold ${row.tone}`}>{row.amt}</span>
           </div>

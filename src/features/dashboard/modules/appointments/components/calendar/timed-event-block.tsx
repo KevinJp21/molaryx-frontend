@@ -113,7 +113,7 @@ export const TimedEventBlock = ({
           <div className="flex h-full w-full flex-col overflow-hidden">
             <p
               className={cn(
-                "truncate font-semibold leading-tight text-ink-50",
+                "truncate font-semibold leading-tight text-ink-950",
                 isShort && compact ? "text-center text-xs" : compact ? "text-xs" : "text-sm",
               )}
             >
@@ -123,7 +123,7 @@ export const TimedEventBlock = ({
               <>
                 <p
                   className={cn(
-                    "mt-0.5 truncate font-medium leading-tight text-ink-400",
+                    "mt-0.5 truncate font-medium leading-tight text-ink-600",
                     compact ? "text-[10px]" : "text-xs",
                   )}
                 >
@@ -132,7 +132,7 @@ export const TimedEventBlock = ({
                 {event.description && height > (compact ? 50 : 60) && (
                   <p
                     className={cn(
-                      "mt-1 truncate leading-tight text-ink-400/80",
+                      "mt-1 truncate leading-tight text-ink-600/80",
                       compact ? "text-[10px]" : "text-xs",
                     )}
                   >
@@ -144,7 +144,7 @@ export const TimedEventBlock = ({
             {overlappingCount > 1 && !isShort && (
               <span
                 className={cn(
-                  "absolute right-1 top-1 flex items-center justify-center rounded-full border border-ink-700 bg-ink-950/80 font-bold text-ink-400 shadow-sm",
+                  "absolute right-1 top-1 flex items-center justify-center rounded-full border border-ink-300 bg-ink-50/80 font-bold text-ink-600 shadow-sm",
                   compact ? "size-4 text-[9px]" : "size-5 text-[10px]",
                 )}
               >

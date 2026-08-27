@@ -54,8 +54,8 @@ export const PatientTreatmentsTemplate = () => {
   return (
     <>
       <section className="mb-4 flex flex-col gap-1">
-        <h1 className="text-xl font-medium text-ink-50">Planes de tratamiento</h1>
-        <p className="text-sm text-ink-300">
+        <h1 className="text-xl font-medium text-ink-950">Planes de tratamiento</h1>
+        <p className="text-sm text-ink-700">
           Planes asignados a los pacientes: busca, filtra y da seguimiento
         </p>
       </section>

@@ -6,7 +6,7 @@ export type TTeamStatusFilter = TUserStatusId | "all";
 const STATUS_COLOR_ALL = "var(--color-accent-500)";
 const STATUS_COLOR_ACTIVE = "var(--color-accent-400)";
 const STATUS_COLOR_INACTIVE = "var(--color-coral-500)";
-const STATUS_COLOR_PENDING = "var(--color-ink-400)";
+const STATUS_COLOR_PENDING = "var(--color-ink-600)";
 const STATUS_COLOR_BLOCKED = "var(--color-coral-600)";
 
 export const getTeamStatusColor = (status: TTeamStatusFilter) => {

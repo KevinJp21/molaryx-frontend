@@ -84,7 +84,7 @@ const ResetPasswordForm = () => {
               aria-hidden
               className="absolute -inset-3 rounded-full bg-coral-500/10 blur-xl"
             />
-            <div className="relative flex size-14 items-center justify-center rounded-2xl bg-ink-900 ring-1 ring-inset ring-coral-500/25">
+            <div className="relative flex size-14 items-center justify-center rounded-2xl bg-ink-100 ring-1 ring-inset ring-coral-500/25">
               <CircleAlert
                 className="size-7 text-coral-400"
                 strokeWidth={1.75}
@@ -92,10 +92,10 @@ const ResetPasswordForm = () => {
             </div>
           </div>
 
-          <h1 className="text-2xl font-semibold text-ink-50 md:text-3xl">
+          <h1 className="text-2xl font-semibold text-ink-950 md:text-3xl">
             Enlace no válido
           </h1>
-          <p className="mt-2 text-sm leading-relaxed text-ink-300">
+          <p className="mt-2 text-sm leading-relaxed text-ink-700">
             Este enlace de restablecimiento no es válido o ha expirado. Solicita
             uno nuevo para continuar.
           </p>
@@ -123,11 +123,11 @@ const ResetPasswordForm = () => {
             Listo
           </p>
 
-          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink-50 md:text-3xl">
+          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink-950 md:text-3xl">
             Contraseña actualizada
           </h1>
 
-          <p className="mt-3 text-sm leading-relaxed text-ink-300">
+          <p className="mt-3 text-sm leading-relaxed text-ink-700">
             Tu contraseña se restableció correctamente. Ya puedes iniciar sesión
             con tu nueva clave.
           </p>
@@ -142,13 +142,13 @@ const ResetPasswordForm = () => {
               <p className="text-[11px] font-medium uppercase tracking-wide text-ink-500">
                 Estado
               </p>
-              <p className="mt-0.5 text-sm font-medium text-ink-100">
+              <p className="mt-0.5 text-sm font-medium text-ink-900">
                 Lista para iniciar sesión
               </p>
             </div>
           </div>
 
-          <p className="mt-5 text-[13px] leading-relaxed text-ink-400">
+          <p className="mt-5 text-[13px] leading-relaxed text-ink-600">
             Por seguridad, el enlace de restablecimiento ya no es válido.
           </p>
 
@@ -161,10 +161,10 @@ const ResetPasswordForm = () => {
         </div>
       ) : (
         <>
-          <h1 className="text-2xl font-semibold text-ink-50 md:text-3xl">
+          <h1 className="text-2xl font-semibold text-ink-950 md:text-3xl">
             Nueva contraseña
           </h1>
-          <p className="mt-2 text-sm text-ink-300">
+          <p className="mt-2 text-sm text-ink-700">
             Elige una contraseña segura para tu cuenta de Molaryx.
           </p>
           <FormProvider {...methods}>
@@ -199,7 +199,7 @@ const ResetPasswordForm = () => {
               </Button>
             </form>
           </FormProvider>
-          <p className="mt-8 flex items-center justify-center gap-1 text-center text-sm text-ink-300">
+          <p className="mt-8 flex items-center justify-center gap-1 text-center text-sm text-ink-700">
             <Link
               href="/sign-in"
               className="inline-flex items-center gap-1 font-semibold text-accent-400 hover:text-accent-300 hover:underline"

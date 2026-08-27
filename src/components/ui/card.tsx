@@ -7,7 +7,7 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        "relative flex flex-col overflow-hidden rounded-2xl border border-ink-750 bg-ink-950 text-ink-100 shadow-[0_1px_0_rgba(14,14,23,0.04),0_12px_40px_-28px_rgba(124,77,255,0.35)]",
+        "relative flex flex-col overflow-hidden rounded-2xl border border-ink-250 bg-ink-50 text-ink-900 shadow-[0_1px_0_rgba(14,14,23,0.04),0_12px_40px_-28px_rgba(124,77,255,0.35)]",
         className,
       )}
       {...props}
@@ -32,7 +32,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-title"
-      className={cn("text-sm font-medium tracking-tight text-ink-300", className)}
+      className={cn("text-sm font-medium tracking-tight text-ink-700", className)}
       {...props}
     />
   )
@@ -42,7 +42,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-description"
-      className={cn("text-xs leading-relaxed text-ink-400", className)}
+      className={cn("text-xs leading-relaxed text-ink-600", className)}
       {...props}
     />
   )
@@ -76,7 +76,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-footer"
       className={cn(
-        "flex items-center gap-3 border-t border-ink-800 bg-ink-900/40 px-5 py-3",
+        "flex items-center gap-3 border-t border-ink-200 bg-ink-100/40 px-5 py-3",
         className,
       )}
       {...props}

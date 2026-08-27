@@ -69,10 +69,10 @@ export const DayView = ({
   const nowOffset = ((now.getHours() * 60 + now.getMinutes()) / 60) * HOUR_HEIGHT;
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-ink-950 shadow-sm ring-1 ring-ink-700/60">
-      <div className="shrink-0 border-b border-ink-800 bg-ink-900/40 px-6 py-4 text-center">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-ink-50 shadow-sm ring-1 ring-ink-300/60">
+      <div className="shrink-0 border-b border-ink-200 bg-ink-100/40 px-6 py-4 text-center">
         <div className="flex items-center justify-center gap-3">
-          <h2 className="text-xl font-semibold capitalize text-ink-50">
+          <h2 className="text-xl font-semibold capitalize text-ink-950">
             {format(currentDate, "EEEE d 'de' MMMM yyyy", { locale: es })}
           </h2>
           {isToday(currentDate) && (
@@ -85,11 +85,11 @@ export const DayView = ({
 
       <div ref={scrollRef} className="scrollbar-hide relative flex-1 overflow-y-auto">
         <div className="relative flex" style={{ height: HOURS.length * HOUR_HEIGHT }}>
-          <div className="relative w-20 shrink-0 border-r border-ink-800 bg-ink-900/40">
+          <div className="relative w-20 shrink-0 border-r border-ink-200 bg-ink-100/40">
             {HOURS.map((hour) => (
               <div key={hour} className="relative w-full" style={{ height: HOUR_HEIGHT }}>
                 {hour !== 0 && (
-                  <span className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-md bg-ink-950 px-1.5 text-[11px] font-medium tabular-nums text-ink-400">
+                  <span className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-md bg-ink-50 px-1.5 text-[11px] font-medium tabular-nums text-ink-600">
                     {formatAxisHour(hour)}
                   </span>
                 )}
@@ -101,7 +101,7 @@ export const DayView = ({
             {HOURS.map((hour) => (
               <div
                 key={hour}
-                className="relative box-border border-b border-dashed border-ink-800"
+                className="relative box-border border-b border-dashed border-ink-200"
                 style={{ height: HOUR_HEIGHT }}
               >
                 {QUARTERS.map((minute) => {
@@ -155,7 +155,7 @@ export const DayView = ({
                 className="pointer-events-none absolute left-0 right-0 z-20 flex items-center"
                 style={{ top: `${nowOffset}px` }}
               >
-                <span className="absolute -left-1.5 size-3 animate-pulse rounded-full bg-accent-500 shadow-lg shadow-accent-500/40 ring-2 ring-ink-950" />
+                <span className="absolute -left-1.5 size-3 animate-pulse rounded-full bg-accent-500 shadow-lg shadow-accent-500/40 ring-2 ring-ink-50" />
                 <span className="h-0.5 w-full bg-linear-to-r from-accent-500 via-accent-500 to-accent-500/50" />
               </div>
             )}

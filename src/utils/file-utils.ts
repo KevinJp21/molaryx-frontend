@@ -56,7 +56,9 @@ export function parseFilenameFromContentDisposition(
 export const downloadReport = (blob: Blob, filename: string): void => {
     if (typeof window === 'undefined') return;
     if (!(blob instanceof Blob)) {
-        console.error('downloadReport: se esperaba un Blob');
+        if (process.env.NODE_ENV === "development") {
+            console.error('downloadReport: se esperaba un Blob');
+        }
         return;
     }
     const url = window.URL.createObjectURL(blob);

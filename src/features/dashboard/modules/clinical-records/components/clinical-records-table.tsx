@@ -117,7 +117,7 @@ export const ClinicalRecordsTable = ({
                 <TableRow>
                   <TableCell
                     colSpan={colSpan}
-                    className="py-16 text-center text-sm text-ink-400 group-hover/row:bg-transparent"
+                    className="py-16 text-center text-sm text-ink-600 group-hover/row:bg-transparent"
                   >
                     {emptyMessage}
                   </TableCell>
@@ -161,7 +161,7 @@ export const ClinicalRecordsTable = ({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="w-full justify-start text-xs font-normal text-ink-200"
+                            className="w-full justify-start text-xs font-normal text-ink-800"
                             onClick={() => openDetails(item)}
                           >
                             <Logs className="size-4" strokeWidth={1.75} />

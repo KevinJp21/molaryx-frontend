@@ -72,7 +72,7 @@ const UpcomingListSkeleton = () => (
         <CardContent className="space-y-5 px-5 pb-5">
             {Array.from({ length: 2 }).map((_, groupIndex) => (
                 <div key={groupIndex} className="space-y-3">
-                    <div className="flex items-center gap-3 border-b border-ink-800 pb-3">
+                    <div className="flex items-center gap-3 border-b border-ink-200 pb-3">
                         <Skeleton className="size-14 rounded-2xl" />
                         <div className="space-y-2">
                             <Skeleton className="h-4 w-20" />
@@ -83,7 +83,7 @@ const UpcomingListSkeleton = () => (
                     {Array.from({ length: groupIndex === 0 ? 2 : 1 }).map((_, itemIndex) => (
                         <div
                             key={itemIndex}
-                            className="flex gap-3 rounded-2xl border border-ink-800 p-3.5"
+                            className="flex gap-3 rounded-2xl border border-ink-200 p-3.5"
                         >
                             <div className="flex min-w-16 flex-col items-center gap-1.5">
                                 <Skeleton className="h-4 w-10" />

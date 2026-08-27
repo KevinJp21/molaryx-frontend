@@ -12,6 +12,8 @@ import treatmentsReducer from './treatments/treatments-slice'
 import patientTreatmentsReducer from './patient-treatments/patient-treatments-slice'
 import paymentsReducer from './payments/payments-slice'
 import clinicalRecordsReducer from './clinical-records/clinical-records-slice'
+import notificationsReducer from './notifications/notifications-slice'
+import tenantsReducer from './tenants/tenants-slice'
 export const store = configureStore({
     reducer: {
         masters: mastersReducer,
@@ -26,6 +28,8 @@ export const store = configureStore({
         patientTreatments: patientTreatmentsReducer,
         payments: paymentsReducer,
         clinicalRecords: clinicalRecordsReducer,
+        notifications: notificationsReducer,
+        tenants: tenantsReducer,
     },
 
 })

@@ -55,7 +55,7 @@ export const PATIENT_TREATMENT_STATUS_COLORS: Record<
   all: "var(--color-accent-500)",
   [PATIENT_TREATMENT_STATUS.ACTIVE]: "var(--color-accent-400)",
   [PATIENT_TREATMENT_STATUS.PAUSED]: "var(--color-chart-3)",
-  [PATIENT_TREATMENT_STATUS.COMPLETED]: "var(--color-ink-400)",
+  [PATIENT_TREATMENT_STATUS.COMPLETED]: "var(--color-ink-600)",
   [PATIENT_TREATMENT_STATUS.CANCELLED]: "var(--color-coral-500)",
 };
 

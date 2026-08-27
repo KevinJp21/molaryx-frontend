@@ -44,7 +44,7 @@ export const BaseTable = ({
         <CardHeader>
           <div className="flex min-w-0 items-center gap-3">
             {icon && (
-              <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl bg-ink-900 text-accent-500 ring-1 ring-inset ring-accent-500/20">
+              <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl bg-ink-100 text-accent-500 ring-1 ring-inset ring-accent-500/20">
                 {icon}
               </span>
             )}
@@ -61,7 +61,7 @@ export const BaseTable = ({
       </CardContent>
 
       <CardFooter className="justify-between">
-        <p className="text-xs text-ink-400">
+        <p className="text-xs text-ink-600">
           {`${totalItemsView} de ${totalItems} registros en esta página`}
         </p>
         <CustomPagination

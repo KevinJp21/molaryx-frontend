@@ -20,6 +20,28 @@ const DEFAULT_ERROR_MESSAGES: Record<number, string> = {
 
 const FALLBACK_ERROR_MESSAGE = 'Error inesperado, vuelva a intentarlo.';
 
+const NETWORK_ERROR_MESSAGE =
+    'No pudimos conectar con el servidor. Revisa tu conexión a internet e inténtalo de nuevo.';
+
+const NETWORK_ERROR_PATTERNS = [
+    'fetch failed',
+    'failed to fetch',
+    'networkerror',
+    'network request failed',
+    'load failed',
+    'econnrefused',
+    'econnreset',
+    'enotfound',
+    'etimedout',
+    'socket hang up',
+] as const;
+
+const isNetworkErrorMessage = (message: string) => {
+    const normalized = message.trim().toLowerCase();
+    if (!normalized) return false;
+    return NETWORK_ERROR_PATTERNS.some((pattern) => normalized.includes(pattern));
+};
+
 export type ApiErrorResult = {
     /** Mensaje general del backend o por código HTTP */
     message: string;
@@ -135,6 +157,17 @@ type HandleApiErrorOptions = {
     redirectOn401?: boolean;
 };
 
+const getErrorMessagesToInspect = (error: Error): string[] => {
+    const messages = [error.message];
+    const cause = (error as Error & { cause?: unknown }).cause;
+    if (cause instanceof Error && cause.message) {
+        messages.push(cause.message);
+    } else if (typeof cause === 'string' && cause.trim()) {
+        messages.push(cause);
+    }
+    return messages;
+};
+
 /**
  * Manejador centralizado de errores de API (contrato Molaryx Admin).
  * Retorna `{ message, error? }` donde `error` es el primer mensaje de validación.
@@ -174,7 +207,10 @@ export async function handleApiError(
 
     if (error instanceof Error) {
         console.error('Generic Error:', error.message);
-        return { message: error.message };
+        if (getErrorMessagesToInspect(error).some(isNetworkErrorMessage)) {
+            return { message: NETWORK_ERROR_MESSAGE };
+        }
+        return { message: error.message || FALLBACK_ERROR_MESSAGE };
     }
 
     return { message: FALLBACK_ERROR_MESSAGE };

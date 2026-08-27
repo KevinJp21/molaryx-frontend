@@ -55,14 +55,14 @@ export const CalendarEmptyState = ({ view, onCreateClick, className }: Props) =>
     >
       <div className="relative mb-8">
         <div className="absolute inset-0 scale-150 rounded-full bg-linear-to-br from-accent-500/5 via-transparent to-accent-500/5 blur-3xl" />
-        <div className="relative rounded-3xl border border-ink-800 bg-linear-to-br from-ink-900/60 to-ink-900/20 p-6">
+        <div className="relative rounded-3xl border border-ink-200 bg-linear-to-br from-ink-100/60 to-ink-100/20 p-6">
           <Icon className="size-16 text-ink-500/40" strokeWidth={1.5} />
         </div>
       </div>
 
       <div className="max-w-sm text-center">
-        <h3 className="mb-2 text-lg font-semibold text-ink-50">{VIEW_TITLE[view]}</h3>
-        <p className="mb-6 text-sm leading-relaxed text-ink-400">
+        <h3 className="mb-2 text-lg font-semibold text-ink-950">{VIEW_TITLE[view]}</h3>
+        <p className="mb-6 text-sm leading-relaxed text-ink-600">
           {VIEW_DESCRIPTION[view]}
         </p>
 

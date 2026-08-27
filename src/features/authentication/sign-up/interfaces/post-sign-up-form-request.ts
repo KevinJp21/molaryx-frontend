@@ -23,4 +23,6 @@ export interface IPostSignUpFormRequest {
     password: string;
     confirmPassword: string;
   };
+  acceptedTermsAndConditions: boolean;
+  acceptedPrivacyPolicy: boolean;
 }

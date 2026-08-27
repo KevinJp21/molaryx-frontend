@@ -4,6 +4,7 @@ export * from "./input-error-message";
 export * from "./custom-form-field";
 export * from "./custom-form-textarea";
 export * from "./custom-form-select";
+export * from "./custom-form-checkbox";
 export * from "./custom-password-form-field";
 export * from "./custom-card";
 export * from "./base-table";

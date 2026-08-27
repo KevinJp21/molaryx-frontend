@@ -105,7 +105,7 @@ export const TeamTable = ({
   }, [status, items.length, currentPage]);
 
   return (
-    <div className="relative flex min-h-160 w-full flex-1 flex-col overflow-hidden rounded-2xl bg-ink-950 shadow-[0_1px_0_rgba(14,14,23,0.04),0_24px_48px_-28px_rgba(124,77,255,0.45)] ring-1 ring-ink-700/70">
+    <div className="relative flex min-h-160 w-full flex-1 flex-col overflow-hidden rounded-2xl bg-ink-50 shadow-[0_1px_0_rgba(14,14,23,0.04),0_24px_48px_-28px_rgba(124,77,255,0.45)] ring-1 ring-ink-300/70">
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <TeamSidebar
           search={search}
@@ -128,7 +128,7 @@ export const TeamTable = ({
         />
 
         <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
-          <div className="border-b border-ink-800 px-3 py-3 lg:hidden">
+          <div className="border-b border-ink-200 px-3 py-3 lg:hidden">
             {canCreate && (
               <Button
                 type="button"
@@ -190,19 +190,19 @@ export const TeamTable = ({
                       <div className="relative mx-auto flex max-w-sm flex-col items-center px-4 text-center">
                         <div className="relative mb-6">
                           <div className="absolute inset-0 scale-150 rounded-full bg-linear-to-br from-accent-500/5 via-transparent to-accent-500/5 blur-3xl" />
-                          <div className="relative rounded-3xl border border-ink-800 bg-linear-to-br from-ink-900/60 to-ink-900/20 p-5">
+                          <div className="relative rounded-3xl border border-ink-200 bg-linear-to-br from-ink-100/60 to-ink-100/20 p-5">
                             <Users
                               className="size-12 text-ink-500/40"
                               strokeWidth={1.5}
                             />
                           </div>
                         </div>
-                        <p className="text-base font-medium text-ink-50">
+                        <p className="text-base font-medium text-ink-950">
                           {hasActiveFilters
                             ? "Sin resultados"
                             : "Aún no hay miembros"}
                         </p>
-                        <p className="mt-1.5 text-sm leading-relaxed text-ink-400">
+                        <p className="mt-1.5 text-sm leading-relaxed text-ink-600">
                           {hasActiveFilters
                             ? "No hay miembros con los filtros seleccionados. Ajusta la búsqueda, el estado o el rol."
                             : "Invita al primer profesional o asistente para gestionar el equipo de la clínica."}
@@ -242,31 +242,31 @@ export const TeamTable = ({
                               ),
                             }}
                           >
-                            <span className="font-medium text-ink-50">
+                            <span className="font-medium text-ink-950">
                               {fullName}
                             </span>
-                            <span className="text-xs text-ink-400">
+                            <span className="text-xs text-ink-600">
                               @{item.username}
                             </span>
                           </div>
                         </TableCell>
-                        <TableCell className="text-ink-200">
+                        <TableCell className="text-ink-800">
                           {getTeamRoleName(item.idUserRole)}
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col gap-0.5">
-                            <span className="text-ink-100">
+                            <span className="text-ink-900">
                               {item.identificationType}
                             </span>
-                            <span className="font-mono text-xs tabular-nums text-ink-400">
+                            <span className="font-mono text-xs tabular-nums text-ink-600">
                               {item.identificationNumber}
                             </span>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col gap-0.5">
-                            <span className="text-ink-200">{item.email}</span>
-                            <span className="font-mono text-xs tabular-nums text-ink-400">
+                            <span className="text-ink-800">{item.email}</span>
+                            <span className="font-mono text-xs tabular-nums text-ink-600">
                               {item.phoneNumber}
                             </span>
                           </div>
@@ -298,7 +298,7 @@ export const TeamTable = ({
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      className="justify-start text-xs font-normal text-ink-200"
+                                      className="justify-start text-xs font-normal text-ink-800"
                                       aria-label={`Editar miembro ${fullName}`}
                                       onClick={() => onEdit(item)}
                                     >

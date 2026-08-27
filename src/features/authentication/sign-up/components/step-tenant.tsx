@@ -15,8 +15,8 @@ export const StepTenant = () => {
 
   return (
     <div>
-      <h1 className="font-semibold text-3xl tracking-tight text-ink-50">Datos de tu consultorio</h1>
-      <p className="mt-2 text-sm text-ink-300">
+      <h1 className="font-semibold text-3xl tracking-tight text-ink-950">Datos de tu consultorio</h1>
+      <p className="mt-2 text-sm text-ink-700">
         Esta información identifica a tu consultorio dentro de Molaryx.
       </p>
 

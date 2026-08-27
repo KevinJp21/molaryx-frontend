@@ -1,20 +1,37 @@
+"use client";
+
+import type { IGetPublicPlans } from "@/features/public-plans";
 import {
   Navbar,
-  DashboardSection,
   HeroSection,
+  DashboardSection,
   FeaturesSection,
   PricingSection,
+  CtaSection,
+  FooterSection,
+  ScrollProgress,
+  SmoothScroll,
 } from "../components";
 
-export const LandingTemplate = () => {
+type Props = {
+  plans: IGetPublicPlans[];
+  plansError?: string;
+};
+
+export const LandingTemplate = ({ plans, plansError }: Props) => {
   return (
-    <div id="top">
-      <Navbar />
-      <HeroSection />
-      <DashboardSection />
-      <FeaturesSection />
-      <PricingSection />
-    </div>
+    <SmoothScroll>
+      <div id="top">
+        <ScrollProgress />
+        <Navbar />
+        <HeroSection />
+        <DashboardSection />
+        <FeaturesSection />
+        <PricingSection plans={plans} plansError={plansError} />
+        <CtaSection />
+        <FooterSection />
+      </div>
+    </SmoothScroll>
   );
 };
 

@@ -13,25 +13,25 @@ export const PricingFounderCallout = () => {
             Programa Founder
           </span>
 
-          <h3 className="mt-2 text-xl font-semibold tracking-tight text-ink-50 sm:text-2xl">
+          <h3 className="mt-2 text-xl font-semibold tracking-tight text-ink-950 sm:text-2xl">
             Una oportunidad exclusiva para los primeros consultorios
           </h3>
 
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed wrap-break-word text-ink-200 sm:text-base">
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed wrap-break-word text-ink-800 sm:text-base">
             Durante el lanzamiento, el plan{" "}
-            <strong className="text-ink-50">Professional</strong> tiene un{" "}
-            <strong className="text-ink-50">precio Founder</strong> para los primeros
+            <strong className="text-ink-950">Professional</strong> tiene un{" "}
+            <strong className="text-ink-950">precio Founder</strong> para los primeros
             consultorios que quieran operar con Molaryx desde el inicio.
           </p>
 
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed wrap-break-word text-ink-300 sm:text-base">
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed wrap-break-word text-ink-700 sm:text-base">
             Tendrás acceso a todas las funcionalidades del plan Professional con un precio
             preferencial por tiempo limitado, como reconocimiento por confiar en Molaryx desde
             sus primeros pasos.
           </p>
 
           <ul className="mt-5 grid gap-2.5 sm:grid-cols-3">
-            <li className="flex min-w-0 items-start gap-2 text-sm text-ink-200">
+            <li className="flex min-w-0 items-start gap-2 text-sm text-ink-800">
               <Check
                 className="mt-0.5 size-4 shrink-0 text-accent-400"
                 strokeWidth={2}
@@ -39,7 +39,7 @@ export const PricingFounderCallout = () => {
               <span className="min-w-0 wrap-break-word">Todas las funcionalidades del plan Professional.</span>
             </li>
 
-            <li className="flex min-w-0 items-start gap-2 text-sm text-ink-200">
+            <li className="flex min-w-0 items-start gap-2 text-sm text-ink-800">
               <Check
                 className="mt-0.5 size-4 shrink-0 text-accent-400"
                 strokeWidth={2}
@@ -47,7 +47,7 @@ export const PricingFounderCallout = () => {
               <span className="min-w-0 wrap-break-word">Precio Founder exclusivo durante el lanzamiento.</span>
             </li>
 
-            <li className="flex min-w-0 items-start gap-2 text-sm text-ink-200">
+            <li className="flex min-w-0 items-start gap-2 text-sm text-ink-800">
               <Check
                 className="mt-0.5 size-4 shrink-0 text-accent-400"
                 strokeWidth={2}

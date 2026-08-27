@@ -66,14 +66,14 @@ export const AppointmentEventModal = ({
       <DialogPortal>
         <DialogOverlay
           className={cn(
-            "fixed inset-0 z-40 bg-ink-50/20 backdrop-blur-[2px]",
+            "fixed inset-0 z-40 bg-ink-950/20 backdrop-blur-[2px]",
             "data-[state=open]:animate-in data-[state=open]:fade-in-0",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
           )}
         />
         <DialogContent
           className={cn(
-            "fixed left-1/2 top-1/2 z-50 w-[calc(100vw-1.5rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-ink-750 bg-ink-950 text-ink-100 shadow-2xl",
+            "fixed left-1/2 top-1/2 z-50 w-[calc(100vw-1.5rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-ink-250 bg-ink-50 text-ink-900 shadow-2xl",
             "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
           )}
@@ -111,6 +111,7 @@ export const AppointmentEventModal = ({
                 isEdit={form.isEdit}
                 isSubmitting={form.isSubmitting}
                 statusColor={form.statusColor}
+                statusLabel={form.statusLabel}
                 durationLabel={form.durationLabel}
                 event={event}
                 onClose={form.handleClose}

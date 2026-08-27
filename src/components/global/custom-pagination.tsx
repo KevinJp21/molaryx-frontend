@@ -17,7 +17,7 @@ export const CustomPagination = ({
     isLoading = false
 }: CustomPaginationProps) => {
     const pageButtonClass = cn(
-        "flex size-8 items-center justify-center rounded-lg border border-ink-750 bg-ink-950 text-ink-300 transition-colors",
+        "flex size-8 items-center justify-center rounded-lg border border-ink-250 bg-ink-50 text-ink-700 transition-colors",
         "hover:border-accent-500/30 hover:bg-accent-500/8 hover:text-accent-600",
         "disabled:pointer-events-none disabled:opacity-40 cursor-pointer"
     )
@@ -34,9 +34,9 @@ export const CustomPagination = ({
                 <ArrowLeft className="size-3.5" strokeWidth={2} />
             </button>
 
-            <div className="mx-1 flex h-8 min-w-16 items-center justify-center rounded-lg px-2.5 text-xs font-medium text-ink-300 ring-1 ring-inset ring-accent-500/15">
+            <div className="mx-1 flex h-8 min-w-16 items-center justify-center rounded-lg px-2.5 text-xs font-medium text-ink-700 ring-1 ring-inset ring-accent-500/15">
                 {currentPage}
-                <span className="mx-1 text-ink-400/70">/</span>
+                <span className="mx-1 text-ink-600/70">/</span>
                 {totalPages || 1}
             </div>
 
