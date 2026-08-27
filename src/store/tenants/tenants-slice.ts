@@ -3,8 +3,10 @@ import { TStatus } from "@/types";
 import {
   apiGetTenantsAction,
   apiPostActivateTenantAction,
+  apiPostCreateBusinessTenantAction,
   IGetTenantsResponseData,
   IPostActivateTenantRequest,
+  IPostCreateBusinessTenantRequest,
   TGetTenantsParams,
 } from "@/features/platform/modules/tenants";
 
@@ -20,6 +22,11 @@ type TTenantsState = {
     message?: string;
     error?: string;
   };
+  postCreateBusinessTenant: {
+    status: TStatus;
+    message?: string;
+    error?: string;
+  };
 };
 
 const initialState: TTenantsState = {
@@ -30,6 +37,11 @@ const initialState: TTenantsState = {
     error: undefined,
   },
   postActivateTenant: {
+    status: "idle",
+    message: undefined,
+    error: undefined,
+  },
+  postCreateBusinessTenant: {
     status: "idle",
     message: undefined,
     error: undefined,
@@ -95,10 +107,40 @@ const tenantsSlice = createAppSlice({
     resetPostActivateTenant: create.reducer((state) => {
       state.postActivateTenant = initialState.postActivateTenant;
     }),
+    postCreateBusinessTenant: create.asyncThunk(
+      async (data: IPostCreateBusinessTenantRequest) =>
+        await apiPostCreateBusinessTenantAction(data),
+      {
+        pending: (state) => {
+          state.postCreateBusinessTenant.status = "loading";
+        },
+        fulfilled: (state, action) => {
+          if (!action.payload.success) {
+            state.postCreateBusinessTenant.status = "error";
+            state.postCreateBusinessTenant.message = action.payload.message;
+            state.postCreateBusinessTenant.error =
+              action.payload.error ?? undefined;
+            return;
+          }
+          state.postCreateBusinessTenant.status = "success";
+          state.postCreateBusinessTenant.message = action.payload.message;
+          state.postCreateBusinessTenant.error = undefined;
+        },
+        rejected: (state, action) => {
+          state.postCreateBusinessTenant.status = "error";
+          state.postCreateBusinessTenant.message = action.error.message;
+          state.postCreateBusinessTenant.error = undefined;
+        },
+      },
+    ),
+    resetPostCreateBusinessTenant: create.reducer((state) => {
+      state.postCreateBusinessTenant = initialState.postCreateBusinessTenant;
+    }),
   }),
   selectors: {
     selectGetTenants: (state) => state.getTenants,
     selectPostActivateTenant: (state) => state.postActivateTenant,
+    selectPostCreateBusinessTenant: (state) => state.postCreateBusinessTenant,
   },
 });
 
@@ -106,7 +148,12 @@ export const {
   getTenants,
   postActivateTenant,
   resetPostActivateTenant,
+  postCreateBusinessTenant,
+  resetPostCreateBusinessTenant,
 } = tenantsSlice.actions;
-export const { selectGetTenants, selectPostActivateTenant } =
-  tenantsSlice.selectors;
+export const {
+  selectGetTenants,
+  selectPostActivateTenant,
+  selectPostCreateBusinessTenant,
+} = tenantsSlice.selectors;
 export default tenantsSlice.reducer;

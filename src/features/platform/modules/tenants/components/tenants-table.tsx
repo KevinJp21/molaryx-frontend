@@ -31,17 +31,18 @@ import { TenantDetailModal } from "./tenant-detail-modal";
 
 type Props = {
   refreshKey?: number;
+  onRefresh?: () => void;
   emptyMessage?: string;
 };
 
 export const TenantsTable = ({
-  refreshKey: refreshKeyProp = 0,
+  refreshKey = 0,
+  onRefresh,
   emptyMessage = "No hay tenants registrados.",
 }: Props) => {
   const dispatch = useAppDispatch();
   const { data, status, message, error } = useAppSelector(selectGetTenants);
   const [currentPage, setCurrentPage] = useState(1);
-  const [refreshKey, setRefreshKey] = useState(0);
   const {
     open: detailOpen,
     selected: selectedTenant,
@@ -56,7 +57,7 @@ export const TenantsTable = ({
         Page: currentPage,
       }),
     );
-  }, [dispatch, currentPage, refreshKey, refreshKeyProp]);
+  }, [dispatch, currentPage, refreshKey]);
 
   const items = data?.items ?? [];
   const totalPages = data?.totalPages ?? 0;
@@ -215,7 +216,7 @@ export const TenantsTable = ({
         open={detailOpen}
         onOpenChange={handleDetailOpenChange}
         tenant={selectedTenant}
-        onSuccess={() => setRefreshKey((key) => key + 1)}
+        onSuccess={onRefresh}
       />
     </>
   );
