@@ -108,16 +108,16 @@ export const EventContextMenu = ({
   return (
     <div
       ref={menuRef}
-      className="fixed z-100 min-w-45 overflow-hidden rounded-xl border border-ink-750 bg-ink-950 shadow-xl animate-in fade-in-0 zoom-in-95 duration-150"
+      className="fixed z-100 min-w-45 overflow-hidden rounded-xl border border-ink-250 bg-ink-50 shadow-xl animate-in fade-in-0 zoom-in-95 duration-150"
       style={{ left: adjusted.x, top: adjusted.y }}
     >
-      <div className="border-b border-ink-800 bg-ink-900/60 px-3 py-2">
+      <div className="border-b border-ink-200 bg-ink-100/60 px-3 py-2">
         <div className="flex items-center gap-2">
           <span
             className="size-2.5 shrink-0 rounded-full"
             style={{ backgroundColor: event.color }}
           />
-          <span className="truncate text-sm font-medium text-ink-50">{event.title}</span>
+          <span className="truncate text-sm font-medium text-ink-950">{event.title}</span>
         </div>
       </div>
 
@@ -125,7 +125,7 @@ export const EventContextMenu = ({
         {actions.map((action, index) => (
           <Fragment key={action.id}>
             {index > 0 && action.variant === "danger" && (
-              <div className="my-1 h-px bg-ink-800" />
+              <div className="my-1 h-px bg-ink-200" />
             )}
             <Button
               type="button"

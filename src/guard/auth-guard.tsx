@@ -7,10 +7,14 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import {
   getUserData,
   logout,
+  postLogout,
   selectGetUserData,
   selectPostLogout,
 } from "@/store/authentication/authentication-slice";
+import { resetGetNotifications } from "@/store/notifications/notifications-slice";
 import { PUBLIC_AUTH_ROUTES, PROTECTED_ROUTE_PREFIXES } from "@/consts";
+import { resolveAppHomeRoute } from "@/utils/resolve-app-home-route";
+import { Button, ErrorMessage } from "@/components";
 import Image from "next/image";
 
 const SessionExpiredHandler = () => {
@@ -24,6 +28,7 @@ const SessionExpiredHandler = () => {
     if (!session && !unauthenticated) return;
 
     dispatch(logout());
+    dispatch(resetGetNotifications());
 
     if (session) {
       toast.error(
@@ -37,9 +42,22 @@ const SessionExpiredHandler = () => {
   return null;
 };
 
+const AuthLoading = () => (
+  <div className="flex min-h-screen w-full flex-1 flex-col items-center justify-center bg-background">
+    <Image
+      src="/images/molaryx_logo_animated.svg"
+      alt="Cargando Molaryx"
+      width={248}
+      height={248}
+      priority
+      className="size-62"
+    />
+  </div>
+);
+
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
-  const { status, userState } = useAppSelector(selectGetUserData);
+  const { status, userState, message, data: userData } = useAppSelector(selectGetUserData);
   const { status: logoutStatus } = useAppSelector(selectPostLogout);
   const pathname = usePathname();
   const router = useRouter();
@@ -63,38 +81,66 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 
     if (isProtectedRoute && userState === "unauthenticated") {
       // Logout deliberado: no marcar sesión como "unauthenticated" en la URL.
-      router.replace(isIntentionalLogout ? "/sign-in" : "/sign-in?session=unauthenticated");
+      router.replace(
+        isIntentionalLogout ? "/sign-in" : "/sign-in?session=unauthenticated",
+      );
       return;
     }
 
     if (userState === "authenticated" && isPublicAuthRoute) {
-      router.replace("/dashboard");
+      router.replace(resolveAppHomeRoute(userData?.permissions));
     }
   }, [
     pathname,
     router,
     status,
     userState,
+    userData?.permissions,
     isProtectedRoute,
     isPublicAuthRoute,
     isIntentionalLogout,
   ]);
 
-  // En dashboard no pintes la app hasta haber sesión. Si getUser falla por
-  // carrera del refresh, RouteGuard se quedaba en el logo con status error.
-  if (isProtectedRoute && userState !== "authenticated") {
+  if (isProtectedRoute && userState === "error") {
     return (
-      <div className="flex min-h-screen w-full flex-1 flex-col items-center justify-center bg-background">
-        <Image
-          src="/images/molaryx_logo_animated.svg"
-          alt="Cargando Molaryx"
-          width={248}
-          height={248}
-          priority
-          className="size-62"
-        />
+      <div className="flex min-h-screen w-full flex-1 flex-col items-center justify-center bg-background px-4">
+        <div className="w-full max-w-md">
+          <ErrorMessage
+            message="No se pudo cargar la sesión"
+            error={
+              message ||
+              "Hubo un problema al conectar con el servidor. Puedes reintentar o volver al inicio de sesión."
+            }
+          />
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => {
+                void dispatch(getUserData());
+              }}
+            >
+              Reintentar
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                void dispatch(postLogout());
+              }}
+            >
+              Ir al inicio de sesión
+            </Button>
+          </div>
+        </div>
       </div>
     );
+  }
+
+  // En dashboard no pintes la app hasta haber sesión.
+  if (isProtectedRoute && userState !== "authenticated") {
+    return <AuthLoading />;
   }
 
   return (

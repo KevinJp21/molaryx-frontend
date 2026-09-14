@@ -102,16 +102,16 @@ export const MonthView = ({
   }, [events]);
 
   return (
-    <div className="scrollbar-hide flex h-full min-w-200 flex-col overflow-hidden rounded-2xl bg-ink-950 shadow-sm ring-1 ring-ink-700/60 md:min-w-0">
+    <div className="scrollbar-hide flex h-full min-w-200 flex-col overflow-hidden rounded-2xl bg-ink-50 shadow-sm ring-1 ring-ink-300/60 md:min-w-0">
       <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl">
         <div className="h-full overflow-y-auto">
-        <div className="sticky top-0 z-20 grid grid-cols-7 border-b border-ink-800 bg-ink-900">
+        <div className="sticky top-0 z-20 grid grid-cols-7 border-b border-ink-200 bg-ink-100">
           {weekDays.map((day, index) => (
             <div
               key={day.toISOString()}
               className={cn(
-                "py-3 text-center text-xs font-semibold uppercase tracking-wider text-ink-400",
-                index > 0 && "border-l border-ink-800",
+                "py-3 text-center text-xs font-semibold uppercase tracking-wider text-ink-600",
+                index > 0 && "border-l border-ink-200",
               )}
             >
               {format(day, "EEE", { locale: es })}
@@ -132,8 +132,8 @@ export const MonthView = ({
                 date={day}
                 onClick={() => onDateClick(day)}
                 className={cn(
-                  "group relative flex h-32.5 cursor-pointer flex-col gap-1.5 overflow-hidden border-b border-r border-ink-800 p-2 text-left transition-all duration-200 nth-[7n]:border-r-0",
-                  !inMonth && "bg-ink-900/40 text-ink-400",
+                  "group relative flex h-32.5 cursor-pointer flex-col gap-1.5 overflow-hidden border-b border-r border-ink-200 p-2 text-left transition-all duration-200 nth-[7n]:border-r-0",
+                  !inMonth && "bg-ink-100/40 text-ink-600",
                   isToday(day) && "bg-accent-50 ring-1 ring-inset ring-accent-200",
                 )}
               >
@@ -149,7 +149,7 @@ export const MonthView = ({
                     {format(day, "d")}
                   </span>
                   {dayEvents.length > 0 && (
-                    <span className="rounded-full bg-ink-800 px-1.5 py-0.5 text-[10px] font-medium text-ink-400">
+                    <span className="rounded-full bg-ink-200 px-1.5 py-0.5 text-[10px] font-medium text-ink-600">
                       {dayEvents.length}
                     </span>
                   )}

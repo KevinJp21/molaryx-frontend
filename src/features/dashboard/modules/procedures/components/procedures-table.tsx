@@ -93,7 +93,7 @@ export const ProceduresTable = ({
                         )}
                         {status === "success" && items.length === 0 && (
                             <TableRow>
-                                <TableCell colSpan={colSpan} className="py-16 text-center text-sm text-ink-400 group-hover/row:bg-transparent">
+                                <TableCell colSpan={colSpan} className="py-16 text-center text-sm text-ink-600 group-hover/row:bg-transparent">
                                     No hay procedimientos con los filtros seleccionados.
                                 </TableCell>
                             </TableRow>
@@ -106,10 +106,10 @@ export const ProceduresTable = ({
                                             <span>{item.name}</span>
                                         </TableCell>
                                         <TableCell className="max-w-40">
-                                            <span className="line-clamp-2 text-ink-300 truncate">{item.description ?? "—"}</span>
+                                            <span className="line-clamp-2 text-ink-700 truncate">{item.description ?? "—"}</span>
                                         </TableCell>
                                         <TableCell>
-                                            <span className="tabular-nums text-ink-200">
+                                            <span className="tabular-nums text-ink-800">
                                                 {item.referencePrice != null
                                                     ? currencyFormat(item.referencePrice)
                                                     : "—"}
@@ -140,7 +140,7 @@ export const ProceduresTable = ({
                                                                 <Button
                                                                     variant="ghost"
                                                                     size="sm"
-                                                                    className="text-xs justify-start text-ink-200 font-normal"
+                                                                    className="text-xs justify-start text-ink-800 font-normal"
                                                                     aria-label={`Editar procedimiento ${item.name}`}
                                                                     onClick={() => onEdit(item)}
                                                                 >
@@ -152,7 +152,7 @@ export const ProceduresTable = ({
                                                                 <Button
                                                                     variant="destructive"
                                                                     size="sm"
-                                                                    className="text-xs justify-start text-ink-200 font-normal"
+                                                                    className="text-xs justify-start text-ink-800 font-normal"
                                                                     aria-label={`Eliminar procedimiento ${item.name}`}
                                                                     onClick={() => onDelete(item)}
                                                                 >

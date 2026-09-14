@@ -1,0 +1,86 @@
+"use client";
+
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { selectGetUserData } from "@/store/authentication/authentication-slice";
+import {
+  getNotifications,
+  selectGetNotifications,
+} from "@/store/notifications/notifications-slice";
+import {
+  DASHBOARD_HOME_ROUTE,
+  isPlatformOnlyUser,
+} from "@/utils/resolve-app-home-route";
+import { hasRouteAccess, PLATFORM_HOME_ROUTE } from "../utils/route-permissions";
+
+type Props = {
+  children: React.ReactNode;
+};
+
+const RouteLoading = () => (
+  <div className="flex min-h-screen w-full flex-1 flex-col items-center justify-center bg-background">
+    <Image
+      src="/images/molaryx_logo_animated.svg"
+      alt="Cargando Molaryx"
+      width={248}
+      height={248}
+      priority
+      className="size-62"
+    />
+  </div>
+);
+
+export const RouteGuard = ({ children }: Props) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const dispatch = useAppDispatch();
+  const { data: userData, status } = useAppSelector(selectGetUserData);
+  const {
+    status: notificationsStatus,
+    sessionKey: notificationsSessionKey,
+  } = useAppSelector(selectGetNotifications);
+
+  const isUserReady = status === "success" && !!userData;
+  const isPlatformUser = isPlatformOnlyUser(userData?.permissions);
+  const isAllowed =
+    isUserReady &&
+    isPlatformUser &&
+    hasRouteAccess(pathname, userData.permissions);
+
+  useEffect(() => {
+    if (!isUserReady || !userData) return;
+
+    if (!isPlatformUser) {
+      router.replace(DASHBOARD_HOME_ROUTE);
+      return;
+    }
+
+    if (hasRouteAccess(pathname, userData.permissions)) return;
+
+    router.replace(PLATFORM_HOME_ROUTE);
+  }, [isUserReady, isPlatformUser, pathname, userData, router]);
+
+  useEffect(() => {
+    if (!isUserReady || !userData?.username) return;
+    if (!isPlatformOnlyUser(userData.permissions)) return;
+    if (notificationsStatus === "loading") return;
+    if (notificationsSessionKey === userData.username) return;
+
+    dispatch(getNotifications({ sessionKey: userData.username }));
+  }, [
+    dispatch,
+    isUserReady,
+    notificationsSessionKey,
+    notificationsStatus,
+    userData?.permissions,
+    userData?.username,
+  ]);
+
+  if (!isUserReady || !isAllowed) {
+    return <RouteLoading />;
+  }
+
+  return <>{children}</>;
+};

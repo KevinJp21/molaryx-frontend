@@ -30,8 +30,8 @@ export const ClinicalRecordsTemplate = () => {
     <>
       <section className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-xl font-medium text-ink-50">Historia clínica</h1>
-          <p className="text-sm text-ink-300">
+          <h1 className="text-xl font-medium text-ink-950">Historia clínica</h1>
+          <p className="text-sm text-ink-700">
             Registros clínicos del consultorio
           </p>
         </div>

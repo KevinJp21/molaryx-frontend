@@ -7,8 +7,8 @@ export const AgendaVisual = () => {
       <div className="grid grid-cols-[40px_1fr] gap-2">
         {AGENDA_HOURS.map((hour, i) => (
           <div key={hour} className="contents">
-            <span className="text-[10px] text-ink-400">{hour}:00</span>
-            <div className="relative h-12 border-t border-white/5">
+            <span className="text-[10px] text-ink-600">{hour}:00</span>
+            <div className="relative h-12 border-t border-ink-800/5">
               {AGENDA_BLOCKS.filter((block) => block.row === i).map((block) => (
                 <div
                   key={block.label}

@@ -20,8 +20,8 @@ const Field = ({
   value?: string | null;
 }) => (
   <div className="flex flex-col gap-1">
-    <span className="text-xs text-ink-400">{label}</span>
-    <span className="text-sm text-ink-100">{value ? value : "—"}</span>
+    <span className="text-xs text-ink-600">{label}</span>
+    <span className="text-sm text-ink-900">{value ? value : "—"}</span>
   </div>
 );
 
@@ -35,10 +35,10 @@ const ScrollableTextField = ({
   maxHeightClass: string;
 }) => (
   <div className="flex flex-col gap-1">
-    <span className="text-xs text-ink-400">{label}</span>
+    <span className="text-xs text-ink-600">{label}</span>
     <div
       className={cn(
-        "overflow-y-auto rounded-md border border-ink-800 bg-ink-950/50 px-3 py-2 text-sm whitespace-pre-wrap text-ink-100",
+        "overflow-y-auto rounded-md border border-ink-200 bg-ink-50/50 px-3 py-2 text-sm whitespace-pre-wrap text-ink-900",
         maxHeightClass,
       )}
     >
@@ -86,8 +86,8 @@ export const ClinicalRecordDetailModal = ({
           <Field label="Procedimiento" value={record.procedureName} />
         </div>
 
-        <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
-          <h3 className="text-sm font-medium text-ink-50">Paciente</h3>
+        <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-200 bg-ink-100/30 p-4">
+          <h3 className="text-sm font-medium text-ink-950">Paciente</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <Field
               label="Nombre"
@@ -104,8 +104,8 @@ export const ClinicalRecordDetailModal = ({
 
 
         {appointment && (
-          <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
-            <h3 className="text-sm font-medium text-ink-50">Cita asociada</h3>
+          <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-200 bg-ink-100/30 p-4">
+            <h3 className="text-sm font-medium text-ink-950">Cita asociada</h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <Field label="Procedimientos" value={appointment.procedureNames} />
               <Field label="Estado" value={appointment.appointmentStatus} />
@@ -124,8 +124,8 @@ export const ClinicalRecordDetailModal = ({
         )}
 
         {patientTreatment && (
-          <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
-            <h3 className="text-sm font-medium text-ink-50">
+          <section className="mt-5 flex flex-col gap-3 rounded-lg border border-ink-200 bg-ink-100/30 p-4">
+            <h3 className="text-sm font-medium text-ink-950">
               Plan de tratamiento
             </h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -151,7 +151,7 @@ export const ClinicalRecordDetailModal = ({
           </section>
         )}
 
-        <section className="mt-5 flex flex-col gap-4 rounded-lg border border-ink-800 bg-ink-900/30 p-4">
+        <section className="mt-5 flex flex-col gap-4 rounded-lg border border-ink-200 bg-ink-100/30 p-4">
           <ScrollableTextField
             label="Motivo"
             value={record.reason}

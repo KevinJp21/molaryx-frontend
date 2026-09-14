@@ -57,14 +57,14 @@ const Metric = ({
   priceColumnClassName?: string;
 }) => (
   <div className="flex min-w-0 flex-col gap-1">
-    <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+    <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
       {label}
     </span>
     <span
       className={cn(
         "truncate text-sm tabular-nums font-semibold",
         priceColumnClassName,
-        emphasize ? "text-accent-600" : "text-ink-50",
+        emphasize ? "text-accent-600" : "text-ink-950",
       )}
     >
       {value}
@@ -122,7 +122,7 @@ export const PaymentSummaryByConcept = ({
     data?.remaining != null && data.remaining > 0;
 
   return (
-    <div className="rounded-lg border border-ink-800 bg-ink-900/30 p-4">
+    <div className="rounded-lg border border-ink-200 bg-ink-100/30 p-4">
       {(status === "loading" || status === "idle") && (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <Skeleton className="h-12" />
@@ -166,7 +166,7 @@ export const PaymentSummaryByConcept = ({
             )}
           </div>
           {progress != null && (
-            <div className="h-1.5 overflow-hidden rounded-full bg-ink-800">
+            <div className="h-1.5 overflow-hidden rounded-full bg-ink-200">
               <div
                 className={cn(
                   "h-full rounded-full bg-accent-500",
@@ -175,7 +175,7 @@ export const PaymentSummaryByConcept = ({
               />
             </div>
           )}
-          <p className="text-xs text-ink-400">{paymentCountLabel}</p>
+          <p className="text-xs text-ink-600">{paymentCountLabel}</p>
         </div>
       )}
     </div>

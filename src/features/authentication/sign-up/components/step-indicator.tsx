@@ -26,14 +26,14 @@ export const StepIndicator = ({ steps, currentStep }: StepIndicatorProps) => {
                     ? 'bg-accent-500 text-[#ffffff]'
                     : isCurrent
                       ? 'border-2 border-accent-500 text-accent-400'
-                      : 'border border-ink-700 text-ink-400'
+                      : 'border border-ink-300 text-ink-600'
                 }`}
               >
                 {isCompleted ? <Check className="h-4 w-4" strokeWidth={2.5} /> : stepNumber}
               </span>
               <span
                 className={`hidden text-xs font-medium sm:block ${
-                  isCurrent ? 'text-ink-50' : isCompleted ? 'text-ink-200' : 'text-ink-400'
+                  isCurrent ? 'text-ink-950' : isCompleted ? 'text-ink-800' : 'text-ink-600'
                 }`}
               >
                 {step.label}
@@ -42,7 +42,7 @@ export const StepIndicator = ({ steps, currentStep }: StepIndicatorProps) => {
             {stepNumber < steps.length && (
               <span
                 className={`h-px flex-1 transition-colors duration-300 ${
-                  isCompleted ? 'bg-accent-500' : 'bg-ink-700'
+                  isCompleted ? 'bg-accent-500' : 'bg-ink-300'
                 }`}
               />
             )}

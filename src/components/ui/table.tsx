@@ -29,8 +29,8 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
       className={cn(
         "[&_th]:sticky [&_th]:top-0 [&_th]:z-20",
         "[&_th]:border-b",
-        "[&_th]:border-ink-800",
-        "[&_th]:bg-ink-950",
+        "[&_th]:border-ink-200",
+        "[&_th]:bg-ink-50",
 
         className,
       )}
@@ -58,7 +58,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
     <tfoot
       data-slot="table-footer"
       className={cn(
-        "border-t border-ink-800 bg-ink-900/50 font-medium text-ink-200",
+        "border-t border-ink-200 bg-ink-100/50 font-medium text-ink-800",
         className,
       )}
       {...props}
@@ -84,7 +84,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "h-10 px-3 text-left align-middle text-[10px] font-semibold tracking-[0.08em] text-ink-400 uppercase whitespace-nowrap first:pl-5 last:pr-5",
+        "h-10 px-3 text-left align-middle text-[10px] font-semibold tracking-[0.08em] text-ink-600 uppercase whitespace-nowrap first:pl-5 last:pr-5",
         className,
       )}
       {...props}
@@ -97,7 +97,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
     <td
       data-slot="table-cell"
       className={cn(
-        "border-b border-ink-850 px-3 py-4 align-middle text-sm text-ink-200 whitespace-nowrap first:pl-5 last:pr-5 group-hover/row:bg-accent-500/4",
+        "border-b border-ink-150 px-3 py-4 align-middle text-sm text-ink-800 whitespace-nowrap first:pl-5 last:pr-5 group-hover/row:bg-accent-500/4",
         className,
       )}
       {...props}
@@ -112,7 +112,7 @@ function TableCaption({
   return (
     <caption
       data-slot="table-caption"
-      className={cn("mt-4 text-sm text-ink-400", className)}
+      className={cn("mt-4 text-sm text-ink-600", className)}
       {...props}
     />
   )

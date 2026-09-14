@@ -8,6 +8,7 @@ export type TScheduleOverride = { start: Date; end: Date };
 
 export type TAppointmentCalendarEvent = {
   id: string;
+  idAppointment: number;
   title: string;
   start: Date;
   end: Date;

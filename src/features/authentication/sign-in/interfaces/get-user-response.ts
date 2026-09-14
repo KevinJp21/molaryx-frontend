@@ -10,6 +10,7 @@ export interface IGetUserResponseData {
     names: string;
     surnames: string;
     email: string;
+    subscription: ISubscription | null;
     permissions: IPermission[];
 }
 
@@ -26,4 +27,12 @@ interface IStatus {
 interface IPermission {
     module: string;
     codes: string[];
+}
+
+interface ISubscription {
+    planName: string;
+    startsAt: string | null;
+    endsAt: string | null;
+    daysRemaining: number | null;
+    statusName: string;
 }

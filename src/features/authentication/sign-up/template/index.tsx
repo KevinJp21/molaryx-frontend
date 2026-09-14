@@ -89,10 +89,10 @@ export const SignUpTemplate = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             {step === 1 && (
               <div>
-                <h1 className="font-semibold text-3xl tracking-tight text-ink-50">
+                <h1 className="font-semibold text-3xl tracking-tight text-ink-950">
                   Elige tu plan
                 </h1>
-                <p className="mt-2 text-sm text-ink-300">
+                <p className="mt-2 text-sm text-ink-700">
                   Puedes cambiar de plan más adelante desde la configuración de tu cuenta.
                 </p>
 
@@ -156,7 +156,7 @@ export const SignUpTemplate = () => {
               )}
             </div>
             {step === 1 && (
-                <p className="mt-4 flex items-center justify-center gap-1 text-center text-sm text-ink-300">
+                <p className="mt-4 flex items-center justify-center gap-1 text-center text-sm text-ink-700">
                   ¿Ya tienes una cuenta?
                   <Link href="/sign-in" className="font-semibold text-accent-400 hover:text-accent-300 hover:underline">
                     Iniciar sesión

@@ -76,14 +76,14 @@ export const WeekView = ({
   const showNowBadge = weekDays.some((day) => isToday(day));
 
   return (
-    <div className="flex h-full min-w-200 flex-col overflow-hidden rounded-2xl bg-ink-950 shadow-sm ring-1 ring-ink-700/60 md:min-w-0">
+    <div className="flex h-full min-w-200 flex-col overflow-hidden rounded-2xl bg-ink-50 shadow-sm ring-1 ring-ink-300/60 md:min-w-0">
       <div
         ref={scrollRef}
         className="scrollbar-hide relative min-h-0 flex-1 scroll-smooth overflow-y-auto overflow-x-hidden rounded-2xl"
         style={{ scrollbarGutter: "stable" }}
       >
-        <div className="sticky top-0 z-20 flex border-b border-ink-800 bg-ink-900">
-          <div className="flex w-16 shrink-0 items-center justify-center border-r border-ink-800 bg-ink-900/60 px-1 py-3 text-center font-semibold text-ink-400">
+        <div className="sticky top-0 z-20 flex border-b border-ink-200 bg-ink-100">
+          <div className="flex w-16 shrink-0 items-center justify-center border-r border-ink-200 bg-ink-100/60 px-1 py-3 text-center font-semibold text-ink-600">
             <span className="flex flex-col items-center leading-tight">
               <span className="text-[11px]">{formatEventTime(now)}</span>
               <span className="text-[9px] opacity-75">(local)</span>
@@ -93,9 +93,9 @@ export const WeekView = ({
             {weekDays.map((day, index) => (
               <div
                 key={day.toISOString()}
-                className={cn("px-2 py-3 text-center", index > 0 && "border-l border-ink-800")}
+                className={cn("px-2 py-3 text-center", index > 0 && "border-l border-ink-200")}
               >
-                <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+                <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-ink-600">
                   {format(day, "EEE", { locale: es })}
                 </div>
                 <div
@@ -103,7 +103,7 @@ export const WeekView = ({
                     "mx-auto flex size-9 items-center justify-center rounded-xl text-sm font-semibold transition-all duration-200",
                     isToday(day)
                       ? "scale-110 bg-accent-500 text-white shadow-lg shadow-accent-500/30"
-                      : "text-ink-50 hover:bg-accent-50",
+                      : "text-ink-950 hover:bg-accent-50",
                   )}
                 >
                   {format(day, "d")}
@@ -114,11 +114,11 @@ export const WeekView = ({
         </div>
 
         <div className="relative flex min-w-full" style={{ height: HOURS.length * HOUR_HEIGHT }}>
-          <div className="relative w-16 shrink-0 border-r border-ink-800 bg-ink-900/40">
+          <div className="relative w-16 shrink-0 border-r border-ink-200 bg-ink-100/40">
             {HOURS.map((hour) => (
               <div
                 key={hour}
-                className="relative box-border w-full pr-3 text-right text-[11px] font-medium tabular-nums text-ink-400"
+                className="relative box-border w-full pr-3 text-right text-[11px] font-medium tabular-nums text-ink-600"
                 style={{ height: HOUR_HEIGHT }}
               >
                 <span className="block -translate-y-1/2">
@@ -135,12 +135,12 @@ export const WeekView = ({
               return (
                 <div
                   key={day.toISOString()}
-                  className={cn("relative h-full", dayIndex > 0 && "border-l border-ink-800")}
+                  className={cn("relative h-full", dayIndex > 0 && "border-l border-ink-200")}
                 >
                   {HOURS.map((hour) => (
                     <div
                       key={hour}
-                      className="relative box-border w-full border-b border-dashed border-ink-800"
+                      className="relative box-border w-full border-b border-dashed border-ink-200"
                       style={{ height: HOUR_HEIGHT }}
                     >
                       {QUARTERS.map((minute) => {
@@ -193,7 +193,7 @@ export const WeekView = ({
                       className="pointer-events-none absolute left-0 right-0 z-20 flex items-center"
                       style={{ top: `${nowOffset}px` }}
                     >
-                      <span className="absolute -left-1.5 size-3 animate-pulse rounded-full bg-accent-500 shadow-lg shadow-accent-500/40 ring-2 ring-ink-950" />
+                      <span className="absolute -left-1.5 size-3 animate-pulse rounded-full bg-accent-500 shadow-lg shadow-accent-500/40 ring-2 ring-ink-50" />
                       <span className="h-0.5 w-full bg-linear-to-r from-accent-500 via-accent-500 to-accent-500/50" />
                     </div>
                   )}

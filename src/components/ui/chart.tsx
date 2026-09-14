@@ -65,7 +65,7 @@ function ChartContainer({
         data-slot="chart"
         data-chart={chartId}
         className={cn(
-          "flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-ink-400 [&_.recharts-cartesian-axis-tick_text]:text-[11px] [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-ink-800 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-ink-700 [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-ink-800 [&_.recharts-radial-bar-background-sector]:fill-ink-850 [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-ink-850 [&_.recharts-reference-line_[stroke='#ccc']]:stroke-ink-750 [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
+          "flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-ink-600 [&_.recharts-cartesian-axis-tick_text]:text-[11px] [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-ink-200 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-ink-300 [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-ink-200 [&_.recharts-radial-bar-background-sector]:fill-ink-150 [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-ink-150 [&_.recharts-reference-line_[stroke='#ccc']]:stroke-ink-250 [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
           className
         )}
         {...props}
@@ -186,7 +186,7 @@ function ChartTooltipContent({
       return (
         <p
           className={cn(
-            "text-[10px] font-bold tracking-wider text-ink-300 uppercase",
+            "text-[10px] font-bold tracking-wider text-ink-700 uppercase",
             labelClassName
           )}
         >
@@ -202,7 +202,7 @@ function ChartTooltipContent({
     return (
       <p
         className={cn(
-          "text-[10px] font-bold tracking-wider text-ink-300 uppercase",
+          "text-[10px] font-bold tracking-wider text-ink-700 uppercase",
           labelClassName
         )}
       >
@@ -229,7 +229,7 @@ function ChartTooltipContent({
   return (
     <div
       className={cn(
-        "animate-in zoom-in-95 min-w-36 rounded-xl border border-ink-750 bg-ink-950/90 p-3 text-xs shadow-[0_1px_0_rgba(14,14,23,0.04),0_16px_40px_-24px_rgba(124,77,255,0.45)] backdrop-blur-md duration-200",
+        "animate-in zoom-in-95 min-w-36 rounded-xl border border-ink-250 bg-ink-50/90 p-3 text-xs shadow-[0_1px_0_rgba(14,14,23,0.04),0_16px_40px_-24px_rgba(124,77,255,0.45)] backdrop-blur-md duration-200",
         className
       )}
     >
@@ -262,7 +262,7 @@ function ChartTooltipContent({
             : null)
 
         return (
-          <div key={index} className={cn(index > 0 && "mt-2.5 border-t border-ink-800 pt-2.5")}>
+          <div key={index} className={cn(index > 0 && "mt-2.5 border-t border-ink-200 pt-2.5")}>
             {(tooltipLabel || (!hideIndicator && isSingle)) && index === 0 ? (
               <div className="mb-1 flex items-center gap-2">
                 {itemConfig?.icon ? (
@@ -300,23 +300,23 @@ function ChartTooltipContent({
                   />
                 )}
                 {!hideName && itemName ? (
-                  <p className="text-xs font-bold capitalize text-ink-100">{itemName}</p>
+                  <p className="text-xs font-bold capitalize text-ink-900">{itemName}</p>
                 ) : null}
               </div>
             ) : null}
 
             {isSingle && !hideName && itemName ? (
-              <p className="mb-1 text-xs font-bold capitalize text-ink-100">{itemName}</p>
+              <p className="mb-1 text-xs font-bold capitalize text-ink-900">{itemName}</p>
             ) : null}
 
             {renderedValue != null ? (
-              <p className="text-lg font-bold leading-none text-ink-100 tabular-nums">
+              <p className="text-lg font-bold leading-none text-ink-900 tabular-nums">
                 {renderedValue}
               </p>
             ) : null}
 
             {resolvedSecondary ? (
-              <p className="mt-1 whitespace-nowrap text-[10px] font-medium text-ink-300">
+              <p className="mt-1 whitespace-nowrap text-[10px] font-medium text-ink-700">
                 {resolvedSecondary}
               </p>
             ) : null}
@@ -348,7 +348,7 @@ function ChartLegendContent({
   return (
     <div
       className={cn(
-        "flex items-center justify-center gap-4 text-xs text-ink-400",
+        "flex items-center justify-center gap-4 text-xs text-ink-600",
         verticalAlign === "top" ? "pb-3" : "pt-3",
         className
       )}
@@ -363,7 +363,7 @@ function ChartLegendContent({
             <div
               key={index}
               className={cn(
-                "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-ink-400"
+                "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-ink-600"
               )}
             >
               {itemConfig?.icon && !hideIcon ? (

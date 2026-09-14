@@ -51,10 +51,10 @@ export const RevenueOverTimeChartArea = ({ data, className }: RevenueOverTimeCha
     return (
         <Card className={cn("h-full", className)}>
             <CardHeader>
-                <CardTitle className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+                <CardTitle className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
                     Ingresos de los ultimos 6 meses
                 </CardTitle>
-                <CardDescription className="text-2xl font-semibold tracking-tight text-ink-50 tabular-nums">
+                <CardDescription className="text-2xl font-semibold tracking-tight text-ink-950 tabular-nums">
                     {currencyFormat(total, 0)}
                 </CardDescription>
 
@@ -131,21 +131,21 @@ export const RevenueOverTimeChartArea = ({ data, className }: RevenueOverTimeCha
                                 activeDot={{
                                     r: 4,
                                     strokeWidth: 2,
-                                    stroke: "var(--color-ink-950)",
+                                    stroke: "var(--color-ink-50)",
                                     fill: "var(--color-revenue)",
                                 }}
                             />
                         </AreaChart>
                     </ChartContainer>
                 ) : (
-                    <div className="flex min-h-56 flex-1 items-center justify-center px-5 text-center text-xs text-ink-400">
+                    <div className="flex min-h-56 flex-1 items-center justify-center px-5 text-center text-xs text-ink-600">
                         Aún no hay ingresos registrados para mostrar la tendencia.
                     </div>
                 )}
             </CardContent>
 
             <CardFooter className="mt-auto">
-                <p className="text-xs text-ink-400">{rangeLabel}</p>
+                <p className="text-xs text-ink-600">{rangeLabel}</p>
             </CardFooter>
         </Card>
     );

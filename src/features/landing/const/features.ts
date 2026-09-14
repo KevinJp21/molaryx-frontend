@@ -194,7 +194,7 @@ export const APPOINTMENT_ITEMS = [
     name: "Ana Torres",
     svc: "Evaluación inicial",
     status: "Pendiente",
-    tone: "text-ink-200 bg-white/[0.06]",
+    tone: "text-ink-800 bg-white/[0.06]",
   },
 ] as const;
 

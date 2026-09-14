@@ -38,10 +38,10 @@ export const MiniCalendar = ({ currentDate, onDateChange, onViewChange }: Props)
   return (
     <div className="w-full px-4">
       <div className="mb-4 flex items-center justify-between">
-        <span className="text-sm font-semibold capitalize text-ink-50">
+        <span className="text-sm font-semibold capitalize text-ink-950">
           {format(viewDate, "MMMM yyyy", { locale: es })}
         </span>
-        <div className="flex items-center rounded-lg bg-ink-900 p-0.5">
+        <div className="flex items-center rounded-lg bg-ink-100 p-0.5">
           <Button
             type="button"
             variant="ghost"
@@ -79,7 +79,7 @@ export const MiniCalendar = ({ currentDate, onDateChange, onViewChange }: Props)
         {weekDays.map((day) => (
           <div
             key={day.toISOString()}
-            className="text-[10px] font-semibold uppercase text-ink-400"
+            className="text-[10px] font-semibold uppercase text-ink-600"
           >
             {format(day, "EEEEE", { locale: es })}
           </div>

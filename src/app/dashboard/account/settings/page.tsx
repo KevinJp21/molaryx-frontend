@@ -1,10 +1,9 @@
-import { AccountPlaceholderTemplate } from "@/features/dashboard/modules/account";
+import type { Metadata } from "next";
+import { SettingsTemplate } from "@/features/dashboard/modules/account/modules/settings";
+import { buildAppPageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildAppPageMetadata("Configuración");
 
 export default function AccountSettingsPage() {
-  return (
-    <AccountPlaceholderTemplate
-      title="Configuración"
-      description="Pronto podrás ajustar preferencias de la clínica y de tu cuenta desde aquí."
-    />
-  );
+  return <SettingsTemplate />;
 }

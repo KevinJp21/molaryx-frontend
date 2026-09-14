@@ -68,16 +68,16 @@ export const UpcomingAppointmentsList = ({ data, className }: UpcomingAppointmen
     return (
         <Card className={cn("flex h-full flex-col", className)}>
             <CardHeader>
-                <CardTitle className="text-[10px] font-semibold uppercase tracking-wider text-ink-400">
+                <CardTitle className="text-[10px] font-semibold uppercase tracking-wider text-ink-600">
                     Próximas citas
                 </CardTitle>
-                <CardDescription className="text-2xl font-semibold tracking-tight text-ink-50 tabular-nums">
+                <CardDescription className="text-2xl font-semibold tracking-tight text-ink-950 tabular-nums">
                     {amountFormat(total)}
                 </CardDescription>
 
                 {total > 0 ? (
                     <CardAction>
-                        <span className="rounded-full bg-ink-900 px-2.5 py-1 text-xs font-medium text-ink-300 ring-1 ring-inset ring-ink-750">
+                        <span className="rounded-full bg-ink-100 px-2.5 py-1 text-xs font-medium text-ink-700 ring-1 ring-inset ring-ink-250">
                             {`${amountFormat(groupedAppointments.length)} ${groupedAppointments.length === 1 ? "día" : "días"}`}
                         </span>
                     </CardAction>
@@ -89,14 +89,14 @@ export const UpcomingAppointmentsList = ({ data, className }: UpcomingAppointmen
                     <div className="max-h-105 overflow-y-auto px-5 pb-5">
                         {groupedAppointments.map((group) => (
                             <div key={group.date.toISOString()} className="relative">
-                                <div className="sticky top-0 z-10 border-b border-ink-800 bg-ink-950/95 py-3 backdrop-blur-md">
+                                <div className="sticky top-0 z-10 border-b border-ink-200 bg-ink-50/95 py-3 backdrop-blur-md">
                                     <div className="flex items-center gap-3">
                                         <div
                                             className={cn(
                                                 "flex size-14 flex-col items-center justify-center rounded-2xl transition-all",
                                                 isToday(group.date)
                                                     ? "bg-accent-500 text-white shadow-lg shadow-accent-500/30"
-                                                    : "bg-ink-900 text-ink-50 ring-1 ring-ink-750",
+                                                    : "bg-ink-100 text-ink-950 ring-1 ring-ink-250",
                                             )}
                                         >
                                             <span className="text-xl font-bold leading-none">
@@ -111,12 +111,12 @@ export const UpcomingAppointmentsList = ({ data, className }: UpcomingAppointmen
                                             <span
                                                 className={cn(
                                                     "text-base font-semibold capitalize",
-                                                    isToday(group.date) ? "text-accent-600" : "text-ink-50",
+                                                    isToday(group.date) ? "text-accent-600" : "text-ink-950",
                                                 )}
                                             >
                                                 {getDateLabel(group.date)}
                                             </span>
-                                            <span className="text-xs text-ink-400">
+                                            <span className="text-xs text-ink-600">
                                                 {group.appointments.length}{" "}
                                                 {group.appointments.length === 1 ? "cita" : "citas"}
                                             </span>
@@ -144,7 +144,7 @@ export const UpcomingAppointmentsList = ({ data, className }: UpcomingAppointmen
                                         return (
                                             <article
                                                 key={appointment.idAppointment}
-                                                className="relative flex gap-3 rounded-2xl border border-ink-800 bg-ink-950 p-3.5"
+                                                className="relative flex gap-3 rounded-2xl border border-ink-200 bg-ink-50 p-3.5"
                                             >
                                                 <span
                                                     className="absolute top-3 bottom-3 left-0 w-1 rounded-full"
@@ -152,21 +152,21 @@ export const UpcomingAppointmentsList = ({ data, className }: UpcomingAppointmen
                                                 />
 
                                                 <div className="flex min-w-16 flex-col items-center pl-2">
-                                                    <span className="text-sm font-semibold text-ink-50">
+                                                    <span className="text-sm font-semibold text-ink-950">
                                                         {format(appointment.start, "h:mm")}
                                                     </span>
-                                                    <span className="text-[10px] uppercase text-ink-400">
+                                                    <span className="text-[10px] uppercase text-ink-600">
                                                         {format(appointment.start, "a", { locale: es }).replace(/\./g, "")}
                                                     </span>
-                                                    <span className="my-1 h-3 w-px bg-ink-700" />
-                                                    <span className="text-[10px] font-medium text-ink-400/80">
+                                                    <span className="my-1 h-3 w-px bg-ink-300" />
+                                                    <span className="text-[10px] font-medium text-ink-600/80">
                                                         {formatDuration(appointment.start, appointment.end)}
                                                     </span>
                                                 </div>
 
                                                 <div className="min-w-0 flex-1 space-y-2">
                                                     <div className="flex items-start justify-between gap-2">
-                                                        <h4 className="line-clamp-1 text-sm font-semibold text-ink-50">
+                                                        <h4 className="line-clamp-1 text-sm font-semibold text-ink-950">
                                                             {patientName || "Paciente sin nombre"}
                                                         </h4>
                                                         <span
@@ -176,19 +176,19 @@ export const UpcomingAppointmentsList = ({ data, className }: UpcomingAppointmen
                                                     </div>
 
                                                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                                                        <span className="flex items-center gap-1.5 text-xs text-ink-400">
+                                                        <span className="flex items-center gap-1.5 text-xs text-ink-600">
                                                             <Clock className="size-3.5 shrink-0" />
                                                             {formatEventTime(appointment.start)} -{" "}
                                                             {formatEventTime(appointment.end)}
                                                         </span>
                                                         {appointment.procedureNames ? (
-                                                            <span className="flex items-center gap-1.5 text-xs text-ink-400">
+                                                            <span className="flex items-center gap-1.5 text-xs text-ink-600">
                                                                 <Stethoscope className="size-3.5 shrink-0" />
                                                                 <span className="line-clamp-1">{appointment.procedureNames}</span>
                                                             </span>
                                                         ) : null}
                                                         {professionalName ? (
-                                                            <span className="flex items-center gap-1.5 text-xs text-ink-400">
+                                                            <span className="flex items-center gap-1.5 text-xs text-ink-600">
                                                                 <User className="size-3.5 shrink-0" />
                                                                 <span className="line-clamp-1">{professionalName}</span>
                                                             </span>
@@ -212,14 +212,14 @@ export const UpcomingAppointmentsList = ({ data, className }: UpcomingAppointmen
                         ))}
                     </div>
                 ) : (
-                    <div className="flex min-h-48 items-center justify-center px-5 pb-5 text-center text-xs text-ink-400">
+                    <div className="flex min-h-48 items-center justify-center px-5 pb-5 text-center text-xs text-ink-600">
                         No hay citas próximas por mostrar.
                     </div>
                 )}
             </CardContent>
 
             <CardFooter className="mt-auto">
-                <p className="text-xs text-ink-400">Agenda de próximas citas</p>
+                <p className="text-xs text-ink-600">Agenda de próximas citas</p>
             </CardFooter>
         </Card>
     );
