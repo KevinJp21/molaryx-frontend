@@ -67,7 +67,7 @@ export const ClinicalRecordDetailModal = ({
       open={open}
       onOpenChange={onOpenChange}
       icon={<FileText className="size-3.5" strokeWidth={2} />}
-      title={record.reason}
+      title="Registro clínico"
       description="Detalle del registro clínico"
     >
       <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
