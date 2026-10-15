@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Plataforma Molaryx · Arquitectura del frontend",
+    "output": "artifacts/frontend-architecture.html",
+    "quality_profile": "showcase",
+    "views": [
+      { "id": "primary-path", "label": "Vía principal", "focus": ["browser", "spa", "router", "auth", "apiclient", "backend", "state", "ui"], "note": "Del navegador al render con datos de la API." },
+      { "id": "auth-flow", "label": "Autenticación y permisos", "focus": ["router", "auth", "apiclient", "backend"], "note": "Proxy, guards, cookies httpOnly y refresh token." },
+      { "id": "data-flow", "label": "Capa de datos", "focus": ["ui", "apiclient", "state", "backend"], "note": "Server Actions → API Client → Redux → UI." }
+    ],
+    "repository": {
+      "url": "https://github.com/KevinJp21/molaryx-frontend.git",
+      "provider": "github",
+      "revision": "511903a5051d26b8506fdadaeef612834c343ccb"
+    }
+  },
+  "components": [
+    { "id": "browser", "type": "external", "label": "Navegador", "sublabel": "Clínica · Superadmin", "tag": "cliente web", "pos": [40, 110], "size": [140, 70] },
+    { "id": "spa", "type": "frontend", "label": "Frontend Next.js 16", "sublabel": "App Router · React 19", "tag": "TypeScript", "pos": [260, 100], "size": [150, 90], "sources": [{ "path": "package.json", "line": 30, "label": "next 16.2.12" }] },
+    { "id": "router", "type": "frontend", "label": "Rutas + Guards", "sublabel": "AuthGuard · RouteGuard", "tag": "/dashboard · /platform", "pos": [480, 100], "size": [150, 90], "sources": [{ "path": "src/proxy.ts", "line": 19, "label": "proxy() protege rutas" }, { "path": "src/features/dashboard/guards/route-guard.tsx", "line": 35, "label": "RouteGuard por permisos" }] },
+    { "id": "auth", "type": "security", "label": "Auth/Sesión", "sublabel": "JWT access + refresh", "tag": "cookies httpOnly", "pos": [700, 100], "size": [150, 90], "sources": [{ "path": "src/lib/auth/refresh-session.ts", "line": 73, "label": "refreshSessionFromProxy" }, { "path": "src/features/authentication/sign-in/actions/sign-in-action.ts", "line": 37, "label": "Cookies de sesión" }] },
+    { "id": "apiclient", "type": "backend", "label": "API Client", "sublabel": "fetch · token · errores", "tag": "Server Actions", "pos": [915, 230], "size": [160, 90], "sources": [{ "path": "src/lib/api/core.ts", "line": 3, "label": "ApiClient sobre fetch" }, { "path": "src/lib/api/error-handler.ts", "line": 175, "label": "handleApiError" }] },
+    { "id": "state", "type": "frontend", "label": "Estado Redux", "sublabel": "14 slices por dominio", "tag": "Redux Toolkit", "pos": [915, 470], "size": [160, 80], "sources": [{ "path": "src/store/index.ts", "line": 17, "label": "configureStore" }] },
+    { "id": "ui", "type": "frontend", "label": "UI Shell", "sublabel": "sidebar · header · forms", "tag": "Tailwind · Radix", "pos": [480, 470], "size": [170, 80], "sources": [{ "path": "src/app/layout.tsx", "line": 33, "label": "Providers + AuthGuard" }, { "path": "src/features/dashboard/template/index.tsx", "line": 20, "label": "Shell del dashboard" }] },
+    { "id": "signalr", "type": "messagebus", "label": "SignalR Client", "sublabel": "notificaciones en vivo", "tag": "tiempo real", "pos": [1180, 470], "size": [140, 80], "sources": [{ "path": "src/features/notifications/hooks/use-signal-r.ts", "line": 70, "label": "HubConnectionBuilder" }] },
+    { "id": "backend", "type": "external", "label": "Molaryx Admin API", "sublabel": "ASP.NET Core · .NET 10", "tag": "api/v1/*", "pos": [1180, 110], "size": [140, 70] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Frontend SPA · este repositorio", "wraps": ["spa", "router", "auth", "apiclient", "state", "ui"] }
+  ],
+  "connections": [
+    { "id": "browser-to-spa", "from": "browser", "to": "spa", "label": "carga la app" },
+    { "id": "spa-to-router", "from": "spa", "to": "router", "label": "navegación" },
+    { "id": "router-to-auth", "from": "router", "to": "auth", "label": "valida sesión", "variant": "security" },
+    { "id": "auth-to-apiclient", "from": "auth", "to": "apiclient", "label": "inyecta JWT", "variant": "security" },
+    { "id": "apiclient-to-backend", "from": "apiclient", "to": "backend", "label": "HTTPS · api/v1/*", "variant": "emphasis" },
+    { "id": "backend-to-apiclient", "from": "backend", "to": "apiclient", "label": "ApiResponse<T>" },
+    { "id": "apiclient-to-state", "from": "apiclient", "to": "state", "label": "actualiza estado" },
+    { "id": "state-to-ui", "from": "state", "to": "ui", "label": "render datos" },
+    { "id": "ui-to-apiclient", "from": "ui", "to": "apiclient", "label": "acciones CRUD" },
+    { "id": "router-to-backend", "from": "router", "to": "backend", "label": "refresh token (proxy)", "variant": "security" },
+    { "id": "ui-to-signalr", "from": "ui", "to": "signalr", "label": "SignalRProvider · dashboard" },
+    { "id": "signalr-to-backend", "from": "signalr", "to": "backend", "label": "WS · hub notifications" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Vía principal",
+      "items": [
+        "Navegador → Next.js 16 (App Router) → guards → Auth/Sesión → API Client → Molaryx Admin API",
+        "Respuesta uniforme ApiResponse<T> (TBaseResponse) mapeada por handleApiError",
+        "El resultado vuelve a Redux (slices) y se renderiza en el UI Shell"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Autenticación y permisos",
+      "items": [
+        "src/proxy.ts protege /dashboard y /platform y redirige a /sign-in sin sesión",
+        "JWT access (15 min) + refresh (7 d) en cookies httpOnly con nombres ofuscados",
+        "AuthGuard valida la sesión; RouteGuard valida permisos por ruta y rol (clínica vs superadmin)",
+        "Roles de clínica: Propietario, Profesional y Asistente"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Capa HTTP + Estado",
+      "items": [
+        "ApiClient propio sobre fetch: timeout, token, JSON, blobs y PDF/Excel (sin Axios)",
+        "serverApi (cookies) vía Server Actions es la vía real; clientApi (localStorage) está declarado sin uso",
+        "Redux Toolkit con 14 slices: patients, appointments, payments, notifications, tenants…",
+        "Errores: 401 → /sign-in?session=expired · 403 y 5xx con mensajes genéricos"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "UI + Ruteo",
+      "items": [
+        "Feature-Sliced Design: app/ fino → features/ (templates, modules, guards, actions)",
+        "Dos shells: /dashboard (clínica) y /platform (superadmin) con layout propio",
+        "Forms con react-hook-form + Zod; UI Tailwind + Radix/shadcn; gráficas Recharts",
+        "Landing y auth pública fuera de la región protegida (GSAP, MDX legal)"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Integración con Backend",
+      "items": [
+        "Base URL y endpoints por variables de entorno (URL + URN + AUTH, PATIENT, APPOINTMENT…)",
+        "SignalR: @microsoft/signalr → /api/v1/hub/notifications con accessToken de la cookie",
+        "Server Action entrega hubUrl + token; reconexión automática con withAutomaticReconnect",
+        "Coherente con el diagrama del backend: API versionada api/v1/* y ApiResponse<T>"
+      ]
+    }
+  ]
+}
