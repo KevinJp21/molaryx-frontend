@@ -54,8 +54,7 @@ export const PatientsSidebar = ({
         {canCreate && onCreateClick && (
           <div className="mb-5 px-4">
             <Button
-              type="button"
-              className="h-12 w-full justify-center gap-3 rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-accent-500/20 active:scale-[0.98]"
+              className="w-full"
               onClick={onCreateClick}
             >
               <Plus className="size-5" />
@@ -65,7 +64,7 @@ export const PatientsSidebar = ({
         )}
 
         <div className="mb-5 px-4">
-          <label className="mb-2 block text-[10px] font-semibold uppercase tracking-wider text-ink-600">
+          <label className="mb-2 block text-xs font-medium tracking-wider text-ink-800">
             Buscar
           </label>
           <div className="relative">

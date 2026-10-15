@@ -148,7 +148,7 @@ const ResetPasswordForm = () => {
             </div>
           </div>
 
-          <p className="mt-5 text-[13px] leading-relaxed text-ink-600">
+          <p className="mt-5 text-sm leading-relaxed text-ink-600">
             Por seguridad, el enlace de restablecimiento ya no es válido.
           </p>
 

@@ -6,7 +6,7 @@ import { IGetClinicalRecordsResponse } from "../interfaces";
 import { TPaginationParams } from "@/types";
 
 export type TGetClinicalRecordsParams = TPaginationParams & {
-  Search: string
+  Search?: string;
 };
 
 export const apiGetClinicalRecordsAction = async (

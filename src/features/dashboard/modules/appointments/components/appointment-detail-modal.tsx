@@ -1,5 +1,4 @@
 "use client";
-//TODO: dejar diseño de tablas como paciente
 import { useState } from "react";
 import { CalendarDays, Clock, PlusIcon, Stethoscope } from "lucide-react";
 import { BaseModal, Button } from "@/components";

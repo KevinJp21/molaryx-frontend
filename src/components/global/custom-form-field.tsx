@@ -224,7 +224,7 @@ export const CustomFormField = ({
 
                 return (
                 <div className="flex flex-col gap-1.5">
-                    <label htmlFor={name} className="text-[13px] font-medium text-ink-800">
+                    <label htmlFor={name} className="text-xs font-medium text-ink-800">
                         {label}
                     </label>
 

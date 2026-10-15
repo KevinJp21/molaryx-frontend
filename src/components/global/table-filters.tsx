@@ -51,7 +51,7 @@ type TableFiltersProps<TForm extends FieldValues, TParams> = {
   onFiltersChange: (filters: TParams) => void;
   toQueryParams: (values: TForm, debouncedSearch?: string) => TParams;
   searchField?: SearchField<TForm>;
-  drawerFields: DrawerField<TForm>[];
+  drawerFields?: DrawerField<TForm>[];
   drawerTitle?: string;
   drawerDescription?: string;
   resetButtonLabel?: string;
@@ -104,7 +104,7 @@ export const TableFilters = <TForm extends FieldValues, TParams>({
   }, [defaultValuesKey, form, searchField]);
 
   const activeCount = useMemo(() => {
-    return drawerFields.reduce((count, field) => {
+    return drawerFields?.reduce((count, field) => {
       const value = values[field.name];
       if (field.type === "select") {
         return value !== field.allValue ? count + 1 : count;
@@ -132,7 +132,7 @@ export const TableFilters = <TForm extends FieldValues, TParams>({
     return () => clearTimeout(timer);
   }, [searchFieldName, searchDebounceMs, searchValue]);
 
-  const drawerFieldValues = drawerFields.map((field) => values[field.name]);
+  const drawerFieldValues = drawerFields?.map((field) => values[field.name]);
   const drawerValuesKey = JSON.stringify(drawerFieldValues);
 
   useEffect(() => {
@@ -154,7 +154,7 @@ export const TableFilters = <TForm extends FieldValues, TParams>({
       cleared[searchField.name] = "" as TForm[Path<TForm>];
     }
 
-    for (const field of drawerFields) {
+    for (const field of drawerFields ?? []) {
       if (field.type === "select") {
         cleared[field.name] = field.allValue as TForm[Path<TForm>];
       } else {
@@ -202,7 +202,7 @@ export const TableFilters = <TForm extends FieldValues, TParams>({
           >
             <SlidersHorizontal className="size-4" />
             Filtros
-            {activeCount > 0 && (
+            {(activeCount !== undefined && activeCount > 0) && (
               <span className="flex size-5 items-center justify-center rounded-full bg-accent-500 text-[10px] font-bold text-white">
                 {activeCount}
               </span>
@@ -218,7 +218,7 @@ export const TableFilters = <TForm extends FieldValues, TParams>({
             </SheetHeader>
 
             <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-6">
-              {drawerFields.map((field) => (
+              {drawerFields?.map((field) => (
                 field.type === "select" ? (
                   <CustomFormSelect
                     key={field.name}

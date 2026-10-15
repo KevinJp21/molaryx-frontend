@@ -19,7 +19,7 @@ export const CustomPasswordFormField = ({ name, label, errorMessage, showForgotP
             render={({ field, fieldState }) => (
                 <div className='flex flex-col gap-1.5'>
                     <span className='flex justify-between items-center '>
-                        <label htmlFor={name} className='text-[13px] font-medium text-ink-800'>{label}</label>
+                        <label htmlFor={name} className='text-xs font-medium text-ink-800'>{label}</label>
                         {showForgotPassword && (
                             <Link href='/forgot-password' className='text-accent-400 font-medium text-xs leading-5 tracking-normal hover:underline'>
                                 ¿Olvidaste tu contraseña?

@@ -20,7 +20,7 @@ export type TSelectItem<T extends string | number | boolean> = {
 interface Props<T extends string | number | boolean> {
     label: string;
     placeholder: string;
-    /** Página actual (o listado completo). Con `onLoadMore` se acumula. */
+    // Página actual (o listado completo). Con `onLoadMore` se acumula.
     items: TSelectItem<T>[];
     itemBadge?: boolean;
     errorMessage?: string;
@@ -29,28 +29,28 @@ interface Props<T extends string | number | boolean> {
     disabled?: boolean;
     className?: string;
     defaultValue?: T;
-    /** Muestra un campo de búsqueda dentro del listado. */
+    // Muestra un campo de búsqueda dentro del listado.
     searchable?: boolean;
     searchPlaceholder?: string;
-    /**
-     * Búsqueda remota. Si se define, el padre actualiza `items`
-     * (p. ej. con el param Search de la API). Sin filtro local.
-     * Reinicia el acumulado de paginación.
+    /*
+      Búsqueda remota. Si se define, el padre actualiza `items`
+      (p. ej. con el param Search de la API). Sin filtro local.
+      Reinicia el acumulado de paginación.
      */
     onSearch?: (query: string) => void;
     searchDebounceMs?: number;
     isSearching?: boolean;
-    /** Opción que escribe `null` en el formulario (Radix no admite value vacío). */
+    // Opción que escribe `null` en el formulario (Radix no admite value vacío).
     emptyLabel?: string;
-    /**
-     * Paginación: botón “Cargar más” en el footer del listado.
-     * Preferir `usePaginatedSelect` (`@/hooks`) en el padre para Page/Search/hasMore.
-     * Este select acumula los `items` nuevos entre páginas.
+    /*
+      Paginación: botón “Cargar más” en el footer del listado.
+      Preferir `usePaginatedSelect` (`@/hooks`) en el padre para Page/Search/hasMore.
+      Este select acumula los `items` nuevos entre páginas.
      */
     onLoadMore?: () => void;
     hasMore?: boolean;
     isLoadingMore?: boolean;
-    /** Cambia (p. ej. idPatient) para vaciar el acumulado y volver a página 1. */
+    // Cambia (p. ej. idPatient) para vaciar el acumulado y volver a página 1.
     resetKey?: string | number | null;
 }
 
@@ -99,7 +99,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
     const [search, setSearch] = useState("");
     const [selectedCache, setSelectedCache] = useState<TSelectItem<T> | null>(null);
     const [accumulatedItems, setAccumulatedItems] = useState<TSelectItem<T>[]>(items);
-    /** Evita el anillo :focus-visible tras escribir en el buscador y seleccionar. */
+    // Evita el anillo :focus-visible tras escribir en el buscador y seleccionar.
     const [hideFocusStyles, setHideFocusStyles] = useState(false);
     const skipSearchOnOpen = useRef(false);
     const hadRemoteSearchRef = useRef(false);
@@ -217,7 +217,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
 
     return (
         <div className="flex flex-col gap-1.5">
-            <label htmlFor={name} className="text-sm font-medium text-ink-800">
+            <label htmlFor={name} className="text-xs font-medium text-ink-800">
                 {label}
             </label>
 
@@ -395,7 +395,7 @@ export const CustomFormSelect = <T extends string | number | boolean>({
                                                         }}
                                                         onPointerDown={(e) => e.stopPropagation()}
                                                         placeholder={searchPlaceholder}
-                                                        className="rounded-lg py-2 pr-3 pl-8 text-[13px]"
+                                                        className="rounded-lg py-2 pr-3 pl-8 text-xs"
                                                         aria-label={searchPlaceholder}
                                                     />
                                                 </div>

@@ -35,22 +35,13 @@ export const ClinicalRecordsTemplate = () => {
             Registros clínicos del consultorio
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {canView && (
-            <Button variant="destructive" onClick={() => setExportModalOpen(true)}>
-              <FileDownIcon className="h-4 w-4" />
-              Exportar historia clínica
-            </Button>
-          )}
-          {canCreate && (
-            <Button onClick={() => setModalOpen(true)}>
-              <PlusIcon className="h-4 w-4" />
-              Crear registro
-            </Button>
-          )}
-        </div>
       </section>
-      <ClinicalRecordsTable refreshKey={listRefreshKey} />
+      <ClinicalRecordsTable
+      onCreate={() => setModalOpen(true)}
+      canCreate={canCreate}
+      onExport={() => setExportModalOpen(true)}
+      canView={canView}
+      refreshKey={listRefreshKey} />
       <ClinicalRecordFormModal
         open={modalOpen}
         onOpenChange={setModalOpen}

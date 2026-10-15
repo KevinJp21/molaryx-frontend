@@ -83,7 +83,7 @@ export const ForgotPasswordTemplate = () => {
                         </div>
                     </div>
 
-                    <p className="mt-5 text-[13px] leading-relaxed text-ink-600">
+                    <p className="mt-5 text-sm leading-relaxed text-ink-600">
                         Puede tardar unos minutos. Si no lo ves, revisa spam o correo
                         no deseado.
                     </p>
