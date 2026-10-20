@@ -7,6 +7,8 @@ import { TPaginationParams } from "@/types";
 
 export type TGetClinicalRecordsParams = TPaginationParams & {
   Search?: string;
+  From?: string;
+  To?: string;
 };
 
 export const apiGetClinicalRecordsAction = async (
@@ -15,13 +17,15 @@ export const apiGetClinicalRecordsAction = async (
   const CLINICAL_RECORD = process.env.CLINICAL_RECORD;
   const GET_CLINICAL_RECORDS = process.env.GET_CLINICAL_RECORDS;
 
-  const { Page, Size, Search} =
+  const { Page, Size, Search, From, To } =
     params ?? {};
   const query = new URLSearchParams();
 
   if (Page) query.append("Page", Page.toString());
   if (Size) query.append("Size", Size.toString());
-  if (Search) query.append("Search", Search.toString());
+  if (Search) query.append("Search", Search);
+  if (From) query.append("From", From);
+  if (To) query.append("To", To);
 
   const url = `${CLINICAL_RECORD}${GET_CLINICAL_RECORDS}?${query.toString()}`;
 

@@ -64,6 +64,8 @@ export const ClinicalRecordsTable = ({
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const {
     open: detailOpen,
     selected: selectedRecord,
@@ -72,14 +74,33 @@ export const ClinicalRecordsTable = ({
   } = useDetailModalState<IClinicalRecordItems>();
   const colSpan = 6;
 
-  const listFilters: Pick<TGetClinicalRecordsParams, "Search"> = {
-    ...(search.trim() ? { Search: search.trim() } : {})
-  }
-
-  const handleMobileFiltersChange = (filters: TGetClinicalRecordsParams) => {
-    setSearch(filters.Search ?? "");
+  const listFilters: Pick<TGetClinicalRecordsParams, "Search" | "From" | "To"> = {
+    ...(search.trim() ? { Search: search.trim() } : {}),
+    ...(from ? { From: from } : {}),
+    ...(to ? { To: to } : {}),
   };
 
+  const applyFilters = (filters: TGetClinicalRecordsParams) => {
+    setSearch(filters.Search ?? "");
+    setFrom(filters.From ?? "");
+    setTo(filters.To ?? "");
+    setCurrentPage(1);
+  };
+
+  const applySearch = (value: string) => {
+    setSearch(value);
+    setCurrentPage(1);
+  };
+
+  const applyFrom = (value: string) => {
+    setFrom(value);
+    setCurrentPage(1);
+  };
+
+  const applyTo = (value: string) => {
+    setTo(value);
+    setCurrentPage(1);
+  };
 
   useEffect(() => {
     dispatch(
@@ -88,13 +109,15 @@ export const ClinicalRecordsTable = ({
         ...listFilters,
       }),
     );
-  }, [dispatch, currentPage, refreshKey, search]);
+  }, [dispatch, currentPage, refreshKey, search, from, to]);
 
   const items = data?.items ?? [];
   const totalPages = data?.totalPages ?? 0;
   const filterParamsForForm: TGetClinicalRecordsParams = {
     Page: 1,
     ...(search.trim() ? { Search: search.trim() } : {}),
+    ...(from ? { From: from } : {}),
+    ...(to ? { To: to } : {}),
   };
 
   useEffect(() => {
@@ -109,7 +132,11 @@ export const ClinicalRecordsTable = ({
       <section className="flex min-h-0 flex-1 overflow-hidden">
         <ClinicalRecordsSidebar
           search={search}
-          onSearchChange={setSearch}
+          from={from}
+          to={to}
+          onSearchChange={applySearch}
+          onFromChange={applyFrom}
+          onToChange={applyTo}
           onCreate={onCreate}
           canCreate={canCreate}
           onExport={onExport}
@@ -137,7 +164,7 @@ export const ClinicalRecordsTable = ({
 
             <ClinicalRecordTableFilter
               params={filterParamsForForm}
-              onFiltersChange={handleMobileFiltersChange}
+              onFiltersChange={applyFilters}
             />
           </div>
 
