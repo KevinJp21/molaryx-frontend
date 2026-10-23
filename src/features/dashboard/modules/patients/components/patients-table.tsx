@@ -95,7 +95,7 @@ export const PatientsTable = ({
 
     return (
         <div className="relative flex min-h-160 w-full flex-1 flex-col overflow-hidden rounded-2xl bg-ink-50 shadow-[0_1px_0_rgba(14,14,23,0.04),0_24px_48px_-28px_rgba(124,77,255,0.45)] ring-1 ring-ink-300/70">
-            <div className="flex min-h-0 flex-1 overflow-hidden">
+            <section className="flex min-h-0 flex-1 overflow-hidden">
                 <PatientsSidebar
                     search={search}
                     status={statusFilter}
@@ -305,7 +305,7 @@ export const PatientsTable = ({
                         </Table>
                     </BaseTable>
                 </div>
-            </div>
+            </section>
         </div>
     )
 }

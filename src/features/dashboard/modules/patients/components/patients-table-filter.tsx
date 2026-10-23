@@ -1,7 +1,7 @@
 'use client';
 
 import { TableFilters } from "@/components";
-import { IS_ACTIVE_STATUS } from "@/features/dashboard/consts";
+import { IS_ACTIVE_STATUS, ALL_STATUSES_VALUE } from "@/features/dashboard/consts";
 import { TGetPatientsParams } from "../actions";
 
 type TPatientsTableFilterProps = {
@@ -13,8 +13,6 @@ type TFormValues = {
     searchTerm: string;
     isActive: boolean | typeof ALL_STATUSES_VALUE;
 };
-
-const ALL_STATUSES_VALUE = "all";
 
 const STATUS_ITEMS = [
     { value: ALL_STATUSES_VALUE, name: "Todos" },

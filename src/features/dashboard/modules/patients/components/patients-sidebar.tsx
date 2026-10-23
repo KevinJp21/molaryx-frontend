@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Plus, Search } from "lucide-react";
+import { Plus, RotateCcw, Search } from "lucide-react";
 import { Button, CustomFormSelect, Input } from "@/components";
 import {
   PATIENT_STATUS_FILTER_OPTIONS,
@@ -13,7 +13,7 @@ type TFilterForm = {
   isActive: TPatientStatusFilter;
 };
 
-type Props = {
+type TProps = {
   search: string;
   status: TPatientStatusFilter;
   onSearchChange: (value: string) => void;
@@ -29,7 +29,7 @@ export const PatientsSidebar = ({
   onStatusChange,
   onCreateClick,
   canCreate = false,
-}: Props) => {
+}: TProps) => {
   const [searchDraft, setSearchDraft] = useState(search);
   const methods = useForm<TFilterForm>({
     values: {
@@ -47,6 +47,15 @@ export const PatientsSidebar = ({
     }, 300);
     return () => window.clearTimeout(timer);
   }, [searchDraft, search, onSearchChange]);
+
+  const hasActiveFilters = Boolean(searchDraft.trim()) || status !== "all";
+
+  const handleResetFilters = () => {
+    setSearchDraft("");
+    methods.reset({ isActive: "all" });
+    onSearchChange("");
+    onStatusChange("all");
+  };
 
   return (
     <aside className="hidden h-full w-64 shrink-0 flex-col overflow-hidden border-r border-ink-200 lg:flex">
@@ -96,6 +105,19 @@ export const PatientsSidebar = ({
             />
           </div>
         </FormProvider>
+
+        <div className="mt-auto w-full px-4">
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={handleResetFilters}
+            disabled={!hasActiveFilters}
+            className="w-full gap-2"
+          >
+            <RotateCcw className="size-4" />
+            Reiniciar filtros
+          </Button>
+        </div>
       </div>
     </aside>
   );

@@ -1,3 +1,5 @@
 export * from './procedures-table'
 export * from './procedure-form-modal'
 export * from './delete-procedure-modal'
+export * from './procedure-table-filter'
+export * from './procedure-sidebar'

@@ -76,18 +76,14 @@ export const ProceduresTemplate = () => {
                         Gestión de procedimientos
                     </p>
                 </div>
-                {canCreate && (
-                    <Button onClick={openCreateModal}>
-                        <PlusIcon className="h-4 w-4" />
-                        Agregar procedimiento
-                    </Button>
-                )}
             </section>
             <ProceduresTable
                 onEdit={openEditModal}
                 onDelete={openDeleteModal}
+                onCreate={openCreateModal}
                 canUpdate={canUpdate}
                 canDelete={canDelete}
+                canCreate={canCreate}
                 refreshKey={listRefreshKey}
             />
             {(canCreate || canUpdate) && (

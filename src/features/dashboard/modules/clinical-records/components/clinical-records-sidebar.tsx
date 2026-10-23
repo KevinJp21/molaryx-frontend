@@ -11,7 +11,7 @@ type TFilterForm = {
   to: string;
 };
 
-type Props = {
+type TProps = {
   search: string;
   from: string;
   to: string;
@@ -35,7 +35,7 @@ export const ClinicalRecordsSidebar = ({
   canCreate = false,
   onExport,
   canView = false,
-}: Props) => {
+}: TProps) => {
   const [searchDraft, setSearchDraft] = useState(search);
   const methods = useForm<TFilterForm>({
     values: {

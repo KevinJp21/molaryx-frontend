@@ -6,6 +6,7 @@ import {
   TENANT_STATUS_FILTER_OPTIONS,
   type TTenantStatusFilter,
 } from "../consts";
+import { ALL_STATUSES_VALUE } from "@/features/dashboard";
 
 type TTenantsTableFilterProps = {
   params: TGetTenantsParams;
@@ -16,8 +17,6 @@ type TFormValues = {
   searchTerm: string;
   idTenantStatus: TTenantStatusFilter;
 };
-
-const ALL_STATUSES_VALUE = "all" as const;
 
 const STATUS_ITEMS = TENANT_STATUS_FILTER_OPTIONS.map((option) => ({
   value: option.value,
