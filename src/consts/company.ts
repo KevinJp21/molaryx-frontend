@@ -17,6 +17,10 @@ export const COMPANY_COUNTRY = "Colombia";
 
 export const COMPANY_DOMICILE = "Barranquilla, Atlántico, Colombia";
 
+export const START_DATE_PROMO = "24 de agosto de 2026"
+
+export const END_DATE_PROMO = "24 de agosto de 2027"
+
 export const getCompanyLegalLabel = () => {
   if (COMPANY_LEGAL_NAME.trim() && COMPANY_NIT.trim()) {
     return `${COMPANY_LEGAL_NAME}, NIT ${COMPANY_NIT}`;

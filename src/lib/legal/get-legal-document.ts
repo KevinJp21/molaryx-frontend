@@ -7,6 +7,8 @@ import {
   COMPANY_LEGAL_NAME,
   COMPANY_NAME,
   COMPANY_SUPPORT_EMAIL,
+  START_DATE_PROMO,
+  END_DATE_PROMO,
   getCompanyLegalLabel,
 } from "@/consts";
 
@@ -43,6 +45,12 @@ const applyPlaceholders = (source: string) => {
       hasLegalEntity
         ? "."
         : `, marca bajo la cual se presta el servicio. Cuando exista sociedad registrada, se indicará aquí su razón social y NIT.`,
+    )
+    .replaceAll(
+      "{{START_DATE_PROMO}}", START_DATE_PROMO
+    )
+    .replaceAll(
+      "{{END_DATE_PROMO}}", END_DATE_PROMO
     );
 };
 
